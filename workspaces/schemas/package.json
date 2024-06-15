@@ -1,14 +1,14 @@
 {
-  "name": "schemas",
-  "type": "module",
-  "exports": {
-    ".": "./src/index.ts"
-  },
-  "dependencies": {
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
-    "@lusc/tsconfig": "^4.1.0",
-    "typescript": "^5.4.5"
-  }
+	"name": "schemas",
+	"type": "module",
+	"exports": {
+		".": "./src/index.ts"
+	},
+	"dependencies": {
+		"zod": "^3.23.8"
+	},
+	"devDependencies": {
+		"@lusc/tsconfig": "^4.1.0",
+		"typescript": "^5.4.5"
+	}
 }
