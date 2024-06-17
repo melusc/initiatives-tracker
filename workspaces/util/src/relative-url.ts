@@ -2,8 +2,8 @@ export class RelativeUrl {
 	readonly #url: URL;
 
 	constructor(base: string | URL | RelativeUrl) {
-		this.#url =
-			base instanceof RelativeUrl
+		this.#url
+			= base instanceof RelativeUrl
 				? new URL(base.full, 'http://localhost/')
 				: new URL(base, 'http://localhost/');
 	}
