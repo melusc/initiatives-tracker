@@ -1,22 +1,38 @@
 {
-	"name": "backend",
+	"name": "@lusc/initiatives-tracker-backend",
+	"private": true,
 	"type": "module",
 	"devDependencies": {
 		"@lusc/tsconfig": "^4.1.0",
 		"@types/better-sqlite3": "^7.6.10",
+		"@types/cookie-parser": "^1",
+		"@types/cors": "^2",
+		"@types/express": "^4.17.21",
+		"@types/morgan": "^1",
 		"@types/node": "^20.14.2",
+		"concurrently": "^8.2.2",
 		"esbuild": "^0.21.5",
-		"schemas": "workspace:^",
 		"typescript": "^5.4.5",
 		"xo": "^0.58.0"
 	},
 	"dependencies": {
-		"better-sqlite3": "^11.0.0"
+		"@lusc/initiatives-tracker-util": "workspace:^",
+		"better-sqlite3": "^11.0.0",
+		"cookie-parser": "^1.4.6",
+		"cors": "^2.8.5",
+		"express": "^4.19.2",
+		"file-type": "^19.0.0",
+		"helmet": "^7.1.0",
+		"morgan": "^1.10.0",
+		"zod": "^3.23.8"
 	},
 	"scripts": {
 		"fmt": "xo --fix",
-		"build": "tsc && esbuild --outdir=dist --format=esm --platform=node --bundle --sourcemap --packages=external src/server.ts",
+		"build": "tsc && node --run esbuild",
+		"esbuild": "esbuild --outdir=dist --format=esm --platform=node --bundle --sourcemap --packages=external src/server.ts",
+		"build:w": "node --run esbuild -- --watch",
 		"start": "node dist/server.js",
-		"dev": "node --run build && node --run start"
+		"start:w": "node --watch dist/server.js",
+		"dev": "concurrently 'yarn:start:w' 'yarn:build:w'"
 	}
 }

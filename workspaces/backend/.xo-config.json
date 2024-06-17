@@ -1,0 +1,15 @@
+{
+	"indent": "off",
+	"no-mixed-spaces-and-tabs": "off",
+	"overrides": [
+		{
+			"files": "**/*.ts",
+			"rules": {
+				"n/file-extension-in-import": "off",
+				"@typescript-eslint/indent": "off",
+				"@typescript-eslint/ban-types": "off",
+				"no-mixed-spaces-and-tabs": "off"
+			}
+		}
+	]
+}
