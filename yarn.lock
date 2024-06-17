@@ -361,11 +361,11 @@ __metadata:
     "@lusc/initiatives-tracker-util": "workspace:^"
     "@lusc/tsconfig": "npm:^4.1.0"
     "@types/better-sqlite3": "npm:^7.6.10"
-    "@types/cookie-parser": "npm:^1"
-    "@types/cors": "npm:^2"
+    "@types/cookie-parser": "npm:^1.4.7"
+    "@types/cors": "npm:^2.8.17"
     "@types/express": "npm:^4.17.21"
-    "@types/morgan": "npm:^1"
-    "@types/node": "npm:^20.14.2"
+    "@types/morgan": "npm:^1.9.9"
+    "@types/node": "npm:^20.14.3"
     better-sqlite3: "npm:^11.0.0"
     concurrently: "npm:^8.2.2"
     cookie-parser: "npm:^1.4.6"
@@ -385,13 +385,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@lusc/initiatives-tracker-frontend@workspace:workspaces/frontend"
   dependencies:
-    "@sveltejs/vite-plugin-svelte": "npm:^3.0.2"
-    "@tsconfig/svelte": "npm:^5.0.2"
-    svelte: "npm:^4.2.12"
-    svelte-check: "npm:^3.6.7"
-    tslib: "npm:^2.6.2"
-    typescript: "npm:^5.2.2"
-    vite: "npm:^5.2.0"
+    "@sveltejs/vite-plugin-svelte": "npm:^3.1.1"
+    "@tsconfig/svelte": "npm:^5.0.4"
+    svelte: "npm:^4.2.18"
+    svelte-check: "npm:^3.8.1"
+    tslib: "npm:^2.6.3"
+    typescript: "npm:^5.4.5"
+    vite: "npm:^5.3.1"
   languageName: unknown
   linkType: soft
 
@@ -400,7 +400,7 @@ __metadata:
   resolution: "@lusc/initiatives-tracker-util@workspace:workspaces/util"
   dependencies:
     "@lusc/tsconfig": "npm:^4.1.0"
-    "@types/node": "npm:^20.14.2"
+    "@types/node": "npm:^20.14.3"
     typescript: "npm:^5.4.5"
     xo: "npm:^0.58.0"
   languageName: unknown
@@ -608,7 +608,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sveltejs/vite-plugin-svelte@npm:^3.0.2":
+"@sveltejs/vite-plugin-svelte@npm:^3.1.1":
   version: 3.1.1
   resolution: "@sveltejs/vite-plugin-svelte@npm:3.1.1"
   dependencies:
@@ -633,7 +633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/svelte@npm:^5.0.2":
+"@tsconfig/svelte@npm:^5.0.4":
   version: 5.0.4
   resolution: "@tsconfig/svelte@npm:5.0.4"
   checksum: 10c0/dc7cdc7e057030aff5e113f509d0567ff30b174520ca054d1512b9d28e7b5de613ffd669ab7c43e37dd7079803d878058dd34acc85c9156cfdad0b2982806f44
@@ -668,7 +668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cookie-parser@npm:^1":
+"@types/cookie-parser@npm:^1.4.7":
   version: 1.4.7
   resolution: "@types/cookie-parser@npm:1.4.7"
   dependencies:
@@ -677,7 +677,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/cors@npm:^2":
+"@types/cors@npm:^2.8.17":
   version: 2.8.17
   resolution: "@types/cors@npm:2.8.17"
   dependencies:
@@ -755,7 +755,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/morgan@npm:^1":
+"@types/morgan@npm:^1.9.9":
   version: 1.9.9
   resolution: "@types/morgan@npm:1.9.9"
   dependencies:
@@ -764,12 +764,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*, @types/node@npm:^20.14.2":
-  version: 20.14.2
-  resolution: "@types/node@npm:20.14.2"
+"@types/node@npm:*, @types/node@npm:^20.14.3":
+  version: 20.14.3
+  resolution: "@types/node@npm:20.14.3"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/2d86e5f2227aaa42212e82ea0affe72799111b888ff900916376450b02b09b963ca888b20d9c332d8d2b833ed4781987867a38eaa2e4863fa8439071468b0a6f
+  checksum: 10c0/fbd15d63ac64b7d864e7a423c9af4fcc672cc78316c66b764effcf39736f3bac907df491dbd827329492252de08174d877b1855ec6e853e421eb0eeba31737e2
   languageName: node
   linkType: hard
 
@@ -5890,9 +5890,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte-check@npm:^3.6.7":
-  version: 3.8.0
-  resolution: "svelte-check@npm:3.8.0"
+"svelte-check@npm:^3.8.1":
+  version: 3.8.1
+  resolution: "svelte-check@npm:3.8.1"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.17"
     chokidar: "npm:^3.4.1"
@@ -5906,7 +5906,7 @@ __metadata:
     svelte: ^3.55.0 || ^4.0.0-next.0 || ^4.0.0 || ^5.0.0-next.0
   bin:
     svelte-check: bin/svelte-check
-  checksum: 10c0/994662321882224ef8c5bb8b644d30929e3df5ade3dd187130a7c2578d845291d1032e713a2a2d2863fa6cc03dd8f10bbb9d94b2b0179d5974f8435eb49375d2
+  checksum: 10c0/1e217fbf1f0f6bdc15455acba50dd4056c8631a9b5d82dae8818146a2dd4b7ebe9cb45259f3894e70011e185ea58a62d354671c427ceaa1f02ad1acd7dfbe085
   languageName: node
   linkType: hard
 
@@ -5965,7 +5965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^4.2.12":
+"svelte@npm:^4.2.18":
   version: 4.2.18
   resolution: "svelte@npm:4.2.18"
   dependencies:
@@ -6116,7 +6116,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.1.0, tslib@npm:^2.6.2":
+"tslib@npm:^2.1.0, tslib@npm:^2.6.2, tslib@npm:^2.6.3":
   version: 2.6.3
   resolution: "tslib@npm:2.6.3"
   checksum: 10c0/2598aef53d9dbe711af75522464b2104724d6467b26a60f2bdac8297d2b5f1f6b86a71f61717384aa8fd897240467aaa7bcc36a0700a0faf751293d1331db39a
@@ -6231,7 +6231,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.0.3, typescript@npm:^5.2.2, typescript@npm:^5.4.2, typescript@npm:^5.4.5":
+"typescript@npm:^5.0.3, typescript@npm:^5.4.2, typescript@npm:^5.4.5":
   version: 5.4.5
   resolution: "typescript@npm:5.4.5"
   bin:
@@ -6241,7 +6241,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.0.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.2.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.0.3#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.2#optional!builtin<compat/typescript>, typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>":
   version: 5.4.5
   resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"
   bin:
@@ -6370,7 +6370,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.2.0":
+"vite@npm:^5.3.1":
   version: 5.3.1
   resolution: "vite@npm:5.3.1"
   dependencies:
