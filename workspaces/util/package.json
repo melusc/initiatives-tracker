@@ -1,0 +1,22 @@
+{
+	"name": "@lusc/initiatives-tracker-util",
+	"private": true,
+	"exports": {
+		"./color-hash.js": "./dist/color-hash.js",
+		"./relative-url.js": "./dist/relative-url.js",
+		"./slug.js": "./dist/slug.js",
+		"./type-of.js": "./dist/type-of.js"
+	},
+	"type": "module",
+	"devDependencies": {
+		"@lusc/tsconfig": "^4.1.0",
+		"@types/node": "^20.14.2",
+		"typescript": "^5.4.5",
+		"xo": "^0.58.0"
+	},
+	"scripts": {
+		"fmt": "xo --fix",
+		"build": "tsc",
+		"test": "tsc && node --test dist/*.test.js"
+	}
+}
