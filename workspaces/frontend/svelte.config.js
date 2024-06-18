@@ -21,7 +21,7 @@ const config = {
 		}),
 		paths: {
 			relative: false,
-			base: '/static'
+			base: '/static',
 		},
 	},
 };

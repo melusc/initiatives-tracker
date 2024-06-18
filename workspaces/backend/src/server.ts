@@ -23,7 +23,7 @@ function send404(request: Request, response: Response) {
 		return;
 	}
 
-	// respond with json
+	// Respond with json
 	if (request.accepts('json')) {
 		response.json({
 			type: 'error',
@@ -33,7 +33,7 @@ function send404(request: Request, response: Response) {
 		return;
 	}
 
-	// default to plain-text. send()
+	// Default to plain-text. send()
 	response.type('txt').send('Not found');
 }
 
@@ -62,7 +62,7 @@ app.use(
 	helmet({
 		contentSecurityPolicy: {
 			directives: {
-				'script-src': ["'self'", "'unsafe-inline'"],
+				'script-src': ['\'self\'', '\'unsafe-inline\''],
 			},
 		},
 	}),

@@ -10,8 +10,8 @@ const root = fileURLToPath(
 
 router.get('*', (request, response, next) => {
 	console.log({
-		path: request.path
-	})
+		path: request.path,
+	});
 	if (request.path.endsWith('.html')) {
 		next();
 		return;
@@ -21,7 +21,7 @@ router.get('*', (request, response, next) => {
 });
 
 export function send404Html(response: Response) {
-	response.sendFile('/404.html', {root})
+	response.sendFile('/404.html', {root});
 }
 
 export {router as staticRouter};
