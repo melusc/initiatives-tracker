@@ -102,9 +102,12 @@ app.use((request, _response, next) => {
 });
 
 app.use('/api', apiRouter);
-app.use('/static', express.static(staticRoot, {
-	index: false,
-}));
+app.use(
+	'/static',
+	express.static(staticRoot, {
+		index: false,
+	}),
+);
 
 app.get('/login', (_request, response) => {
 	response.render('login', {path: 'login'});
