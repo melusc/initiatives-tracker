@@ -38,24 +38,3 @@ export function colorHash(s: string): string {
 
 	return colors[hash % colors.length]!;
 }
-
-export function colorHashSvg(s: string) {
-	s = s.trim().toUpperCase();
-
-	const color = colorHash(s);
-
-	return `
-<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" fill="none" viewBox="0 0 128 128">
-	<style><![CDATA[
-		@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-
-		text {
-			font-size: 70px;
-			font-family: 'Open Sans', sans-serif;
-		}
-	]]></style>
-  <circle cx="64" cy="64" r="64" fill="${color}"/>
-  <text x="50%" y="50%" fill="#fff" dominant-baseline="middle" text-anchor="middle">&#${s[0]!.codePointAt(0)};</text>
-</svg>
-`;
-}
