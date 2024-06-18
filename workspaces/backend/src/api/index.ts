@@ -11,7 +11,9 @@ import {
 	deleteInitiative,
 	getAllInitiatives,
 	getInitiative,
+	initiativeAddOrganisation,
 	initiativeAddSignature,
+	initiativeRemoveOrganisation,
 	initiativeRemoveSignature,
 	patchInitiative,
 } from './initiative.ts';
@@ -69,8 +71,8 @@ router.delete(
 	initiativeRemoveSignature,
 );
 
-// TODO: router.put('/initiative/:initiativeId/organisation/:organisation', initiativeAddOrganisation)
-// TODO: router.delete('/initiative/:initiativeId/organisation/:organisation', initiativeRemoveOrganisation)
+router.put('/initiative/:initiativeId/organisation/:organisation', initiativeAddOrganisation)
+router.delete('/initiative/:initiativeId/organisation/:organisation', initiativeRemoveOrganisation)
 
 router.use('/user-content', userContent);
 

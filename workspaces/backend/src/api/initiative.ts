@@ -14,8 +14,9 @@ import {
 import {isValidUrl, makeValidator} from '../validate-body.ts';
 import type {ApiResponse} from './response.d.ts';
 import type {User} from './users.ts';
+import type {Organisation} from './organisation.ts';
 
-type Initiative = {
+export type Initiative = {
 	id: string;
 	shortName: string;
 	fullName: string;
@@ -24,8 +25,9 @@ type Initiative = {
 	imageUrl: string;
 };
 
-type InitiativeSignatures = Initiative & {
+type InitiativeEnriched = Initiative & {
 	signatures: User[];
+	organisations: Organisation[];
 };
 
 function transformInitiativeUrls(initiative: Initiative): Initiative {
@@ -210,7 +212,7 @@ export const createInitiative: RequestHandler = async (request, response) => {
 
 	return response.status(200).json({
 		type: 'success',
-		data: transformInitiativeUrls(result),
+		data: enrichInitiative(transformInitiativeUrls(result)),
 	});
 };
 
@@ -235,21 +237,31 @@ export const getInitiative: RequestHandler<{id: string}> = (
 
 	return response.status(200).json({
 		type: 'success',
-		data: addSignatures(transformInitiativeUrls(initiative)),
+		data: enrichInitiative(transformInitiativeUrls(initiative)),
 	});
 };
 
-function addSignatures(initiative: Initiative): InitiativeSignatures {
+function enrichInitiative(initiative: Initiative): InitiativeEnriched {
 	const users = database
-		.prepare<
-			{initiativeId: string},
-			User
-		>('SELECT users.* FROM users INNER JOIN signatures on signatures.userId = users.id WHERE signatures.initiativeId = :initiativeId')
+		.prepare<{initiativeId: string}, User>(
+			`SELECT users.* FROM users
+			INNER JOIN signatures on signatures.userId = users.id
+			WHERE signatures.initiativeId = :initiativeId`,
+		)
+		.all({initiativeId: initiative.id});
+
+	const organisations = database
+		.prepare<{initiativeId: string}, Organisation>(
+			`SELECT organisations.* FROM organisations
+				INNER JOIN initiativeOrganisations ON organisations.id = initiativeOrganisations.organisationId
+				WHERE initiativeOrganisations.initiativeId = :initiativeId`,
+		)
 		.all({initiativeId: initiative.id});
 
 	return {
 		...initiative,
 		signatures: users,
+		organisations,
 	};
 }
 
@@ -261,7 +273,7 @@ export const getAllInitiatives: RequestHandler = async (_request, response) => {
 	response.status(200).json({
 		type: 'success',
 		data: rows.map(initiative =>
-			addSignatures(transformInitiativeUrls(initiative)),
+			enrichInitiative(transformInitiativeUrls(initiative)),
 		),
 	});
 };
@@ -304,7 +316,7 @@ export const patchInitiative: RequestHandler<{id: string}> = async (
 	if (Object.keys(newData).length === 0) {
 		response.status(200).json({
 			type: 'success',
-			data: oldRow,
+			data: enrichInitiative(transformInitiativeUrls(oldRow)),
 		});
 		return;
 	}
@@ -336,10 +348,12 @@ export const patchInitiative: RequestHandler<{id: string}> = async (
 
 	response.status(200).send({
 		type: 'success',
-		data: transformInitiativeUrls({
-			...oldRow,
-			...newData,
-		}),
+		data: enrichInitiative(
+			transformInitiativeUrls({
+				...oldRow,
+				...newData,
+			}),
+		),
 	});
 };
 
@@ -417,6 +431,51 @@ export const initiativeRemoveSignature: RequestHandler<{
 		response.status(404).json({
 			type: 'error',
 			readableError: 'Signature does not exist.',
+			error: 'not-found',
+		});
+		return;
+	}
+
+	response.status(200).json({
+		type: 'success',
+	});
+};
+
+export const initiativeAddOrganisation: RequestHandler<{
+	initiativeId: string;
+	organisationId: string;
+}> = (request, response) => {
+	database
+		.prepare<{
+			initiativeId: string;
+			organisationId: string;
+		}>(
+			'INSERT INTO initiativeOrganisations (initiativeId, organisationId) values (:initiativeId, :organisationId);',
+		)
+		.run(request.params);
+
+	response.status(201).json({
+		type: 'success',
+	});
+};
+
+export const initiativeRemoveOrganisation: RequestHandler<{
+	initiativeId: string;
+	organisationId: string;
+}> = (request, response) => {
+	const result = database
+		.prepare<{
+			initiativeId: string;
+			organisationId: string;
+		}>(
+			'DELETE FROM initiativeOrganisations where initiativeId = :initiativeId AND organisationId = :organisationId;',
+		)
+		.run(request.params);
+
+	if (result.changes === 0) {
+		response.status(404).json({
+			type: 'error',
+			readableError: "Organisation wasn't associated with initiative.",
 			error: 'not-found',
 		});
 		return;
