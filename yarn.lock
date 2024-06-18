@@ -386,6 +386,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@lusc/initiatives-tracker-frontend@workspace:workspaces/frontend"
   dependencies:
+    "@lusc/initiatives-tracker-util": "workspace:^"
     "@lusc/tsconfig": "npm:^4.1.0"
     "@sveltejs/adapter-static": "npm:^3.0.2"
     "@sveltejs/kit": "npm:^2.5.16"
@@ -3546,6 +3547,7 @@ __metadata:
   resolution: "initiatives-tracker@workspace:."
   dependencies:
     prettier: "npm:^3.3.2"
+    prettier-plugin-svelte: "npm:^3.2.4"
   languageName: unknown
   linkType: soft
 
@@ -5034,6 +5036,16 @@ __metadata:
   dependencies:
     fast-diff: "npm:^1.1.2"
   checksum: 10c0/81e0027d731b7b3697ccd2129470ed9913ecb111e4ec175a12f0fcfab0096516373bf0af2fef132af50cafb0a905b74ff57996d615f59512bb9ac7378fcc64ab
+  languageName: node
+  linkType: hard
+
+"prettier-plugin-svelte@npm:^3.2.4":
+  version: 3.2.4
+  resolution: "prettier-plugin-svelte@npm:3.2.4"
+  peerDependencies:
+    prettier: ^3.0.0
+    svelte: ^3.2.0 || ^4.0.0-next.0 || ^5.0.0-next.0
+  checksum: 10c0/88eb82a2c87741165e7f50a7441d36bd9155097efe12ab1634d934def867e177a19dd8118b8f7e0eead0c77f7b4f7d9a238e03f79636044b25b277eb594cc988
   languageName: node
   linkType: hard
 
