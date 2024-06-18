@@ -6,12 +6,12 @@ export function loginProtect(
 	allowedPaths: Set<string> | string[],
 	database: Database,
 ): RequestHandler {
-	allowedPaths = new Set(allowedPaths);
-
 	return (request, response, next) => {
-		if (allowedPaths.has(request.path)) {
-			next();
-			return;
+		for (const allowedPath of allowedPaths) {
+			if (request.path.startsWith(allowedPath)) {
+				next();
+				return;
+			}
 		}
 
 		const cookies = z

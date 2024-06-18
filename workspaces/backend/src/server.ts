@@ -25,7 +25,7 @@ app.use(
 	}),
 );
 
-app.use(loginProtect(['/login'], database));
+app.use(loginProtect(['/login/', '/static/'], database));
 
 app.use((request, _response, next) => {
 	request.search = new RelativeUrl(request.url).searchParams;
