@@ -1,0 +1,10 @@
+{
+	"overrides": [
+		{
+			"files": "**/*.ts",
+			"rules": {
+				"@typescript-eslint/ban-types": "off"
+			}
+		}
+	]
+}

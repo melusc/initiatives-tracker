@@ -15,8 +15,8 @@ export type EnrichedInitiative = Initiative & {
 export type Organisation = {
 	id: string;
 	name: string;
-	image: string | undefined;
-	homepage: string | undefined;
+	image: string | null;
+	homepage: string | null;
 };
 
 export type EnrichedOrganisation = Organisation & {
@@ -44,3 +44,10 @@ export type ApiResponseSuccess<R> = {
 };
 
 export type ApiResponse<R> = ApiResponseError | ApiResponseSuccess<R>;
+
+export type LoginInfo = {
+	name: string;
+	id: string;
+	isAdmin: boolean;
+	icon: string;
+};
