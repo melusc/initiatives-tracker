@@ -1,5 +1,7 @@
 import {fileURLToPath} from 'node:url';
+
 import {Router} from 'express';
+
 import {imageOutDirectory, pdfOutDirectory} from '../paths.ts';
 
 // eslint-disable-next-line new-cap

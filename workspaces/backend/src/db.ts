@@ -2,7 +2,9 @@ import {randomBytes, randomUUID} from 'node:crypto';
 import {stdin, stdout} from 'node:process';
 import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
+
 import Database, {type Database as DatabaseT} from 'better-sqlite3';
+
 import {dataDirectory} from './paths.ts';
 import {scrypt} from './promisified.ts';
 

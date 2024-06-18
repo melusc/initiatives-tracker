@@ -1,7 +1,9 @@
 import {randomBytes, timingSafeEqual} from 'node:crypto';
+
 import type {Request, Response} from 'express';
 import z from 'zod';
 import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
+
 import {database} from '../db.ts';
 import {scrypt} from '../promisified.ts';
 
@@ -13,11 +15,12 @@ export async function loginPost(request: Request, response: Response) {
 		})
 		.safeParse(request.body);
 
-	const onErrorUrl = new RelativeUrl(request.originalUrl);
-
 	if (!body.success) {
-		onErrorUrl.searchParams.set('status', 'missing-values');
-		response.redirect(400, onErrorUrl.full);
+		response.render('login', {
+			state: {
+				error: 'missing-values',
+			},
+		});
 		return;
 	}
 
@@ -29,8 +32,11 @@ export async function loginPost(request: Request, response: Response) {
 		.get(body.data.username);
 
 	if (!databaseResult) {
-		onErrorUrl.searchParams.set('status', 'incorrect-credentials');
-		response.redirect(400, onErrorUrl.full);
+		response.render('login', {
+			state: {
+				error: 'incorrect-credentials',
+			},
+		});
 		return;
 	}
 
@@ -38,8 +44,11 @@ export async function loginPost(request: Request, response: Response) {
 	const requestHash = await scrypt(body.data.password, passwordSalt, 64);
 
 	if (!timingSafeEqual(passwordHash, requestHash)) {
-		onErrorUrl.searchParams.set('status', 'incorrect-credentials');
-		response.redirect(400, onErrorUrl.full);
+		response.render('login', {
+			state: {
+				error: 'incorrect-credentials',
+			},
+		});
 		return;
 	}
 

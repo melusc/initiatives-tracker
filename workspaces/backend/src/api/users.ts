@@ -7,6 +7,7 @@ import type {
 	User,
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
+
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
 

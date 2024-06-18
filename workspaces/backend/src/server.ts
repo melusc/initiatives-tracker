@@ -1,24 +1,26 @@
 import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, {type NextFunction, type Request, type Response} from 'express';
+import express, {type Request, type Response} from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
+
 import {apiRouter} from './api/index.ts';
 import {database} from './db.ts';
 import {setHeaders} from './middle-ware/disable-interest-cohort.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
+import {staticRoot} from './paths.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
-import {staticRouter, sendStatic} from './routes/static.ts';
+import {svelteKitEngine} from './svelte-kit-engine.ts';
 
 const app = express();
 
-function send404(request: Request, response: Response, next: NextFunction) {
+function send404(request: Request, response: Response) {
 	response.status(404);
 
 	if (request.accepts('html')) {
-		sendStatic('/404.html', response, next);
+		response.render('404');
 		return;
 	}
 
@@ -36,13 +38,17 @@ function send404(request: Request, response: Response, next: NextFunction) {
 	response.type('txt').send('Not found');
 }
 
+app.engine('html', svelteKitEngine);
+app.set('view engine', 'html');
+app.set('views', staticRoot);
+
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 app.use(
 	helmet({
 		contentSecurityPolicy: {
 			directives: {
-				'script-src': ['\'self\'', '\'unsafe-inline\''],
+				'script-src': ["'self'", "'unsafe-inline'"],
 			},
 		},
 	}),
@@ -68,15 +74,24 @@ app.use((request, response, next) => {
 
 app.use((request, response, next) => {
 	if (request.path.includes('\\')) {
-		send404(request, response, next);
+		response.render('404');
 		return;
 	}
 
 	next();
 });
 
-app.get('/robots.txt', (_request, response, next) => {
-	sendStatic('/robots.txt', response, next);
+app.get('/robots.txt', (_request, response) => {
+	response
+		.status(200)
+		.type('txt')
+		.send(
+			`User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /`,
+		);
 });
 
 app.use(loginProtect(['login', 'static'], database));
@@ -87,29 +102,19 @@ app.use((request, _response, next) => {
 });
 
 app.use('/api', apiRouter);
-app.use('/static', staticRouter);
+app.use('/static', express.static(staticRoot, {
+	index: false,
+}));
 
-app.get('/login', (request, response) => {
-	const status = request.search.get('status');
-	response.contentType('html');
-	response.end(`<!doctype html>
-		<form method="POST">
-			<label>Username <input name="username" type="text" id="name"></label>
-			<label>Password <input name="password" type="password" id="password"></label>
-
-			<input type="submit" value="Submit">
-
-			${status === 'incorrect-credentials' ? '<div>Incorrect credentials</div>' : ''}
-			${status === 'missing-values' ? '<div>Some values are missing. Did you fill in all inputs?</div>' : ''}
-		</form>
-	`);
+app.get('/login', (_request, response) => {
+	response.render('login', {path: 'login'});
 });
 app.post('/login', loginPost);
 
 app.get('/logout', logout);
 
-app.get('/', (_, response, next) => {
-	sendStatic('/index.html', response, next);
+app.get('/', (_, response) => {
+	response.render('index');
 });
 
 app.all('*', send404);

@@ -1,5 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import {mkdir, writeFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+
 import {fileTypeFromBuffer} from 'file-type';
 
 export const dataDirectory = new URL('../data/', import.meta.url);
@@ -10,6 +12,10 @@ await mkdir(pdfOutDirectory, {recursive: true});
 
 export const imageOutDirectory = new URL('image/', dataDirectory);
 await mkdir(imageOutDirectory, {recursive: true});
+
+export const staticRoot = fileURLToPath(
+	import.meta.resolve('@lusc/initiatives-tracker-frontend'),
+);
 
 export function transformImageUrl(imageUrl: string) {
 	return `/api/user-content/image/${imageUrl}`;

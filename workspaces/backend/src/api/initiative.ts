@@ -1,4 +1,5 @@
 import {unlink} from 'node:fs/promises';
+
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import type {RequestHandler} from 'express';
@@ -9,6 +10,7 @@ import type {
 	User,
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
+
 import {database} from '../db.ts';
 import {
 	fetchImage,
@@ -465,7 +467,7 @@ export const initiativeRemoveOrganisation: RequestHandler<{
 	if (result.changes === 0) {
 		response.status(404).json({
 			type: 'error',
-			readableError: 'Organisation wasn\'t associated with initiative.',
+			readableError: "Organisation wasn't associated with initiative.",
 			error: 'not-found',
 		});
 		return;

@@ -1,4 +1,5 @@
 import {unlink} from 'node:fs/promises';
+
 import type {RequestHandler} from 'express';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
@@ -8,6 +9,7 @@ import type {
 	EnrichedOrganisation,
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
+
 import {isValidUrl, makeValidator} from '../validate-body.ts';
 import {fetchImage, imageOutDirectory, transformImageUrl} from '../paths.ts';
 import {database} from '../db.ts';

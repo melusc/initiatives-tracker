@@ -1,4 +1,5 @@
 import type {Request, Response} from 'express';
+
 import {database} from '../db.ts';
 
 export function logout(request: Request, response: Response) {

@@ -1,11 +1,6 @@
 import {Router} from 'express';
-import {
-	createUser,
-	deleteUser,
-	getAllUsers,
-	getUser,
-	patchUser,
-} from './users.ts';
+
+import {getLoginInfo} from './login-info.ts';
 import {
 	createInitiative,
 	deleteInitiative,
@@ -17,7 +12,6 @@ import {
 	initiativeRemoveSignature,
 	patchInitiative,
 } from './initiative.ts';
-import {userContent} from './user-content.ts';
 import {
 	createOrganisation,
 	deleteOrganisation,
@@ -25,6 +19,14 @@ import {
 	getOrganisation,
 	patchOrganisation,
 } from './organisation.ts';
+import {userContent} from './user-content.ts';
+import {
+	createUser,
+	deleteUser,
+	getAllUsers,
+	getUser,
+	patchUser,
+} from './users.ts';
 
 // eslint-disable-next-line new-cap
 const router = Router();
@@ -79,6 +81,8 @@ router.delete(
 	'/initiative/:initiativeId/organisation/:organisation',
 	initiativeRemoveOrganisation,
 );
+
+router.get('/login-info', getLoginInfo);
 
 router.use('/user-content', userContent);
 
