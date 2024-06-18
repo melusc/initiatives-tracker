@@ -3,13 +3,17 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"exports": "./build",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build",
+		"build": "node --run check && vite build",
 		"preview": "vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
+		"@lusc/tsconfig": "^4.1.0",
+		"@sveltejs/adapter-static": "^3.0.2",
+		"@sveltejs/kit": "^2.5.16",
 		"@sveltejs/vite-plugin-svelte": "^3.1.1",
 		"@tsconfig/svelte": "^5.0.4",
 		"svelte": "^4.2.18",
