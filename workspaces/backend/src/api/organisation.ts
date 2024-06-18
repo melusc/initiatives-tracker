@@ -6,15 +6,36 @@ import {isValidUrl, makeValidator} from '../validate-body.ts';
 import {fetchImage, imageOutDirectory, transformImageUrl} from '../paths.ts';
 import {database} from '../db.ts';
 import type {ApiResponse} from './response';
+import type {Initiative} from './initiative.ts';
 
-type Organisation = {
+export type Organisation = {
 	id: string;
 	name: string;
 	image: string | null;
 	homepage: string | null;
 };
 
-// TODO: function addSignatures
+type OrganisationSignatures = Organisation & {
+	signatures: Initiative[];
+};
+
+function enrichOrganisation(organisation: Organisation): OrganisationSignatures {
+	const id = organisation.id;
+
+	const initiatives = database
+		.prepare<{organisationId: string}, Initiative>(
+			`SELECT initiatives.* FROM initiatives
+			INNER JOIN initiativeOrganisations
+			on initiativeOrganisations.initiativeId = initiatives.id
+			where initiativeOrganisations.organisationId = :organisationId`,
+		)
+		.all({organisationId: id});
+
+	return {
+		...organisation,
+		signatures: initiatives,
+	};
+}
 
 function transformOrganisationUrls(organisation: Organisation): Organisation {
 	return {
@@ -171,7 +192,7 @@ export const createOrganisation: RequestHandler = async (request, response) => {
 
 	response.status(201).json({
 		type: 'success',
-		data: transformOrganisationUrls(organisation),
+		data: enrichOrganisation(transformOrganisationUrls(organisation)),
 	});
 };
 
@@ -185,7 +206,9 @@ export const getAllOrganisations: RequestHandler = (_request, response) => {
 
 	response.status(200).json({
 		type: 'success',
-		data: rows.map(organisation => transformOrganisationUrls(organisation)),
+		data: rows.map(organisation =>
+			enrichOrganisation(transformOrganisationUrls(organisation)),
+		),
 	});
 };
 
@@ -212,7 +235,7 @@ export const getOrganisation: RequestHandler<{id: string}> = (
 
 	return response.status(200).json({
 		type: 'success',
-		data: transformOrganisationUrls(organisation),
+		data: enrichOrganisation(transformOrganisationUrls(organisation)),
 	});
 };
 
@@ -278,7 +301,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 	if (Object.keys(newData).length === 0) {
 		response.status(200).json({
 			type: 'success',
-			data: oldRow,
+			data: enrichOrganisation(transformOrganisationUrls(oldRow)),
 		});
 		return;
 	}
