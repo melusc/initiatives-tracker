@@ -1,5 +1,4 @@
 import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
-import {colorHashSvg} from '@lusc/initiatives-tracker-util/color-hash.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, {type Request, type Response} from 'express';
@@ -11,7 +10,7 @@ import {setHeaders} from './middle-ware/disable-interest-cohort.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
-import {send404Html, staticRouter} from './routes/static.ts';
+import {staticRouter, sendStatic} from './routes/static.ts';
 
 const app = express();
 
@@ -19,7 +18,7 @@ function send404(request: Request, response: Response) {
 	response.status(404);
 
 	if (request.accepts('html')) {
-		send404Html(response);
+		sendStatic('/404.html', response);
 		return;
 	}
 
@@ -36,25 +35,6 @@ function send404(request: Request, response: Response) {
 	// Default to plain-text. send()
 	response.type('txt').send('Not found');
 }
-
-app.use((request, response, next) => {
-	if (request.path.includes('\\')) {
-		send404(request, response);
-		return;
-	}
-
-	next();
-});
-
-app.use((request, response, next) => {
-	const segments = request.path.split('/');
-	if (segments.includes('..') || segments.includes('.')) {
-		response.status(418).type('txt').send('Dude');
-		return;
-	}
-
-	next();
-});
 
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
@@ -75,6 +55,29 @@ app.use(
 		'permissions-policy': 'interest-cohort=()',
 	}),
 );
+
+app.use((request, response, next) => {
+	const segments = request.path.split('/');
+	if (segments.includes('..')) {
+		response.status(418).type('txt').send('..');
+		return;
+	}
+
+	next();
+});
+
+app.use((request, response, next) => {
+	if (request.path.includes('\\')) {
+		send404(request, response);
+		return;
+	}
+
+	next();
+});
+
+app.get('/robots.txt', (_request, response) => {
+	sendStatic('/robots.txt', response);
+});
 
 app.use(loginProtect(['/login/', '/static/'], database));
 
@@ -106,11 +109,7 @@ app.post('/login', loginPost);
 app.get('/logout', logout);
 
 app.get('/', (_, response) => {
-	response.send(`
-<!doctype html>
-	<a href="/logout">Logout</a>
-	${colorHashSvg(`${response.locals.user.username}-${response.locals.user.userId}`)}
-`);
+	sendStatic('/index.html', response);
 });
 
 app.all('*', send404);

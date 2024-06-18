@@ -2,26 +2,17 @@ import {unlink} from 'node:fs/promises';
 import type {RequestHandler} from 'express';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
+import type {
+	Initiative,
+	Organisation,
+	EnrichedOrganisation,
+	ApiResponse,
+} from '@lusc/initiatives-tracker-util/types.js';
 import {isValidUrl, makeValidator} from '../validate-body.ts';
 import {fetchImage, imageOutDirectory, transformImageUrl} from '../paths.ts';
 import {database} from '../db.ts';
-import type {ApiResponse} from './response';
-import type {Initiative} from './initiative.ts';
 
-export type Organisation = {
-	id: string;
-	name: string;
-	image: string | null;
-	homepage: string | null;
-};
-
-type OrganisationSignatures = Organisation & {
-	signatures: Initiative[];
-};
-
-function enrichOrganisation(
-	organisation: Organisation,
-): OrganisationSignatures {
+function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
 	const id = organisation.id;
 
 	const initiatives = database

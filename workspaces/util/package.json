@@ -5,7 +5,8 @@
 		"./color-hash.js": "./dist/color-hash.js",
 		"./relative-url.js": "./dist/relative-url.js",
 		"./slug.js": "./dist/slug.js",
-		"./type-of.js": "./dist/type-of.js"
+		"./type-of.js": "./dist/type-of.js",
+		"./types.js": "./dist/types.js"
 	},
 	"type": "module",
 	"devDependencies": {

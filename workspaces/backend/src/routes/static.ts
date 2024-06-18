@@ -8,20 +8,17 @@ const root = fileURLToPath(
 	import.meta.resolve('@lusc/initiatives-tracker-frontend'),
 );
 
+export function sendStatic(path: string, response: Response) {
+	response.sendFile(path, {root});
+}
+
 router.get('*', (request, response, next) => {
-	console.log({
-		path: request.path,
-	});
 	if (request.path.endsWith('.html')) {
 		next();
 		return;
 	}
 
-	response.sendFile(request.path, {root});
+	sendStatic(request.path, response);
 });
-
-export function send404Html(response: Response) {
-	response.sendFile('/404.html', {root});
-}
 
 export {router as staticRouter};

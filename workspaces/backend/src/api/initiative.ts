@@ -2,6 +2,13 @@ import {unlink} from 'node:fs/promises';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import type {RequestHandler} from 'express';
+import type {
+	Initiative,
+	EnrichedInitiative,
+	Organisation,
+	User,
+	ApiResponse,
+} from '@lusc/initiatives-tracker-util/types.js';
 import {database} from '../db.ts';
 import {
 	fetchImage,
@@ -12,23 +19,6 @@ import {
 	transformPdfUrl,
 } from '../paths.ts';
 import {isValidUrl, makeValidator} from '../validate-body.ts';
-import type {ApiResponse} from './response.d.ts';
-import type {User} from './users.ts';
-import type {Organisation} from './organisation.ts';
-
-export type Initiative = {
-	id: string;
-	shortName: string;
-	fullName: string;
-	website: string;
-	pdfUrl: string;
-	imageUrl: string;
-};
-
-type InitiativeEnriched = Initiative & {
-	signatures: User[];
-	organisations: Organisation[];
-};
 
 function transformInitiativeUrls(initiative: Initiative): Initiative {
 	return {
@@ -241,7 +231,7 @@ export const getInitiative: RequestHandler<{id: string}> = (
 	});
 };
 
-function enrichInitiative(initiative: Initiative): InitiativeEnriched {
+function enrichInitiative(initiative: Initiative): EnrichedInitiative {
 	const users = database
 		.prepare<{initiativeId: string}, User>(
 			`SELECT users.* FROM users

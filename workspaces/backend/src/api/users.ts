@@ -1,19 +1,14 @@
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import type {RequestHandler} from 'express';
+import type {
+	EnrichedUser,
+	Initiative,
+	User,
+	ApiResponse,
+} from '@lusc/initiatives-tracker-util/types.js';
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
-import type {ApiResponse} from './response.d.ts';
-import type {Initiative} from './initiative.ts';
-
-export type User = {
-	name: string;
-	id: string;
-};
-
-type EnrichedUser = User & {
-	initiatives: Initiative[];
-};
 
 function enrichUser(user: User): EnrichedUser {
 	const initiatives = database

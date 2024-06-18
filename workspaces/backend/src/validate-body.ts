@@ -3,7 +3,7 @@ import type {
 	ApiResponse,
 	ApiResponseError,
 	ApiResponseSuccess,
-} from './api/response';
+} from '@lusc/initiatives-tracker-util/types.js';
 
 export function isValidUrl(url: string) {
 	if (!URL.canParse(url)) {
