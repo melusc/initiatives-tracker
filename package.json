@@ -10,7 +10,7 @@
 	],
 	"scripts": {
 		"fmt": "prettier -w . && yarn workspaces foreach -A run fmt",
-		"build": "yarn workspaces foreach -At run build",
+		"build": "yarn workspaces foreach -A --topological-dev run build",
 		"test": "yarn workspaces foreach -A run test"
 	},
 	"packageManager": "yarn@4.3.0",

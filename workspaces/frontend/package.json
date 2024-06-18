@@ -12,7 +12,6 @@
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
-		"@lusc/initiatives-tracker-util": "workspace:^",
 		"@lusc/tsconfig": "^4.1.0",
 		"@sveltejs/adapter-static": "^3.0.2",
 		"@sveltejs/kit": "^2.5.16",
@@ -23,5 +22,8 @@
 		"tslib": "^2.6.3",
 		"typescript": "^5.4.5",
 		"vite": "^5.3.1"
+	},
+	"dependencies": {
+		"@lusc/initiatives-tracker-util": "workspace:^"
 	}
 }
