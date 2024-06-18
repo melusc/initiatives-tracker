@@ -1,7 +1,7 @@
 import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, {type Request, type Response} from 'express';
+import express, {type NextFunction, type Request, type Response} from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import {apiRouter} from './api/index.ts';
@@ -14,11 +14,11 @@ import {staticRouter, sendStatic} from './routes/static.ts';
 
 const app = express();
 
-function send404(request: Request, response: Response) {
+function send404(request: Request, response: Response, next: NextFunction) {
 	response.status(404);
 
 	if (request.accepts('html')) {
-		sendStatic('/404.html', response);
+		sendStatic('/404.html', response, next);
 		return;
 	}
 
@@ -68,18 +68,18 @@ app.use((request, response, next) => {
 
 app.use((request, response, next) => {
 	if (request.path.includes('\\')) {
-		send404(request, response);
+		send404(request, response, next);
 		return;
 	}
 
 	next();
 });
 
-app.get('/robots.txt', (_request, response) => {
-	sendStatic('/robots.txt', response);
+app.get('/robots.txt', (_request, response, next) => {
+	sendStatic('/robots.txt', response, next);
 });
 
-app.use(loginProtect(['/login/', '/static/'], database));
+app.use(loginProtect(['login', 'static'], database));
 
 app.use((request, _response, next) => {
 	request.search = new RelativeUrl(request.url).searchParams;
@@ -108,8 +108,8 @@ app.post('/login', loginPost);
 
 app.get('/logout', logout);
 
-app.get('/', (_, response) => {
-	sendStatic('/index.html', response);
+app.get('/', (_, response, next) => {
+	sendStatic('/index.html', response, next);
 });
 
 app.all('*', send404);

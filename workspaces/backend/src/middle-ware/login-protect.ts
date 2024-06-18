@@ -7,11 +7,16 @@ export function loginProtect(
 	database: Database,
 ): RequestHandler {
 	return (request, response, next) => {
-		for (const allowedPath of allowedPaths) {
-			if (request.path.startsWith(allowedPath)) {
-				next();
-				return;
-			}
+
+		allowedPaths = new Set(allowedPaths);
+
+		const segments = request.path.split('/');
+		// '/path/...'.split is ['', 'path', ...]
+		const firstSegment = segments[1];
+
+		if (allowedPaths.has(firstSegment as string)) {
+			next();
+			return;
 		}
 
 		const cookies = z
