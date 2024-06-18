@@ -475,7 +475,7 @@ export const initiativeRemoveOrganisation: RequestHandler<{
 	if (result.changes === 0) {
 		response.status(404).json({
 			type: 'error',
-			readableError: "Organisation wasn't associated with initiative.",
+			readableError: 'Organisation wasn\'t associated with initiative.',
 			error: 'not-found',
 		});
 		return;

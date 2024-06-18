@@ -4,13 +4,31 @@ import type {RequestHandler} from 'express';
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
 import type {ApiResponse} from './response.d.ts';
+import type {Initiative} from './initiative.ts';
 
 export type User = {
 	name: string;
 	id: string;
 };
 
-// TODO: function addSignatures
+type EnrichedUser = User & {
+	initiatives: Initiative[];
+};
+
+function enrichUser(user: User): EnrichedUser {
+	const initiatives = database
+		.prepare<{userId: string}, Initiative>(
+			`SELECT initiatives.* FROM initiatives
+			INNER JOIN signatures on signatures.initiativeId = initiatives.id
+			WHERE signatures.userId = :userId`,
+		)
+		.all({userId: user.id});
+
+	return {
+		...user,
+		initiatives,
+	};
+}
 
 const userKeyValidators = {
 	name(nameRaw: unknown): ApiResponse<string> {
@@ -79,10 +97,10 @@ export const createUser: RequestHandler = async (request, response) => {
 
 	return response.status(201).json({
 		type: 'success',
-		data: {
+		data: enrichUser({
 			id,
 			name,
-		},
+		}),
 	});
 };
 
@@ -103,7 +121,7 @@ export const getUser: RequestHandler<{id: string}> = (request, response) => {
 
 	return response.status(200).json({
 		type: 'success',
-		data: user,
+		data: enrichUser(user),
 	});
 };
 
@@ -143,7 +161,7 @@ export const patchUser: RequestHandler<{id: string}> = async (
 	if (Object.keys(newData).length === 0) {
 		response.status(200).json({
 			type: 'success',
-			data: oldRow,
+			data: enrichUser(oldRow),
 		});
 		return;
 	}
@@ -161,10 +179,10 @@ export const patchUser: RequestHandler<{id: string}> = async (
 
 	response.status(200).send({
 		type: 'success',
-		data: {
+		data: enrichUser({
 			id,
 			...newData,
-		},
+		}),
 	});
 };
 
@@ -197,6 +215,6 @@ export const getAllUsers: RequestHandler = async (_request, response) => {
 
 	response.status(200).json({
 		type: 'success',
-		data: rows,
+		data: rows.map(user => enrichUser(user)),
 	});
 };

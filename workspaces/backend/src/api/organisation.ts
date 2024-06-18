@@ -19,7 +19,9 @@ type OrganisationSignatures = Organisation & {
 	signatures: Initiative[];
 };
 
-function enrichOrganisation(organisation: Organisation): OrganisationSignatures {
+function enrichOrganisation(
+	organisation: Organisation,
+): OrganisationSignatures {
 	const id = organisation.id;
 
 	const initiatives = database
