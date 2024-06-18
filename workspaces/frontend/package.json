@@ -7,10 +7,12 @@
 	"scripts": {
 		"dev": "vite",
 		"build": "node --run check && vite build",
+		"build:w": "vite build --watch",
 		"preview": "vite preview",
 		"check": "svelte-check --tsconfig ./tsconfig.json"
 	},
 	"devDependencies": {
+		"@lusc/initiatives-tracker-util": "workspace:^",
 		"@lusc/tsconfig": "^4.1.0",
 		"@sveltejs/adapter-static": "^3.0.2",
 		"@sveltejs/kit": "^2.5.16",

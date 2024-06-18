@@ -1,1 +1,44 @@
-<slot />
+<script>
+	import Header from '../components/header/header.svelte';
+
+	import '../common/sanitise.css';
+	import '../common/theme.css';
+	import '../common/font.css';
+	import Footer from '../components/footer.svelte';
+</script>
+
+<svelte:head>
+	<link rel="preconnect" href="https://fonts.googleapis.com" />
+	<link
+		rel="preconnect"
+		href="https://fonts.gstatic.com"
+		crossorigin="anonymous"
+	/>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+		rel="stylesheet"
+	/>
+</svelte:head>
+
+<div class="App">
+	<Header />
+
+	<main>
+		<slot />
+	</main>
+
+	<Footer />
+</div>
+
+<style>
+	.App {
+		display: grid;
+		min-height: 100vh;
+		max-width: 100vw;
+		grid-template-rows: max-content max-content 1fr;
+	}
+
+	.App > :global(*) {
+		max-width: 100vw;
+	}
+</style>

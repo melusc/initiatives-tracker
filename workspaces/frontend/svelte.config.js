@@ -23,6 +23,9 @@ const config = {
 			relative: false,
 			base: '/static',
 		},
+		prerender: {
+			crawl: false,
+		},
 	},
 };
 

@@ -4,12 +4,25 @@
 	<head>
 		<link rel="icon" href="%sveltekit.assets%/vite.svg" />
 
+		<script>
+			// prettier-ignore
+			var state = "##state##";
+		</script>
+
 		<meta charset="utf8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<style>
+			html,
+			body,
+			#app {
+				display: contents;
+			}
+		</style>
 
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
-		<div id="app">%sveltekit.body%</div>
+		%sveltekit.body%
 	</body>
 </html>
