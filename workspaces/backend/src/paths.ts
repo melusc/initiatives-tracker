@@ -25,6 +25,26 @@ export function transformPdfUrl(pdfUrl: string) {
 	return `/api/user-content/pdf/${pdfUrl}`;
 }
 
+/**
+ * Timeout after five seconds. Disallow files greater than 10 mb
+ */
+async function safeFetch(url: string) {
+	const controller = new AbortController();
+	const {signal} = controller;
+	setTimeout(() => {
+		controller.abort();
+	}, 5e3);
+	const response = await fetch(url, {signal});
+	const body = await response.arrayBuffer();
+
+	// 10 mb
+	if (body.byteLength > 10_485_760) {
+		throw new Error('File is too large');
+	}
+
+	return body;
+}
+
 const allowedImages: ReadonlySet<string> = new Set<string>([
 	'image/jpeg',
 	'image/png',
@@ -33,8 +53,7 @@ const allowedImages: ReadonlySet<string> = new Set<string>([
 ]);
 
 export async function fetchImage(imageUrl: string) {
-	const response = await fetch(imageUrl);
-	const body = await response.arrayBuffer();
+	const body = await safeFetch(imageUrl);
 
 	const type = await fileTypeFromBuffer(body);
 
@@ -50,8 +69,7 @@ export async function fetchImage(imageUrl: string) {
 }
 
 export async function fetchPdf(pdfUrl: string) {
-	const response = await fetch(pdfUrl);
-	const body = await response.arrayBuffer();
+	const body = await safeFetch(pdfUrl);
 
 	const type = await fileTypeFromBuffer(body);
 
