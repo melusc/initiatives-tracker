@@ -20,7 +20,7 @@ function send404(request: Request, response: Response) {
 	response.status(404);
 
 	if (request.accepts('html')) {
-		response.render('404');
+		response.render('404', {user: response.locals.user});
 		return;
 	}
 
@@ -74,7 +74,7 @@ app.use((request, response, next) => {
 
 app.use((request, response, next) => {
 	if (request.path.includes('\\')) {
-		response.render('404');
+		response.render('404', {user: response.locals.user});
 		return;
 	}
 
@@ -110,14 +110,14 @@ app.use(
 );
 
 app.get('/login', (_request, response) => {
-	response.render('login', {path: 'login'});
+	response.render('login', {user: response.locals.user});
 });
 app.post('/login', loginPost);
 
 app.get('/logout', logout);
 
 app.get('/', (_, response) => {
-	response.render('index');
+	response.render('index', {user: response.locals.user});
 });
 
 app.all('*', send404);

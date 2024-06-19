@@ -1,30 +1,15 @@
 <script lang="ts">
 	import {browser} from '$app/environment';
 
-	import type {LoginInfo} from '@lusc/initiatives-tracker-util/types.js';
 	import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
 
 	import UserIcon from '../user-icon.svelte';
 	import HeaderMenu from './header-menu.svelte';
+	import {getUser} from '../../state.ts';
 
-	let loginInfo: LoginInfo | undefined | false;
-
-	$: iconId = loginInfo ? loginInfo.name + loginInfo.id : undefined;
+	const loginInfo = getUser();
 
 	let showMenu = false;
-
-	async function fetchLoginInfo() {
-		try {
-			const response = await fetch('/api/login-info', {redirect: 'manual'});
-			if (response.type === 'opaqueredirect' || !response.ok) {
-				loginInfo = false;
-			} else {
-				loginInfo = (await response.json()) as LoginInfo;
-			}
-		} catch {}
-	}
-
-	$: fetchLoginInfo();
 
 	const loginLink = new RelativeUrl('/login');
 	const currentLink = new RelativeUrl(browser ? location.href : '/');
@@ -65,9 +50,9 @@
 			on:click={toggleMenu}
 			on:keydown={toggleMenu}
 		>
-			<UserIcon userId={iconId ?? ''} />
+			<UserIcon userId={loginInfo.iconKey} />
 		</div>
-	{:else if loginInfo === false}
+	{:else}
 		<a href={loginLink.full} class="login">Login</a>
 	{/if}
 </header>
@@ -80,7 +65,7 @@
 	>
 		<div slot="user-icon" class="user-info">
 			{#if loginInfo}
-				<UserIcon userId={iconId ?? ''} />
+				<UserIcon userId={loginInfo.iconKey} />
 				<span>{loginInfo.name}</span>
 			{/if}
 		</div>

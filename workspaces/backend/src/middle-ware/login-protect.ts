@@ -1,3 +1,4 @@
+import type {LoginInfo} from '@lusc/initiatives-tracker-util/types.js';
 import type {Database} from 'better-sqlite3';
 import type {RequestHandler} from 'express';
 import {z} from 'zod';
@@ -44,10 +45,11 @@ export function loginProtect(
 
 				// @ts-expect-error .user is readonly anywhere else
 				response.locals.user = {
-					userId: session.userId,
-					username: user.username,
+					name: user.username,
+					id: session.userId,
 					isAdmin: user.isAdmin === 1,
-				};
+					iconKey: user.username + session.userId,
+				} satisfies LoginInfo;
 
 				next();
 				return;

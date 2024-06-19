@@ -1,6 +1,5 @@
 import {Router} from 'express';
 
-import {getLoginInfo} from './login-info.ts';
 import {
 	createInitiative,
 	deleteInitiative,
@@ -81,8 +80,6 @@ router.delete(
 	'/initiative/:initiativeId/organisation/:organisation',
 	initiativeRemoveOrganisation,
 );
-
-router.get('/login-info', getLoginInfo);
 
 router.use('/user-content', userContent);
 
