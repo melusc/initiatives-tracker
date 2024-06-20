@@ -13,6 +13,11 @@ import {staticRoot} from './paths.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
 import {svelteKitEngine} from './svelte-kit-engine.ts';
+import {
+	createInitiative,
+	getAllInitiatives,
+	getInitiative,
+} from './api/initiative.ts';
 
 const app = express();
 
@@ -20,7 +25,7 @@ function send404(request: Request, response: Response) {
 	response.status(404);
 
 	if (request.accepts('html')) {
-		response.render('404', {user: response.locals.user});
+		response.render('404', {user: response.locals.user, state: undefined});
 		return;
 	}
 
@@ -74,7 +79,9 @@ app.use((request, response, next) => {
 
 app.use((request, response, next) => {
 	if (request.path.includes('\\')) {
-		response.render('404', {user: response.locals.user});
+		response
+			.status(404)
+			.render('404', {user: response.locals.user, state: undefined});
 		return;
 	}
 
@@ -110,14 +117,57 @@ app.use(
 );
 
 app.get('/login', (_request, response) => {
-	response.render('login', {user: response.locals.user});
+	response.render('login', {user: response.locals.user, state: undefined});
 });
 app.post('/login', loginPost);
 
 app.get('/logout', logout);
 
 app.get('/', (_, response) => {
-	response.render('index', {user: response.locals.user});
+	response.render('index', {
+		user: response.locals.user,
+		state: getAllInitiatives(),
+	});
+});
+
+app.get('/initiative/create', (_, response) => {
+	response.render('create-initiative', {
+		user: response.locals.user,
+		state: {values: {}},
+	});
+});
+
+app.post('/initiative/create', async (request, response) => {
+	const body = request.body as Record<string, unknown>;
+
+	const initiative = await createInitiative(body);
+
+	if (initiative.type === 'error') {
+		response.status(400).render('create-initiative', {
+			user: response.locals.user,
+			state: {
+				error: initiative.readableError,
+				values: body,
+			},
+		});
+		return;
+	}
+
+	response.redirect(303, `/initiative/${initiative.data.id}`);
+});
+
+app.get('/initiative/:id', (request, response) => {
+	const initiative = getInitiative(request.params.id);
+	if (initiative) {
+		response.status(200).render('initiative', {
+			user: response.locals.user,
+			state: initiative,
+		});
+	} else {
+		response
+			.status(404)
+			.render('404', {user: response.locals.user, state: undefined});
+	}
 });
 
 app.all('*', send404);

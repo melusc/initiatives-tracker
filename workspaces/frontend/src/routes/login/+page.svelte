@@ -12,11 +12,11 @@
 	<form method="POST">
 		<label>
 			Username
-			<input type="text" name="username" minlength="4" />
+			<input type="text" name="username" minlength="4" required />
 		</label>
 		<label>
 			Password
-			<input type="password" name="password" minlength="12" />
+			<input type="password" name="password" minlength="12" required />
 		</label>
 		{#if state?.error === 'incorrect-credentials'}
 			<div class="error">Incorrect credentials. Please try again.</div>

@@ -1,15 +1,15 @@
 import {Router} from 'express';
 
 import {
-	createInitiative,
+	createInitiativeEndpoint,
 	deleteInitiative,
-	getAllInitiatives,
-	getInitiative,
+	getAllInitiativesEndpoint,
+	getInitiativeEndpoint,
 	initiativeAddOrganisation,
 	initiativeAddSignature,
 	initiativeRemoveOrganisation,
 	initiativeRemoveSignature,
-	patchInitiative,
+	patchInitiativeEndpoint,
 } from './initiative.ts';
 import {
 	createOrganisation,
@@ -54,11 +54,11 @@ router.get('/user/:id', getUser);
 router.delete('/user/:id', deleteUser);
 router.patch('/user/:id', patchUser);
 
-router.get('/initiatives', getAllInitiatives);
-router.post('/initiative/create', createInitiative);
-router.get('/initiative/:id', getInitiative);
+router.get('/initiatives', getAllInitiativesEndpoint);
+router.post('/initiative/create', createInitiativeEndpoint);
+router.get('/initiative/:id', getInitiativeEndpoint);
 router.delete('/initiative/:id', deleteInitiative);
-router.patch('/initiative/:id', patchInitiative);
+router.patch('/initiative/:id', patchInitiativeEndpoint);
 
 router.get('/organisations', getAllOrganisations);
 router.post('/organisation/create', createOrganisation);

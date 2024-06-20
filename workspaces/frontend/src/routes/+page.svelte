@@ -1,57 +1,30 @@
 <script lang="ts">
-	import type {
-		EnrichedInitiative,
-		ApiResponse,
-	} from '@lusc/initiatives-tracker-util/types.js';
-	import {browser} from '$app/environment';
+	import type {EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
 	import Initiative from '../components/initiative.svelte';
+	import {getState} from '../state.ts';
 
-	let initiatives: EnrichedInitiative[] | undefined;
-	let errorMsg: string | undefined;
-
-	async function fetchInitiatives() {
-		if (!browser) {
-			return;
-		}
-
-		let response: Response;
-		try {
-			response = await fetch('/api/initiatives', {
-				redirect: 'error',
-			});
-		} catch (error: unknown) {
-			console.log(error);
-			errorMsg = 'Error';
-			return;
-		}
-		if (response.ok) {
-			const json = (await response.json()) as ApiResponse<EnrichedInitiative[]>;
-			if (json.type === 'success') {
-				initiatives = json.data;
-				console.log(initiatives);
-			} else {
-				errorMsg = json.readableError;
-			}
-		} else {
-			errorMsg = await response.text();
-		}
-	}
-
-	$: fetchInitiatives();
+	const initiatives = getState<EnrichedInitiative[]>();
 </script>
 
 <svelte:head>
 	<title>Initiatives Tracker</title>
 </svelte:head>
 
-<div id="index">
+<div class="index">
 	{#if initiatives}
 		{#each initiatives as initiative (initiative.id)}
-			<Initiative {initiative} />
+			<Initiative {initiative} allowEdit={false} standalone={false} />
 		{/each}
-	{:else if errorMsg}
-		<div>Error: {errorMsg}</div>
 	{:else}
 		<div>Loading</div>
 	{/if}
 </div>
+
+<style>
+	.index {
+		padding: 3em;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+		gap: 2em;
+	}
+</style>

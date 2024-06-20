@@ -14,6 +14,11 @@ export async function svelteKitEngine(
 		return;
 	}
 
+	if (!('state' in options)) {
+		callback(new Error('.state not passed to options'));
+		return;
+	}
+
 	const user = options['user'] as Locals['user'] | undefined;
 	const state = options['state'];
 

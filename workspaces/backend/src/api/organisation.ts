@@ -109,7 +109,7 @@ const organisationKeyValidators = {
 			return {
 				type: 'error',
 				readableError:
-					'Could not fetch Image. Either invalid URL or not an image.',
+					'Could not fetch image. Either it was an invalid URL or the file was not an image.',
 				error: 'fetch-error',
 			};
 		}

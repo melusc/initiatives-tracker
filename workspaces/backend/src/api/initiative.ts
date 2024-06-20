@@ -162,7 +162,7 @@ const initativeKeyValidators = {
 			return {
 				type: 'error',
 				readableError:
-					'Could not fetch Image. Either invalid URL or not an image.',
+					'Could not fetch image. Either it was an invalid URL or the file was not an image.',
 				error: 'fetch-error',
 			};
 		}
@@ -171,14 +171,19 @@ const initativeKeyValidators = {
 
 const initiativeValidator = makeValidator(initativeKeyValidators);
 
-export const createInitiative: RequestHandler = async (request, response) => {
-	const validateResult = await initiativeValidator(
-		request.body as Record<string, unknown>,
-		['shortName', 'fullName', 'website', 'pdfUrl', 'imageUrl'],
-	);
+export async function createInitiative(
+	body: Record<string, unknown>,
+): Promise<ApiResponse<EnrichedInitiative>> {
+	const validateResult = await initiativeValidator(body, [
+		'shortName',
+		'fullName',
+		'website',
+		'pdfUrl',
+		'imageUrl',
+	]);
 
 	if (validateResult.type === 'error') {
-		return response.status(400).json(validateResult);
+		return validateResult;
 	}
 
 	const {website, fullName, shortName, pdfUrl, imageUrl} = validateResult.data;
@@ -202,22 +207,47 @@ export const createInitiative: RequestHandler = async (request, response) => {
 		)
 		.run(result);
 
-	return response.status(200).json({
+	return {
 		type: 'success',
 		data: enrichInitiative(transformInitiativeUrls(result)),
-	});
-};
+	};
+}
 
-export const getInitiative: RequestHandler<{id: string}> = (
+export const createInitiativeEndpoint: RequestHandler = async (
 	request,
 	response,
 ) => {
+	const result = await createInitiative(
+		request.body as Record<string, unknown>,
+	);
+
+	if (result.type === 'error') {
+		return response.status(400).json(result);
+	}
+
+	return response.status(201).json(result);
+};
+
+export function getInitiative(id: string): Initiative | false {
 	const initiative = database
 		.prepare<
 			{id: string},
 			Initiative
 		>('SELECT id, shortName, fullName, website, pdfUrl, imageUrl from initiatives where id = :id')
-		.get({id: request.params.id});
+		.get({id});
+
+	if (!initiative) {
+		return false;
+	}
+
+	return enrichInitiative(transformInitiativeUrls(initiative));
+}
+
+export const getInitiativeEndpoint: RequestHandler<{id: string}> = (
+	request,
+	response,
+) => {
+	const initiative = getInitiative(request.params.id);
 
 	if (!initiative) {
 		return response.status(404).json({
@@ -229,7 +259,7 @@ export const getInitiative: RequestHandler<{id: string}> = (
 
 	return response.status(200).json({
 		type: 'success',
-		data: enrichInitiative(transformInitiativeUrls(initiative)),
+		data: initiative,
 	});
 };
 
@@ -257,20 +287,27 @@ function enrichInitiative(initiative: Initiative): EnrichedInitiative {
 	};
 }
 
-export const getAllInitiatives: RequestHandler = async (_request, response) => {
+export function getAllInitiatives(): EnrichedInitiative[] {
 	const rows = database
 		.prepare<[], Initiative>('SELECT initiatives.* from initiatives')
 		.all();
 
+	return rows.map(initiative =>
+		enrichInitiative(transformInitiativeUrls(initiative)),
+	);
+}
+
+export const getAllInitiativesEndpoint: RequestHandler = async (
+	_request,
+	response,
+) => {
 	response.status(200).json({
 		type: 'success',
-		data: rows.map(initiative =>
-			enrichInitiative(transformInitiativeUrls(initiative)),
-		),
+		data: getAllInitiatives(),
 	});
 };
 
-export const patchInitiative: RequestHandler<{id: string}> = async (
+export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 	request,
 	response,
 ) => {
