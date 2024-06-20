@@ -16,7 +16,7 @@
 	let error: undefined | string = undefined;
 	let errorTimeout: ReturnType<typeof setTimeout> | undefined;
 
-	function setError(newError: undefined | string) {
+	function setError(newError: undefined | string): void {
 		if (errorTimeout) {
 			clearTimeout(errorTimeout);
 			errorTimeout = undefined;
@@ -33,7 +33,7 @@
 
 	let submitSuccessful: true | undefined;
 	let submitSuccessfulTimeout: ReturnType<typeof setTimeout> | undefined;
-	function setSubmitSuccessful(newSuccess: true | undefined) {
+	function setSubmitSuccessful(newSuccess: true | undefined): void {
 		// Resetting it:
 		// Do that instantly, remove timeout
 		if (!newSuccess && submitSuccessfulTimeout) {
@@ -62,7 +62,7 @@
 		}
 	}
 
-	async function handleSubmit(event: SubmitEvent) {
+	async function handleSubmit(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
 
 		const response = await fetch(apiEndpoint, {
@@ -92,7 +92,7 @@
 
 	<div class="input-wrap">
 		<input
-			class:error={!!error}
+			class:error={Boolean(error)}
 			class:success={submitSuccessful}
 			{type}
 			{name}
@@ -101,7 +101,7 @@
 			bind:this={node}
 		/><!--
 			--><button
-			class:error={!!error}
+			class:error={Boolean(error)}
 			class:success={submitSuccessful}
 			type="submit"
 		>

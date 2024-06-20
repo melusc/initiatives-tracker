@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type {Initiative} from '@lusc/initiatives-tracker-util/types.js';
+
 	import {getUser} from '../state.ts';
+
 	import PatchInput from './patch-input.svelte';
 	import CreateOutline from './icons/create-outline.svelte';
 
@@ -13,7 +15,7 @@
 
 	let showEdit = false;
 
-	function handleEditToggle() {
+	function handleEditToggle(): void {
 		showEdit = !showEdit;
 	}
 </script>

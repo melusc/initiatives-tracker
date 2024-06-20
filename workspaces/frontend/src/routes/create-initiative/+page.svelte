@@ -1,10 +1,13 @@
 <script lang="ts">
 	import {getState} from '../../state.ts';
 
-	const {error, values} = getState<{
+	const {
+		error,
+		values,
+	}: {
 		error: string;
 		values: Record<string, string>;
-	}>() ?? {values: {} as Record<string, string>};
+	} = getState() ?? {values: {}};
 </script>
 
 <form method="POST">

@@ -1,10 +1,9 @@
 <script>
 	import Header from '../components/header/header.svelte';
-
+	import Footer from '../components/footer.svelte';
 	import '../common/sanitise.css';
 	import '../common/theme.css';
 	import '../common/font.css';
-	import Footer from '../components/footer.svelte';
 </script>
 
 <svelte:head>

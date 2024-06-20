@@ -1,11 +1,12 @@
 <script lang="ts">
-	import {browser} from '$app/environment';
-
 	import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
 
 	import UserIcon from '../user-icon.svelte';
-	import HeaderMenu from './header-menu.svelte';
 	import {getUser} from '../../state.ts';
+
+	import HeaderMenu from './header-menu.svelte';
+
+	import {browser} from '$app/environment';
 
 	const loginInfo = getUser();
 
@@ -19,7 +20,7 @@
 		loginLink.searchParams.set('redirect', currentLink.full);
 	}
 
-	function toggleMenu(event: MouseEvent | KeyboardEvent) {
+	function toggleMenu(event: MouseEvent | KeyboardEvent): void {
 		if (event.type === 'keydown') {
 			const keyEvent = event as KeyboardEvent;
 			if (keyEvent.key === 'Enter' || keyEvent.key === ' ') {
@@ -28,6 +29,10 @@
 		} else {
 			showMenu = !showMenu;
 		}
+	}
+
+	function headerMenuClose(): void {
+		showMenu = false;
 	}
 </script>
 
@@ -58,11 +63,7 @@
 </header>
 
 {#if showMenu}
-	<HeaderMenu
-		close={() => {
-			showMenu = false;
-		}}
-	>
+	<HeaderMenu close={headerMenuClose}>
 		<div slot="user-icon" class="user-info">
 			{#if loginInfo}
 				<UserIcon userId={loginInfo.iconKey} />

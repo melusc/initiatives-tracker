@@ -1,8 +1,15 @@
 <script lang="ts">
 	import {fly} from 'svelte/transition';
+
 	import X from '../icons/x.svelte';
 
 	export let close: () => void;
+
+	function handleKeydown(event: KeyboardEvent): void {
+		if (event.key === 'Enter' || event.key === ' ') {
+			close();
+		}
+	}
 </script>
 
 <div
@@ -27,11 +34,7 @@
 		</a>
 		<div
 			on:click={close}
-			on:keydown={event => {
-				if (event.key === 'Enter' || event.key === ' ') {
-					close();
-				}
-			}}
+			on:keydown={handleKeydown}
 			role="button"
 			tabindex="0"
 			class="close"

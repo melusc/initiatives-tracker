@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type {EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
+
 	import Initiative from '../components/initiative.svelte';
 	import {getState} from '../state.ts';
 
