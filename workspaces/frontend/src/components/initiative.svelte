@@ -6,6 +6,7 @@
 	import PatchInput from './patch-input.svelte';
 	import CreateOutline from './icons/create-outline.svelte';
 	import BoxArrowUpRight from './icons/box-arrow-up-right.svelte';
+	import TrashOutline from './icons/trash-outline.svelte';
 
 	export let initiative: Initiative;
 
@@ -19,11 +20,19 @@
 	function handleEditToggle(): void {
 		showEdit = !showEdit;
 	}
+
+	async function deleteInitiative(): Promise<void> {
+		await fetch(`/api/initiative/${initiative.id}`, {method: 'delete'});
+		location.href = '/';
+	}
 </script>
 
 <div class="initiative" data-initiative-id={initiative.id}>
 	{#if allowEdit && user?.isAdmin}
-		<button class="toggle-edit" on:click={handleEditToggle}>
+		<button
+			class="toggle-edit inline-svg button-reset"
+			on:click={handleEditToggle}
+		>
 			{showEdit ? 'Back' : 'Edit'}
 			<CreateOutline />
 		</button>
@@ -75,7 +84,7 @@
 		>
 		<div class="full-name">{initiative.fullName}</div>
 		<a
-			class="website"
+			class="website inline-svg"
 			href={initiative.website}
 			rel="nofollow noreferrer noopener"
 			target="_blank"
@@ -87,28 +96,32 @@
 			<img class="image-url" src={initiative.imageUrl} alt="" />
 		</a>
 	{/if}
+
+	{#if standalone}
+		<button class="delete inline-svg button-reset" on:click={deleteInitiative}>
+			Delete "{initiative.shortName}" <TrashOutline />
+		</button>
+	{/if}
 </div>
 
 <style>
-	.toggle-edit,
-	.website {
+	.inline-svg {
 		display: flex;
 		flex-direction: row;
 		align-items: center;
 		gap: 5px;
 	}
 
-	.toggle-edit > :global(svg),
-	.website > :global(svg) {
+	.inline-svg > :global(svg) {
 		height: 1em;
 		width: 1em;
 	}
 
-	.toggle-edit {
-		border: var(--theme-primary);
+	.button-reset {
 		background: none;
 		font: inherit;
-		padding: 0;
+		border: none;
+		cursor: pointer;
 	}
 
 	.initiative {
@@ -124,6 +137,8 @@
 		color: var(--text-light);
 		font-size: 1.3em;
 		width: 100%;
+
+		transition: 300ms ease-in-out width;
 	}
 
 	.image-url {
@@ -137,5 +152,20 @@
 
 	.full-name {
 		font-size: 0.8em;
+	}
+
+	.delete {
+		color: var(--text-light);
+		background: var(--error);
+		box-shadow: var(--box-shadow);
+		border-radius: 5px;
+		padding: 0.3em 0.6em;
+		margin-top: 1em;
+
+		transition: 100ms ease-in-out scale;
+	}
+
+	.delete:active {
+		scale: 0.97;
 	}
 </style>
