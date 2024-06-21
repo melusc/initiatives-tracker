@@ -3,30 +3,16 @@
 
 	import {getState} from '../../state.ts';
 	import Initiative from '../../components/initiative.svelte';
+	import StandaloneCenter from '../../components/standalone-center.svelte';
+	import Loading from '../../components/loading.svelte';
 
 	const state = getState<EnrichedInitiative>();
 </script>
 
-<div class="place-center">
-	<div class="initiative-box">
-		{#if state}
-			<Initiative initiative={state} allowEdit standalone />
-		{:else}
-			<div>Loading</div>
-		{/if}
-	</div>
-</div>
-
-<style>
-	.place-center {
-		padding: 3em 0;
-		width: 100%;
-		display: grid;
-		place-items: center;
-	}
-
-	.initiative-box {
-		max-width: 550px;
-		margin: 0 3em;
-	}
-</style>
+<StandaloneCenter>
+	{#if state}
+		<Initiative initiative={state} allowEdit standalone />
+	{:else}
+		<Loading />
+	{/if}
+</StandaloneCenter>

@@ -3,6 +3,8 @@
 
 	import Initiative from '../components/initiative.svelte';
 	import {getState} from '../state.ts';
+	import AddIcon from '../components/icons/add.svelte';
+	import Loading from '../components/loading.svelte';
 
 	const initiatives = getState<EnrichedInitiative[]>();
 </script>
@@ -12,12 +14,13 @@
 </svelte:head>
 
 <div class="index">
+	<a href="/initiative/create">Add initiative <AddIcon /></a>
 	{#if initiatives}
 		{#each initiatives as initiative (initiative.id)}
 			<Initiative {initiative} allowEdit={false} standalone={false} />
 		{/each}
 	{:else}
-		<div>Loading</div>
+		<Loading />
 	{/if}
 </div>
 

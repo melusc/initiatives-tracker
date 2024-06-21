@@ -7,6 +7,7 @@
 	import CreateIcon from './icons/create.svelte';
 	import ExternalLinkIcon from './icons/external-link.svelte';
 	import TrashIcon from './icons/trash.svelte';
+	import Card from './card.svelte';
 
 	export let initiative: Initiative;
 
@@ -27,7 +28,7 @@
 	}
 </script>
 
-<div class="initiative" data-initiative-id={initiative.id}>
+<Card>
 	{#if allowEdit && user?.isAdmin}
 		<button
 			class="toggle-edit inline-svg button-reset"
@@ -102,7 +103,7 @@
 			Delete "{initiative.shortName}" <TrashIcon />
 		</button>
 	{/if}
-</div>
+</Card>
 
 <style>
 	.inline-svg {
@@ -122,23 +123,6 @@
 		font: inherit;
 		border: none;
 		cursor: pointer;
-	}
-
-	.initiative {
-		display: flex;
-		flex-direction: column;
-		width: max-content;
-		align-items: flex-start;
-		gap: 1em;
-		box-shadow: var(--box-shadow);
-		border-radius: 1em;
-		padding: 2em 3em;
-		background: var(--theme-primary);
-		color: var(--text-light);
-		font-size: 1.3em;
-		width: 100%;
-
-		transition: 300ms ease-in-out width;
 	}
 
 	.image-url {

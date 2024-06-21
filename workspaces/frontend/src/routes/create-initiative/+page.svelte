@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Card from '../../components/card.svelte';
 	import {getState} from '../../state.ts';
 
 	const {
@@ -11,64 +12,66 @@
 </script>
 
 <form method="POST">
-	{#if error}
-		<div class="error">{error}</div>
-	{/if}
+	<Card>
+		{#if error}
+			<div class="error">{error}</div>
+		{/if}
 
-	<label>
-		Short name
-		<input
-			type="text"
-			name="shortName"
-			required
-			minlength="4"
-			value={values['shortName'] ?? ''}
-		/>
-	</label>
+		<label>
+			Short name
+			<input
+				type="text"
+				name="shortName"
+				required
+				minlength="4"
+				value={values['shortName'] ?? ''}
+			/>
+		</label>
 
-	<label>
-		Full name
-		<input
-			type="text"
-			name="fullName"
-			required
-			minlength="4"
-			value={values['fullName'] ?? ''}
-		/>
-	</label>
+		<label>
+			Full name
+			<input
+				type="text"
+				name="fullName"
+				required
+				minlength="4"
+				value={values['fullName'] ?? ''}
+			/>
+		</label>
 
-	<label>
-		Website
-		<input
-			type="url"
-			name="website"
-			required
-			minlength="10"
-			value={values['website'] ?? ''}
-		/>
-	</label>
+		<label>
+			Website
+			<input
+				type="url"
+				name="website"
+				required
+				minlength="10"
+				value={values['website'] ?? ''}
+			/>
+		</label>
 
-	<label>
-		PDF URL
-		<input
-			type="url"
-			name="pdfUrl"
-			required
-			minlength="10"
-			value={values['pdfUrl'] ?? ''}
-		/>
-	</label>
+		<label>
+			PDF URL
+			<input
+				type="url"
+				name="pdfUrl"
+				required
+				minlength="10"
+				value={values['pdfUrl'] ?? ''}
+			/>
+		</label>
 
-	<label>
-		Image URL
-		<input
-			type="url"
-			name="imageUrl"
-			required
-			minlength="10"
-			value={values['imageUrl'] ?? ''}
-		/>
-	</label>
+		<label>
+			Image URL
+			<input
+				type="url"
+				name="imageUrl"
+				required
+				minlength="10"
+				value={values['imageUrl'] ?? ''}
+			/>
+		</label>
 
-	<input type="submit" value="Submit" />
+		<input type="submit" value="Submit" />
+	</Card>
 </form>
