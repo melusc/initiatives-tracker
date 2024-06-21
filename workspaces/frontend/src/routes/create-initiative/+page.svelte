@@ -5,7 +5,7 @@
 		error,
 		values,
 	}: {
-		error: string;
+		error?: string;
 		values: Record<string, string>;
 	} = getState() ?? {values: {}};
 </script>
