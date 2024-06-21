@@ -3,7 +3,7 @@
 	"type": "module",
 	"devDependencies": {
 		"prettier": "^3.3.2",
-		"prettier-plugin-svelte": "^3.2.4"
+		"prettier-plugin-svelte": "^3.2.5"
 	},
 	"workspaces": [
 		"workspaces/*"
@@ -13,7 +13,7 @@
 		"build": "yarn workspaces foreach -A --topological-dev run build",
 		"test": "yarn workspaces foreach -A run test"
 	},
-	"packageManager": "yarn@4.3.0",
+	"packageManager": "yarn@4.3.1",
 	"engines": {
 		"node": "^22.3.0"
 	}
