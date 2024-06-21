@@ -1,4 +1,4 @@
-import {unlink} from 'node:fs/promises';
+import {unlink, writeFile} from 'node:fs/promises';
 
 import type {RequestHandler} from 'express';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
@@ -75,7 +75,11 @@ const organisationKeyValidators = {
 			data: name,
 		};
 	},
-	async image(imageUrl: unknown): Promise<ApiResponse<null | string>> {
+	async image(
+		imageUrl: unknown,
+	): Promise<
+		ApiResponse<null | {id: string; suggestedFilePath: URL; body: ArrayBuffer}>
+	> {
 		if (imageUrl === null || imageUrl === 'null') {
 			return {
 				type: 'success',
@@ -167,12 +171,15 @@ export const createOrganisation: RequestHandler = async (request, response) => {
 	}
 
 	const {name, image, homepage} = result.data;
+	if (image) {
+		await writeFile(image.suggestedFilePath, new DataView(image.body));
+	}
 
 	const id = makeSlug(name);
 	const organisation: Organisation = {
 		id,
 		name,
-		image,
+		image: image ? image.id : image,
 		homepage,
 	};
 
@@ -293,6 +300,13 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 
 	const newData = validateResult.data;
 
+	if (newData.image) {
+		await writeFile(
+			newData.image.suggestedFilePath,
+			new DataView(newData.image.body),
+		);
+	}
+
 	if (Object.keys(newData).length === 0) {
 		response.status(200).json({
 			type: 'success',
@@ -319,6 +333,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		.run({
 			...newData,
 			id,
+			image: newData.image ? newData.image.id : null,
 		});
 
 	response.status(200).send({
@@ -326,6 +341,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		data: transformOrganisationUrls({
 			...oldRow,
 			...newData,
+			image: newData.image ? newData.image.id : null,
 		}),
 	});
 };

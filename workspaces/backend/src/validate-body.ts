@@ -45,7 +45,6 @@ export function makeValidator<Validators extends GenericValidator>(
 			};
 		}
 
-		const result: Record<string, unknown> = {};
 		const body = bodyUntyped as Record<string, unknown>;
 
 		for (const key of Object.keys(body)) {
@@ -58,22 +57,33 @@ export function makeValidator<Validators extends GenericValidator>(
 			}
 		}
 
-		for (const key of keys) {
+		const resultEntries: Array<
+			Promise<readonly [string, unknown] | ApiResponseError>
+		> = keys.map(async key => {
 			if (!(key in body)) {
 				return {
 					type: 'error',
 					readableError: `Missing required field "${key}".`,
 					error: 'missing-field',
-				};
+				} satisfies ApiResponseError;
 			}
 
-			// eslint-disable-next-line no-await-in-loop
 			const localResult = await validators[key]!(body[key]);
 			if (localResult.type === 'error') {
 				return localResult;
 			}
 
-			result[key] = localResult.data;
+			return [key, localResult.data] as const;
+		});
+
+		const result: Record<string, unknown> = {};
+
+		for await (const entry of resultEntries) {
+			if ('type' in entry) {
+				return entry;
+			}
+
+			result[entry[0]] = entry[1];
 		}
 
 		return {

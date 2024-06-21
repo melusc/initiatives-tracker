@@ -1,6 +1,6 @@
-import {randomUUID} from 'node:crypto';
-import {mkdir, writeFile} from 'node:fs/promises';
+import {mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
+import {randomUUID} from 'node:crypto';
 
 import {fileTypeFromBuffer} from 'file-type';
 
@@ -52,7 +52,9 @@ const allowedImages: ReadonlySet<string> = new Set<string>([
 	'image/webp',
 ]);
 
-export async function fetchImage(imageUrl: string) {
+export async function fetchImage(
+	imageUrl: string,
+): Promise<{id: string; suggestedFilePath: URL; body: ArrayBuffer}> {
 	const body = await safeFetch(imageUrl);
 
 	const type = await fileTypeFromBuffer(body);
@@ -61,14 +63,18 @@ export async function fetchImage(imageUrl: string) {
 		throw new Error('Not an image.');
 	}
 
-	const id = randomUUID() + '.' + type.ext;
+	const id = [randomUUID(), type.ext].join('.');
 
-	await writeFile(new URL(id, imageOutDirectory), new DataView(body));
-
-	return id;
+	return {
+		id,
+		suggestedFilePath: new URL(id, imageOutDirectory),
+		body,
+	};
 }
 
-export async function fetchPdf(pdfUrl: string) {
+export async function fetchPdf(
+	pdfUrl: string,
+): Promise<{id: string; suggestedFilePath: URL; body: ArrayBuffer}> {
 	const body = await safeFetch(pdfUrl);
 
 	const type = await fileTypeFromBuffer(body);
@@ -79,7 +85,9 @@ export async function fetchPdf(pdfUrl: string) {
 
 	const id = randomUUID() + '.pdf';
 
-	await writeFile(new URL(id, pdfOutDirectory), new DataView(body));
-
-	return id;
+	return {
+		id,
+		suggestedFilePath: new URL(id, pdfOutDirectory),
+		body,
+	};
 }

@@ -1,4 +1,4 @@
-import {unlink} from 'node:fs/promises';
+import {unlink, writeFile} from 'node:fs/promises';
 
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
@@ -104,7 +104,11 @@ const initativeKeyValidators = {
 			data: websiteUrl.href,
 		};
 	},
-	async pdfUrl(pdfUrl: unknown): Promise<ApiResponse<string>> {
+	async pdfUrl(
+		pdfUrl: unknown,
+	): Promise<
+		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
+	> {
 		if (typeof pdfUrl !== 'string') {
 			return {
 				type: 'error',
@@ -135,7 +139,11 @@ const initativeKeyValidators = {
 			};
 		}
 	},
-	async imageUrl(imageUrl: unknown): Promise<ApiResponse<string>> {
+	async imageUrl(
+		imageUrl: unknown,
+	): Promise<
+		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
+	> {
 		if (typeof imageUrl !== 'string') {
 			return {
 				type: 'error',
@@ -188,6 +196,9 @@ export async function createInitiative(
 
 	const {website, fullName, shortName, pdfUrl, imageUrl} = validateResult.data;
 
+	await writeFile(pdfUrl.suggestedFilePath, new DataView(pdfUrl.body));
+	await writeFile(imageUrl.suggestedFilePath, new DataView(imageUrl.body));
+
 	const id = makeSlug(shortName);
 
 	const result: Initiative = {
@@ -195,8 +206,8 @@ export async function createInitiative(
 		shortName,
 		fullName,
 		website,
-		pdfUrl,
-		imageUrl,
+		pdfUrl: pdfUrl.id,
+		imageUrl: imageUrl.id,
 	};
 
 	database
@@ -342,6 +353,20 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 
 	const newData = validateResult.data;
 
+	if (newData.pdfUrl) {
+		await writeFile(
+			newData.pdfUrl.suggestedFilePath,
+			new DataView(newData.pdfUrl.body),
+		);
+	}
+
+	if (newData.imageUrl) {
+		await writeFile(
+			newData.imageUrl.suggestedFilePath,
+			new DataView(newData.imageUrl.body),
+		);
+	}
+
 	if (Object.keys(newData).length === 0) {
 		response.status(200).json({
 			type: 'success',
@@ -373,16 +398,13 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 		.run({
 			...newData,
 			id,
+			pdfUrl: newData.pdfUrl?.id,
+			imageUrl: newData.imageUrl?.id,
 		});
 
 	response.status(200).send({
 		type: 'success',
-		data: enrichInitiative(
-			transformInitiativeUrls({
-				...oldRow,
-				...newData,
-			}),
-		),
+		data: getInitiative(id),
 	});
 };
 
