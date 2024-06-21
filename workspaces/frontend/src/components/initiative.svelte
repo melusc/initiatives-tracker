@@ -152,6 +152,7 @@
 
 	.full-name {
 		font-size: 0.8em;
+		max-width: 30ch;
 	}
 
 	.delete {

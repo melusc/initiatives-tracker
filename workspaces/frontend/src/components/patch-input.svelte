@@ -115,7 +115,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.3em;
-		width: max-content;
+		width: 100%;
 	}
 
 	button > :global(svg) {
@@ -145,17 +145,17 @@
 	input {
 		border-radius: 0.5em 0 0 0.5em;
 		border-right: none;
+		width: 100%;
 
-		margin-right: none;
-		padding-right: none;
+		margin-right: 0;
 	}
 
 	button {
 		border-left: none;
 		border-radius: 0 0.5em 0.5em 0;
 
-		margin-left: none;
-		padding-left: none;
+		margin-left: 0;
+		padding-left: 0;
 
 		cursor: pointer;
 	}

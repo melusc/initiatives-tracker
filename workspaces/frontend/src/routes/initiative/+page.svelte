@@ -19,7 +19,7 @@
 
 <style>
 	.place-center {
-		padding-top: 3em;
+		padding: 3em 0;
 		width: 100%;
 		display: grid;
 		place-items: center;
