@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Card from '../../components/card.svelte';
+	import StandaloneCenter from '../../components/standalone-center.svelte';
 	import {getState} from '../../state.ts';
 
 	const {
@@ -11,67 +12,110 @@
 	} = getState() ?? {values: {}};
 </script>
 
-<form method="POST">
-	<Card>
-		{#if error}
-			<div class="error">{error}</div>
-		{/if}
+<StandaloneCenter>
+	<form method="POST">
+		<Card>
+			{#if error}
+				<div class="error">{error}</div>
+			{/if}
 
-		<label>
-			Short name
-			<input
-				type="text"
-				name="shortName"
-				required
-				minlength="4"
-				value={values['shortName'] ?? ''}
-			/>
-		</label>
+			<label>
+				Short name
+				<input
+					type="text"
+					name="shortName"
+					required
+					minlength="4"
+					value={values['shortName'] ?? ''}
+				/>
+			</label>
 
-		<label>
-			Full name
-			<input
-				type="text"
-				name="fullName"
-				required
-				minlength="4"
-				value={values['fullName'] ?? ''}
-			/>
-		</label>
+			<label>
+				Full name
+				<input
+					type="text"
+					name="fullName"
+					required
+					minlength="4"
+					value={values['fullName'] ?? ''}
+				/>
+			</label>
 
-		<label>
-			Website
-			<input
-				type="url"
-				name="website"
-				required
-				minlength="10"
-				value={values['website'] ?? ''}
-			/>
-		</label>
+			<label>
+				Website
+				<input
+					type="url"
+					name="website"
+					required
+					minlength="10"
+					value={values['website'] ?? ''}
+				/>
+			</label>
 
-		<label>
-			PDF URL
-			<input
-				type="url"
-				name="pdfUrl"
-				required
-				minlength="10"
-				value={values['pdfUrl'] ?? ''}
-			/>
-		</label>
+			<label>
+				PDF URL
+				<input
+					type="url"
+					name="pdfUrl"
+					required
+					minlength="10"
+					value={values['pdfUrl'] ?? ''}
+				/>
+			</label>
 
-		<label>
-			Image URL
-			<input
-				type="url"
-				name="imageUrl"
-				required
-				minlength="10"
-				value={values['imageUrl'] ?? ''}
-			/>
-		</label>
+			<label>
+				Image URL
+				<input
+					type="url"
+					name="imageUrl"
+					required
+					minlength="10"
+					value={values['imageUrl'] ?? ''}
+				/>
+			</label>
 
-		<input type="submit" value="Submit" />
-	</Card>
-</form>
+			<input class="submit" type="submit" value="Submit" />
+		</Card>
+	</form>
+</StandaloneCenter>
+
+<style>
+	form {
+		min-width: 450px;
+		display: inline;
+	}
+
+	@media (width <= 500px) {
+		form {
+			min-width: auto;
+		}
+	}
+
+	label {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
+	input {
+		color: var(--text-dark);
+		font-size: inherit;
+	}
+
+	.submit {
+		border: 1px solid var(--text-light);
+		background: none;
+		color: var(--text-light);
+		box-shadow: var(--box-shadow);
+		border-radius: 5px;
+		padding: 0.3em 0.6em;
+		margin-top: 1em;
+		cursor: pointer;
+
+		transition: 100ms ease-in-out scale;
+	}
+
+	.submit:active {
+		scale: 0.97;
+	}
+</style>

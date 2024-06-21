@@ -6,7 +6,6 @@
 	.card {
 		display: flex;
 		flex-direction: column;
-		width: max-content;
 		align-items: flex-start;
 		gap: 1em;
 		box-shadow: var(--box-shadow);
