@@ -4,9 +4,9 @@
 	import {getUser} from '../state.ts';
 
 	import PatchInput from './patch-input.svelte';
-	import CreateOutline from './icons/create-outline.svelte';
-	import BoxArrowUpRight from './icons/box-arrow-up-right.svelte';
-	import TrashOutline from './icons/trash-outline.svelte';
+	import CreateIcon from './icons/create.svelte';
+	import ExternalLinkIcon from './icons/external-link.svelte';
+	import TrashIcon from './icons/trash.svelte';
 
 	export let initiative: Initiative;
 
@@ -34,7 +34,7 @@
 			on:click={handleEditToggle}
 		>
 			{showEdit ? 'Back' : 'Edit'}
-			<CreateOutline />
+			<CreateIcon />
 		</button>
 	{/if}
 
@@ -89,7 +89,7 @@
 			rel="nofollow noreferrer noopener"
 			target="_blank"
 		>
-			Initiative website <BoxArrowUpRight />
+			Initiative website <ExternalLinkIcon />
 		</a>
 		<a class="pdf-url" href={initiative.pdfUrl}>Download initiative as PDF</a>
 		<a href={standalone ? undefined : `/initiative/${initiative.id}`}>
@@ -99,7 +99,7 @@
 
 	{#if standalone}
 		<button class="delete inline-svg button-reset" on:click={deleteInitiative}>
-			Delete "{initiative.shortName}" <TrashOutline />
+			Delete "{initiative.shortName}" <TrashIcon />
 		</button>
 	{/if}
 </div>

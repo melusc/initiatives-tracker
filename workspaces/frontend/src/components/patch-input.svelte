@@ -2,7 +2,7 @@
 	import type {ApiResponse} from '@lusc/initiatives-tracker-util/types.js';
 	import {slide} from 'svelte/transition';
 
-	import SaveOutline from './icons/save-outline.svelte';
+	import SaveIcon from './icons/save.svelte';
 
 	export let type: 'text' | 'url';
 	export let name: string;
@@ -105,7 +105,7 @@
 			class:success={submitSuccessful}
 			type="submit"
 		>
-			<SaveOutline />
+			<SaveIcon />
 		</button>
 	</div>
 </form>
