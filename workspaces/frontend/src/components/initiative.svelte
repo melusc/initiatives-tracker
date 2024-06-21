@@ -5,6 +5,7 @@
 
 	import PatchInput from './patch-input.svelte';
 	import CreateOutline from './icons/create-outline.svelte';
+	import BoxArrowUpRight from './icons/box-arrow-up-right.svelte';
 
 	export let initiative: Initiative;
 
@@ -76,8 +77,11 @@
 		<a
 			class="website"
 			href={initiative.website}
-			rel="nofollow noreferrer noopener">Initiative website</a
+			rel="nofollow noreferrer noopener"
+			target="_blank"
 		>
+			Initiative website <BoxArrowUpRight />
+		</a>
 		<a class="pdf-url" href={initiative.pdfUrl}>Download initiative as PDF</a>
 		<a href={standalone ? undefined : `/initiative/${initiative.id}`}>
 			<img class="image-url" src={initiative.imageUrl} alt="" />
@@ -86,7 +90,16 @@
 </div>
 
 <style>
-	.toggle-edit > :global(svg) {
+	.toggle-edit,
+	.website {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		gap: 5px;
+	}
+
+	.toggle-edit > :global(svg),
+	.website > :global(svg) {
 		height: 1em;
 		width: 1em;
 	}
