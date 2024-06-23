@@ -18,7 +18,7 @@ import {
 	getAllInitiatives,
 	getInitiative,
 } from './api/initiative.ts';
-import {createUser, getAllUsers, getUser} from './api/users.ts';
+import {createPerson, getAllPeople, getPerson} from './api/persons.ts';
 
 const app = express();
 
@@ -26,7 +26,7 @@ function send404(request: Request, response: Response) {
 	response.status(404);
 
 	if (request.accepts('html')) {
-		response.render('404', {user: response.locals.user, state: undefined});
+		response.render('404', {login: response.locals.login, state: undefined});
 		return;
 	}
 
@@ -82,7 +82,7 @@ app.use((request, response, next) => {
 	if (request.path.includes('\\')) {
 		response
 			.status(404)
-			.render('404', {user: response.locals.user, state: undefined});
+			.render('404', {login: response.locals.login, state: undefined});
 		return;
 	}
 
@@ -118,7 +118,7 @@ app.use(
 );
 
 app.get('/login', (_request, response) => {
-	response.render('login', {user: response.locals.user, state: undefined});
+	response.render('login', {login: undefined, state: undefined});
 });
 app.post('/login', loginPost);
 
@@ -126,14 +126,14 @@ app.get('/logout', logout);
 
 app.get('/', (_, response) => {
 	response.render('index', {
-		user: response.locals.user,
+		login: response.locals.login,
 		state: getAllInitiatives(),
 	});
 });
 
 app.get('/initiative/create', (_, response) => {
 	response.render('create-initiative', {
-		user: response.locals.user,
+		login: response.locals.login,
 		state: {values: {}},
 	});
 });
@@ -145,7 +145,7 @@ app.post('/initiative/create', async (request, response) => {
 
 	if (initiative.type === 'error') {
 		response.status(400).render('create-initiative', {
-			user: response.locals.user,
+			login: response.locals.login,
 			state: {
 				error: initiative.readableError,
 				values: body,
@@ -161,62 +161,62 @@ app.get('/initiative/:id', (request, response) => {
 	const initiative = getInitiative(request.params.id);
 	if (initiative) {
 		response.status(200).render('initiative', {
-			user: response.locals.user,
+			login: response.locals.login,
 			state: initiative,
 		});
 	} else {
 		response
 			.status(404)
-			.render('404', {user: response.locals.user, state: undefined});
+			.render('404', {login: response.locals.login, state: undefined});
 	}
 });
 
-app.get('/users', (_request, response) => {
-	const users = getAllUsers();
+app.get('/people', (_request, response) => {
+	const people = getAllPeople();
 
-	response.render('users', {
-		state: users,
-		user: response.locals.user,
+	response.render('people', {
+		state: people,
+		login: response.locals.login,
 	});
 });
 
-app.get('/user/create', (_, response) => {
-	response.render('create-user', {
-		user: response.locals.user,
+app.get('/person/create', (_, response) => {
+	response.render('create-person', {
+		login: response.locals.login,
 		state: {values: {}},
 	});
 });
 
-app.post('/user/create', async (request, response) => {
+app.post('/person/create', async (request, response) => {
 	const body = request.body as Record<string, unknown>;
 
-	const user = await createUser(body);
+	const person = await createPerson(body);
 
-	if (user.type === 'error') {
-		response.status(400).render('create-user', {
-			user: response.locals.user,
+	if (person.type === 'error') {
+		response.status(400).render('create-person', {
+			login: response.locals.login,
 			state: {
-				error: user.readableError,
+				error: person.readableError,
 				values: body,
 			},
 		});
 		return;
 	}
 
-	response.redirect(303, `/user/${user.data.id}`);
+	response.redirect(303, `/person/${person.data.id}`);
 });
 
-app.get('/user/:id', (request, response) => {
-	const user = getUser(request.params.id);
-	if (user) {
-		response.status(200).render('user', {
-			user: response.locals.user,
-			state: user,
+app.get('/person/:id', (request, response) => {
+	const person = getPerson(request.params.id);
+	if (person) {
+		response.status(200).render('person', {
+			login: response.locals.login,
+			state: person,
 		});
 	} else {
 		response
 			.status(404)
-			.render('404', {user: response.locals.user, state: undefined});
+			.render('404', {login: response.locals.login, state: undefined});
 	}
 });
 

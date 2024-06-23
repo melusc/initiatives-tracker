@@ -45,7 +45,7 @@
 
 	<div class="hr" />
 	<a href="/">Initiatives</a>
-	<a href="/users">Users</a>
+	<a href="/people">People</a>
 	<a href="/organisations">Organisations</a>
 
 	<div class="hr" />

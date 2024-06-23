@@ -25,15 +25,15 @@ database.exec(
 				isAdmin BOOLEAN NOT NULL CHECK (isAdmin IN (0, 1))
 		);
 
-		CREATE TABLE IF NOT EXISTS users (
-				id TEXT PRIMARY KEY,
-				name TEXT NOT NULL UNIQUE
-		);
-
 		CREATE TABLE IF NOT EXISTS sessions (
 				sessionId TEXT PRIMARY KEY,
 				userId TEXT NOT NULL,
 				expires INTEGER NOT NULL
+		);
+
+		CREATE TABLE IF NOT EXISTS people (
+				id TEXT PRIMARY KEY,
+				name TEXT NOT NULL UNIQUE
 		);
 
 		CREATE TABLE IF NOT EXISTS initiatives (
@@ -54,10 +54,10 @@ database.exec(
 		);
 
 		CREATE TABLE IF NOT EXISTS signatures (
-				userId TEXT NOT NULL,
+				personId TEXT NOT NULL,
 				initiativeId TEXT NOT NULL,
-				PRIMARY KEY (userId, initiativeId),
-				FOREIGN KEY(userId) REFERENCES users(id) ON DELETE CASCADE,
+				PRIMARY KEY (personId, initiativeId),
+				FOREIGN KEY(personId) REFERENCES people(id) ON DELETE CASCADE,
 				FOREIGN KEY(initiativeId) REFERENCES initiatives(id) ON DELETE CASCADE
 		);
 

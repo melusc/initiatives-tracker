@@ -7,7 +7,7 @@ import type {
 	Initiative,
 	EnrichedInitiative,
 	Organisation,
-	User,
+	Person,
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
 
@@ -312,10 +312,10 @@ export const getInitiativeEndpoint: RequestHandler<{id: string}> = (
 };
 
 function enrichInitiative(initiative: Initiative): EnrichedInitiative {
-	const users = database
-		.prepare<{initiativeId: string}, User>(
-			`SELECT users.* FROM users
-			INNER JOIN signatures on signatures.userId = users.id
+	const people = database
+		.prepare<{initiativeId: string}, Person>(
+			`SELECT people.* FROM people
+			INNER JOIN signatures on signatures.personId = people.id
 			WHERE signatures.initiativeId = :initiativeId`,
 		)
 		.all({initiativeId: initiative.id});
@@ -330,7 +330,7 @@ function enrichInitiative(initiative: Initiative): EnrichedInitiative {
 
 	return {
 		...initiative,
-		signatures: users,
+		signatures: people,
 		organisations,
 	};
 }
@@ -486,14 +486,14 @@ export const deleteInitiative: RequestHandler<{id: string}> = async (
 
 export const initiativeAddSignature: RequestHandler<{
 	initiativeId: string;
-	userId: string;
+	personId: string;
 }> = (request, response) => {
 	database
 		.prepare<{
 			initiativeId: string;
-			userId: string;
+			personId: string;
 		}>(
-			'INSERT INTO signatures (initiativeId, userId) values (:initiativeId, :userId);',
+			'INSERT INTO signatures (initiativeId, personId) values (:initiativeId, :personId);',
 		)
 		.run(request.params);
 
@@ -504,14 +504,14 @@ export const initiativeAddSignature: RequestHandler<{
 
 export const initiativeRemoveSignature: RequestHandler<{
 	initiativeId: string;
-	userId: string;
+	personId: string;
 }> = (request, response) => {
 	const result = database
 		.prepare<{
 			initiativeId: string;
-			userId: string;
+			personId: string;
 		}>(
-			'DELETE FROM signatures where initiativeId = :initiativeId AND userId = :userId;',
+			'DELETE FROM signatures where initiativeId = :initiativeId AND personId = :personId;',
 		)
 		.run(request.params);
 

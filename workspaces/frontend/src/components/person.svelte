@@ -1,19 +1,19 @@
 <script lang="ts">
-	import type {EnrichedUser} from '@lusc/initiatives-tracker-util/types.js';
+	import type {EnrichedPerson} from '@lusc/initiatives-tracker-util/types.js';
 
-	import {getUser} from '../state.ts';
+	import {getLogin} from '../state.ts';
 
 	import Card from './card.svelte';
 	import CreateIcon from './icons/create.svelte';
 	import TrashIcon from './icons/trash.svelte';
 	import PatchInput from './patch-input.svelte';
 
-	export let user: EnrichedUser;
+	export let person: EnrichedPerson;
 
 	export let allowEdit: boolean;
 	export let standalone: boolean;
 
-	const login = getUser();
+	const login = getLogin();
 
 	let showEdit = false;
 
@@ -22,7 +22,7 @@
 	}
 
 	async function deleteInitiative(): Promise<void> {
-		await fetch(`/api/user/${user.id}`, {method: 'delete'});
+		await fetch(`/api/person/${person.id}`, {method: 'delete'});
 		location.href = '/';
 	}
 </script>
@@ -43,16 +43,16 @@
 			name="name"
 			label="Name"
 			type="text"
-			bind:value={user.name}
-			apiEndpoint={`/api/user/${user.id}`}
+			bind:value={person.name}
+			apiEndpoint={`/api/person/${person.id}`}
 		/>
 	{:else}
-		<div class="name">{user.name}</div>
+		<div class="name">{person.name}</div>
 	{/if}
 
 	{#if standalone}
 		<button class="delete inline-svg button-reset" on:click={deleteInitiative}>
-			Delete "{user.name}" <TrashIcon />
+			Delete "{person.name}" <TrashIcon />
 		</button>
 	{/if}
 </Card>

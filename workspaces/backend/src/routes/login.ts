@@ -17,7 +17,7 @@ export async function loginPost(request: Request, response: Response) {
 
 	if (!body.success) {
 		response.render('login', {
-			user: undefined,
+			login: undefined,
 			state: {
 				error: 'missing-values',
 			},
@@ -34,7 +34,7 @@ export async function loginPost(request: Request, response: Response) {
 
 	if (!databaseResult) {
 		response.render('login', {
-			user: undefined,
+			login: undefined,
 			state: {
 				error: 'incorrect-credentials',
 			},
@@ -47,7 +47,7 @@ export async function loginPost(request: Request, response: Response) {
 
 	if (!timingSafeEqual(passwordHash, requestHash)) {
 		response.render('login', {
-			user: undefined,
+			login: undefined,
 			state: {
 				error: 'incorrect-credentials',
 			},

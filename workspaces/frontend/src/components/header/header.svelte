@@ -2,13 +2,13 @@
 	import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
 
 	import UserIcon from '../user-icon.svelte';
-	import {getUser} from '../../state.ts';
+	import {getLogin} from '../../state.ts';
 
 	import HeaderMenu from './header-menu.svelte';
 
 	import {browser} from '$app/environment';
 
-	const loginInfo = getUser();
+	const loginInfo = getLogin();
 
 	let showMenu = false;
 
@@ -43,7 +43,7 @@
 
 	<div class="header-nav">
 		<a href="/">Initiatives</a>
-		<a href="/users">Users</a>
+		<a href="/people">People</a>
 		<a href="/organisations">Organisations</a>
 	</div>
 

@@ -20,12 +20,12 @@ import {
 } from './organisation.ts';
 import {userContent} from './user-content.ts';
 import {
-	createUserEndpoint,
-	deleteUser,
-	getAllUsersEndpoint,
-	getUserEndpoint,
-	patchUser,
-} from './users.ts';
+	createPersonEndpoint,
+	deletePerson,
+	getAllPeopleEndpoint,
+	getPersonEndpoint,
+	patchPerson,
+} from './persons.ts';
 
 // eslint-disable-next-line new-cap
 const router = Router();
@@ -36,7 +36,7 @@ router.use((request, response, next) => {
 		return;
 	}
 
-	if (!response.locals.user.isAdmin) {
+	if (!response.locals.login.isAdmin) {
 		response.status(403).json({
 			type: 'error',
 			readableError: 'Non-admins can only read resources.',
@@ -48,11 +48,11 @@ router.use((request, response, next) => {
 	next();
 });
 
-router.get('/users', getAllUsersEndpoint);
-router.post('/user/create', createUserEndpoint);
-router.get('/user/:id', getUserEndpoint);
-router.delete('/user/:id', deleteUser);
-router.patch('/user/:id', patchUser);
+router.get('/people', getAllPeopleEndpoint);
+router.post('/person/create', createPersonEndpoint);
+router.get('/person/:id', getPersonEndpoint);
+router.delete('/person/:id', deletePerson);
+router.patch('/person/:id', patchPerson);
 
 router.get('/initiatives', getAllInitiativesEndpoint);
 router.post('/initiative/create', createInitiativeEndpoint);
@@ -66,9 +66,9 @@ router.get('/organisation/:id', getOrganisation);
 router.delete('/organisation/:id', deleteOrganisation);
 router.patch('/organisation/:id', patchOrganisation);
 
-router.put('/initiative/:initiativeId/sign/:userId', initiativeAddSignature);
+router.put('/initiative/:initiativeId/sign/:personId', initiativeAddSignature);
 router.delete(
-	'/initiative/:initiativeId/sign/:userId',
+	'/initiative/:initiativeId/sign/:personId',
 	initiativeRemoveSignature,
 );
 

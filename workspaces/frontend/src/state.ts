@@ -8,8 +8,8 @@ export function getState<T>(): T | undefined {
 	return typeof state === 'undefined' ? undefined : (state as T);
 }
 
-declare const user: LoginInfo | undefined;
+declare const login: LoginInfo | undefined;
 
-export function getUser(): LoginInfo | undefined {
-	return typeof user === 'undefined' ? undefined : user;
+export function getLogin(): LoginInfo | undefined {
+	return typeof login === 'undefined' ? undefined : login;
 }

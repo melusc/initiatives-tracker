@@ -9,7 +9,7 @@ export type Initiative = {
 };
 
 export type EnrichedInitiative = Initiative & {
-	signatures: User[];
+	signatures: Person[];
 	organisations: Organisation[];
 };
 
@@ -24,12 +24,12 @@ export type EnrichedOrganisation = Organisation & {
 	signatures: Initiative[];
 };
 
-export type User = {
+export type Person = {
 	name: string;
 	id: string;
 };
 
-export type EnrichedUser = User & {
+export type EnrichedPerson = Person & {
 	initiatives: Initiative[];
 };
 

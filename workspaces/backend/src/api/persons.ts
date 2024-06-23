@@ -2,31 +2,31 @@ import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import type {RequestHandler} from 'express';
 import type {
-	EnrichedUser,
+	EnrichedPerson,
 	Initiative,
-	User,
+	Person,
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
 
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
 
-function enrichUser(user: User): EnrichedUser {
+function enrichPerson(person: Person): EnrichedPerson {
 	const initiatives = database
-		.prepare<{userId: string}, Initiative>(
+		.prepare<{personId: string}, Initiative>(
 			`SELECT initiatives.* FROM initiatives
 			INNER JOIN signatures on signatures.initiativeId = initiatives.id
-			WHERE signatures.userId = :userId`,
+			WHERE signatures.personId = :personId`,
 		)
-		.all({userId: user.id});
+		.all({personId: person.id});
 
 	return {
-		...user,
+		...person,
 		initiatives,
 	};
 }
 
-const userKeyValidators = {
+const personKeyValidators = {
 	name(nameRaw: unknown): ApiResponse<string> {
 		if (typeof nameRaw !== 'string') {
 			return {
@@ -61,12 +61,12 @@ const userKeyValidators = {
 	},
 };
 
-const userValidator = makeValidator(userKeyValidators);
+const personValidator = makeValidator(personKeyValidators);
 
-export async function createUser(
+export async function createPerson(
 	body: Record<string, unknown>,
-): Promise<ApiResponse<EnrichedUser>> {
-	const result = await userValidator(body, ['name']);
+): Promise<ApiResponse<EnrichedPerson>> {
+	const result = await personValidator(body, ['name']);
 
 	if (result.type === 'error') {
 		return result;
@@ -77,7 +77,7 @@ export async function createUser(
 	const id = makeSlug(name);
 	try {
 		database
-			.prepare<User>('INSERT INTO users (id, name) values (:id, :name)')
+			.prepare<Person>('INSERT INTO people (id, name) values (:id, :name)')
 			.run({
 				id,
 				name,
@@ -85,26 +85,29 @@ export async function createUser(
 	} catch {
 		return {
 			type: 'error',
-			readableError: 'User with that name already exists',
-			error: 'user-already-exists',
+			readableError: 'Person with that name already exists',
+			error: 'person-already-exists',
 		};
 	}
 
 	return {
 		type: 'success',
-		data: enrichUser({
+		data: enrichPerson({
 			id,
 			name,
 		}),
 	};
 }
 
-export const createUserEndpoint: RequestHandler = async (request, response) => {
-	const result = await createUser(request.body as Record<string, unknown>);
+export const createPersonEndpoint: RequestHandler = async (
+	request,
+	response,
+) => {
+	const result = await createPerson(request.body as Record<string, unknown>);
 
 	if (result.type === 'error') {
 		response
-			.status(result.error === 'user-already-exists' ? 409 : 400)
+			.status(result.error === 'person-already-exists' ? 409 : 400)
 			.json(result);
 		return;
 	}
@@ -112,30 +115,30 @@ export const createUserEndpoint: RequestHandler = async (request, response) => {
 	return response.status(201).json(result);
 };
 
-export function getUser(id: string): EnrichedUser | false {
-	const user = database
-		.prepare<{id: string}, User>('SELECT id, name FROM users WHERE id = :id')
+export function getPerson(id: string): EnrichedPerson | false {
+	const person = database
+		.prepare<{id: string}, Person>('SELECT id, name FROM people WHERE id = :id')
 		.get({
 			id,
 		});
 
-	if (!user) {
+	if (!person) {
 		return false;
 	}
 
-	return enrichUser(user);
+	return enrichPerson(person);
 }
 
-export const getUserEndpoint: RequestHandler<{id: string}> = (
+export const getPersonEndpoint: RequestHandler<{id: string}> = (
 	request,
 	response,
 ) => {
-	const result = getUser(request.params.id);
+	const result = getPerson(request.params.id);
 
 	if (!result) {
 		return response.status(404).json({
 			type: 'error',
-			readableError: 'User does not exist.',
+			readableError: 'Person does not exist.',
 			error: 'not-found',
 		});
 	}
@@ -146,20 +149,20 @@ export const getUserEndpoint: RequestHandler<{id: string}> = (
 	});
 };
 
-export const patchUser: RequestHandler<{id: string}> = async (
+export const patchPerson: RequestHandler<{id: string}> = async (
 	request,
 	response,
 ) => {
 	const {id} = request.params;
 
 	const oldRow = database
-		.prepare<{id: string}, User>('SELECT id, name FROM users WHERE id = :id')
+		.prepare<{id: string}, Person>('SELECT id, name FROM people WHERE id = :id')
 		.get({id});
 
 	if (!oldRow) {
 		response.status(404).json({
 			type: 'error',
-			readableError: 'User does not exist.',
+			readableError: 'Person does not exist.',
 			error: 'not-found',
 		});
 		return;
@@ -167,9 +170,9 @@ export const patchUser: RequestHandler<{id: string}> = async (
 
 	const body = request.body as Record<string, unknown>;
 
-	const validateResult = await userValidator(
+	const validateResult = await personValidator(
 		body,
-		Object.keys(body) as Array<keyof typeof userKeyValidators>,
+		Object.keys(body) as Array<keyof typeof personKeyValidators>,
 	);
 
 	if (validateResult.type === 'error') {
@@ -182,7 +185,7 @@ export const patchUser: RequestHandler<{id: string}> = async (
 	if (Object.keys(newData).length === 0) {
 		response.status(200).json({
 			type: 'success',
-			data: enrichUser(oldRow),
+			data: enrichPerson(oldRow),
 		});
 		return;
 	}
@@ -195,7 +198,7 @@ export const patchUser: RequestHandler<{id: string}> = async (
 
 	try {
 		database
-			.prepare(`UPDATE users SET ${query.join(', ')} WHERE id = :id`)
+			.prepare(`UPDATE people SET ${query.join(', ')} WHERE id = :id`)
 			.run({
 				...newData,
 				id,
@@ -203,7 +206,7 @@ export const patchUser: RequestHandler<{id: string}> = async (
 
 		response.status(200).send({
 			type: 'success',
-			data: enrichUser({
+			data: enrichPerson({
 				id,
 				...newData,
 			}),
@@ -212,25 +215,25 @@ export const patchUser: RequestHandler<{id: string}> = async (
 		response.status(409).json({
 			type: 'error',
 			error: 'unique-name',
-			readableError: 'User with that name already exists.',
+			readableError: 'Person with that name already exists.',
 		});
 	}
 };
 
-export const deleteUser: RequestHandler<{id: string}> = async (
+export const deletePerson: RequestHandler<{id: string}> = async (
 	request,
 	response,
 ) => {
 	const {id} = request.params;
 
 	const result = database
-		.prepare<{id: string}>('DELETE FROM users WHERE id = :id')
+		.prepare<{id: string}>('DELETE FROM people WHERE id = :id')
 		.run({id});
 
 	if (result.changes === 0) {
 		response.status(404).json({
 			type: 'error',
-			readableError: 'User does not exist.',
+			readableError: 'Person does not exist.',
 			error: 'not-found',
 		});
 		return;
@@ -241,18 +244,20 @@ export const deleteUser: RequestHandler<{id: string}> = async (
 	});
 };
 
-export function getAllUsers() {
-	const rows = database.prepare<[], User>('SELECT id, name from users').all();
+export function getAllPeople() {
+	const rows = database
+		.prepare<[], Person>('SELECT id, name from people')
+		.all();
 
-	return rows.map(user => enrichUser(user));
+	return rows.map(person => enrichPerson(person));
 }
 
-export const getAllUsersEndpoint: RequestHandler = async (
+export const getAllPeopleEndpoint: RequestHandler = async (
 	_request,
 	response,
 ) => {
 	response.status(200).json({
 		type: 'success',
-		data: getAllUsers(),
+		data: getAllPeople(),
 	});
 };

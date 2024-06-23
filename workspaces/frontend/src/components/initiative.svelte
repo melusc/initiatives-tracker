@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type {Initiative} from '@lusc/initiatives-tracker-util/types.js';
 
-	import {getUser} from '../state.ts';
+	import {getLogin} from '../state.ts';
 
 	import PatchInput from './patch-input.svelte';
 	import CreateIcon from './icons/create.svelte';
@@ -15,7 +15,7 @@
 	export let allowEdit: boolean;
 	export let standalone: boolean;
 
-	const user = getUser();
+	const login = getLogin();
 
 	let showEdit = false;
 
@@ -30,7 +30,7 @@
 </script>
 
 <Card>
-	{#if allowEdit && user?.isAdmin}
+	{#if allowEdit && login?.isAdmin}
 		<button
 			class="toggle-edit inline-svg button-reset"
 			on:click={handleEditToggle}

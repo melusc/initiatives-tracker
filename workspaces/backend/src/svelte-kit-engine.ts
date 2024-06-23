@@ -9,8 +9,8 @@ export async function svelteKitEngine(
 ): Promise<void> {
 	const options = options_ as Record<string, unknown>;
 
-	if (!('user' in options)) {
-		callback(new Error('.user not passed to options'));
+	if (!('login' in options)) {
+		callback(new Error('.login not passed to options'));
 		return;
 	}
 
@@ -19,14 +19,14 @@ export async function svelteKitEngine(
 		return;
 	}
 
-	const user = options['user'] as Locals['user'] | undefined;
+	const login = options['login'] as Locals['login'] | undefined;
 	const state = options['state'];
 
 	try {
 		const content = await readFile(path, 'utf8');
 		const injected = content
 			.replace('__state__', JSON.stringify(state))
-			.replace('__user__', JSON.stringify(user));
+			.replace('__login__', JSON.stringify(login));
 		callback(null, injected);
 	} catch (error: unknown) {
 		callback(error, undefined);

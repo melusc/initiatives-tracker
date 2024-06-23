@@ -3,7 +3,7 @@ declare global {
 		// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 		interface Locals {
 			// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-			readonly user: import('@lusc/initiatives-tracker-util/types.js').LoginInfo;
+			readonly login: import('@lusc/initiatives-tracker-util/types.js').LoginInfo;
 		}
 
 		// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
