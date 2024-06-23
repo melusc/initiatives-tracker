@@ -93,6 +93,7 @@
 		border: 1px solid var(--text-light);
 		background: #fff;
 		color: var(--text-dark);
+		font-size: 0.8em;
 	}
 
 	input {

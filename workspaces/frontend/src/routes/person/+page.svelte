@@ -2,17 +2,27 @@
 	import type {EnrichedPerson} from '@lusc/initiatives-tracker-util/types.js';
 
 	import Loading from '../../components/loading.svelte';
-	import StandaloneCenter from '../../components/standalone-center.svelte';
-	import Person from '../../components/person.svelte';
-	import {getState} from '../../state.ts';
+	import {getLogin, getState} from '../../state.ts';
+	import EditableTitle from '../../components/editable-title.svelte';
 
-	const state = getState<EnrichedPerson>();
+	let person = getState<EnrichedPerson>();
+	const login = getLogin();
 </script>
 
-<StandaloneCenter>
-	{#if state}
-		<Person person={state} allowEdit standalone />
+<div class="person" data-person={person?.id}>
+	{#if person}
+		<EditableTitle
+			bind:subject={person}
+			canEdit={login?.isAdmin ?? false}
+			patchApi={`/api/person/${person.id}`}
+		/>
 	{:else}
 		<Loading />
 	{/if}
-</StandaloneCenter>
+</div>
+
+<style>
+	.person {
+		padding: 3em;
+	}
+</style>
