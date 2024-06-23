@@ -1,121 +1,40 @@
 <script lang="ts">
-	import Card from '../../components/card.svelte';
-	import StandaloneCenter from '../../components/standalone-center.svelte';
-	import {getState} from '../../state.ts';
-
-	const {
-		error,
-		values,
-	}: {
-		error?: string;
-		values: Record<string, string>;
-	} = getState() ?? {values: {}};
+	import CreateForm from '../../components/create-form.svelte';
 </script>
 
-<StandaloneCenter>
-	<form method="POST">
-		<Card>
-			{#if error}
-				<div class="error">{error}</div>
-			{/if}
+<CreateForm
+	inputs={[
+		{
+			name: 'shortName',
+			label: 'Short name',
+			type: 'text',
+			minlength: 4,
+		},
+		{
+			name: 'fullName',
+			label: 'Full name',
+			type: 'text',
+			minlength: 4,
+		},
 
-			<label>
-				Short name
-				<input
-					type="text"
-					name="shortName"
-					required
-					minlength="4"
-					value={values['shortName'] ?? ''}
-				/>
-			</label>
+		{
+			name: 'website',
+			label: 'Website',
+			type: 'url',
+			minlength: 10,
+		},
 
-			<label>
-				Full name
-				<input
-					type="text"
-					name="fullName"
-					required
-					minlength="4"
-					value={values['fullName'] ?? ''}
-				/>
-			</label>
-
-			<label>
-				Website
-				<input
-					type="url"
-					name="website"
-					required
-					minlength="10"
-					value={values['website'] ?? ''}
-				/>
-			</label>
-
-			<label>
-				PDF URL
-				<input
-					type="url"
-					name="pdfUrl"
-					required
-					minlength="10"
-					value={values['pdfUrl'] ?? ''}
-				/>
-			</label>
-
-			<label>
-				Image URL
-				<input
-					type="url"
-					name="imageUrl"
-					required
-					minlength="10"
-					value={values['imageUrl'] ?? ''}
-				/>
-			</label>
-
-			<input class="submit" type="submit" value="Submit" />
-		</Card>
-	</form>
-</StandaloneCenter>
-
-<style>
-	form {
-		min-width: 450px;
-		display: inline;
-	}
-
-	@media (width <= 500px) {
-		form {
-			min-width: auto;
-		}
-	}
-
-	label {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-	}
-
-	input {
-		color: var(--text-dark);
-		font-size: inherit;
-	}
-
-	.submit {
-		border: 1px solid var(--text-light);
-		background: none;
-		color: var(--text-light);
-		box-shadow: var(--box-shadow);
-		border-radius: 5px;
-		padding: 0.3em 0.6em;
-		margin-top: 1em;
-		cursor: pointer;
-
-		transition: 100ms ease-in-out scale;
-	}
-
-	.submit:active {
-		scale: 0.97;
-	}
-</style>
+		{
+			name: 'pdfUrl',
+			label: 'PDF URL',
+			type: 'url',
+			minlength: 10,
+		},
+		{
+			name: 'imageUrl',
+			label: 'Image URL',
+			type: 'url',
+			minlength: 10,
+		},
+	]}
+/>

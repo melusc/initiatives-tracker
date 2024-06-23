@@ -18,6 +18,7 @@ import {
 	getAllInitiatives,
 	getInitiative,
 } from './api/initiative.ts';
+import {createUser, getAllUsers, getUser} from './api/users.ts';
 
 const app = express();
 
@@ -162,6 +163,55 @@ app.get('/initiative/:id', (request, response) => {
 		response.status(200).render('initiative', {
 			user: response.locals.user,
 			state: initiative,
+		});
+	} else {
+		response
+			.status(404)
+			.render('404', {user: response.locals.user, state: undefined});
+	}
+});
+
+app.get('/users', (_request, response) => {
+	const users = getAllUsers();
+
+	response.render('users', {
+		state: users,
+		user: response.locals.user,
+	});
+});
+
+app.get('/user/create', (_, response) => {
+	response.render('create-user', {
+		user: response.locals.user,
+		state: {values: {}},
+	});
+});
+
+app.post('/user/create', async (request, response) => {
+	const body = request.body as Record<string, unknown>;
+
+	const user = await createUser(body);
+
+	if (user.type === 'error') {
+		response.status(400).render('create-user', {
+			user: response.locals.user,
+			state: {
+				error: user.readableError,
+				values: body,
+			},
+		});
+		return;
+	}
+
+	response.redirect(303, `/user/${user.data.id}`);
+});
+
+app.get('/user/:id', (request, response) => {
+	const user = getUser(request.params.id);
+	if (user) {
+		response.status(200).render('user', {
+			user: response.locals.user,
+			state: user,
 		});
 	} else {
 		response

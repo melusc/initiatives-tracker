@@ -20,10 +20,10 @@ import {
 } from './organisation.ts';
 import {userContent} from './user-content.ts';
 import {
-	createUser,
+	createUserEndpoint,
 	deleteUser,
-	getAllUsers,
-	getUser,
+	getAllUsersEndpoint,
+	getUserEndpoint,
 	patchUser,
 } from './users.ts';
 
@@ -48,9 +48,9 @@ router.use((request, response, next) => {
 	next();
 });
 
-router.get('/users', getAllUsers);
-router.post('/user/create', createUser);
-router.get('/user/:id', getUser);
+router.get('/users', getAllUsersEndpoint);
+router.post('/user/create', createUserEndpoint);
+router.get('/user/:id', getUserEndpoint);
 router.delete('/user/:id', deleteUser);
 router.patch('/user/:id', patchUser);
 

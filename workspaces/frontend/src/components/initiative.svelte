@@ -123,6 +123,7 @@
 		font: inherit;
 		border: none;
 		cursor: pointer;
+		padding-left: 0;
 	}
 
 	.image-url {
