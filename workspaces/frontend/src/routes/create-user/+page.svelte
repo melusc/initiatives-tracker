@@ -3,6 +3,7 @@
 </script>
 
 <CreateForm
+	title="Create new person"
 	inputs={[
 		{
 			name: 'name',

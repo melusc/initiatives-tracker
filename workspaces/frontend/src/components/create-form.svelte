@@ -1,7 +1,10 @@
 <script lang="ts">
+	import {getState} from '../state.ts';
+
 	import Card from './card.svelte';
 	import StandaloneCenter from './standalone-center.svelte';
-	import {getState} from '../state.ts';
+
+	export let title: string;
 
 	export let inputs: Array<{
 		name: string;
@@ -22,6 +25,7 @@
 <StandaloneCenter>
 	<form method="POST">
 		<Card>
+			<h1>{title}</h1>
 			{#if error}
 				<div class="error">{error}</div>
 			{/if}

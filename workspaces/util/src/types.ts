@@ -5,6 +5,7 @@ export type Initiative = {
 	website: string;
 	pdfUrl: string;
 	imageUrl: string;
+	deadline: string;
 };
 
 export type EnrichedInitiative = Initiative & {

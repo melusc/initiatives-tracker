@@ -4,7 +4,7 @@
 
 	import SaveIcon from './icons/save.svelte';
 
-	export let type: 'text' | 'url';
+	export let type: 'text' | 'url' | 'date';
 	export let name: string;
 	export let label: string;
 	export let apiEndpoint: string;
@@ -158,6 +158,10 @@
 		padding-left: 0;
 
 		cursor: pointer;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
 	}
 
 	button.error,

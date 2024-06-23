@@ -42,7 +42,8 @@ database.exec(
 				fullName TEXT NOT NULL,
 				website TEXT NOT NULL,
 				pdfUrl TEXT NOT NULL,
-				imageUrl TEXT NOT NULL
+				imageUrl TEXT NOT NULL,
+				deadline TEXT NOT NULL
 		);
 
 		CREATE TABLE IF NOT EXISTS organisations (

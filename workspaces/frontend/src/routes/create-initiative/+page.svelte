@@ -3,6 +3,7 @@
 </script>
 
 <CreateForm
+	title="Create initiative"
 	inputs={[
 		{
 			name: 'shortName',

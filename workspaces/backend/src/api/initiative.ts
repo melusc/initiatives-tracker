@@ -104,6 +104,40 @@ const initativeKeyValidators = {
 			data: websiteUrl.href,
 		};
 	},
+	deadline(input: unknown): ApiResponse<string> {
+		if (typeof input !== 'string') {
+			return {
+				type: 'error',
+				readableError: `Invalid type for deadline. Expected number, got ${typeOf(input)}`,
+				error: 'invalid-type',
+			};
+		}
+
+		const deadline = input.trim();
+
+		const date = new Date(deadline);
+		if (Number.isNaN(date.getTime())) {
+			return {
+				type: 'error',
+				readableError: 'Invalid date.',
+				error: 'invalid-date',
+			};
+		}
+
+		const stringified = date.toISOString().slice(0, 'YYYY-MM-DD'.length);
+		if (stringified !== deadline) {
+			return {
+				type: 'error',
+				readableError: `Invalid date. Normalising input "${deadline}" resulted in "${stringified}". Expected it to stay unchanged`,
+				error: 'invalid-date',
+			};
+		}
+
+		return {
+			type: 'success',
+			data: deadline,
+		};
+	},
 	async pdfUrl(
 		pdfUrl: unknown,
 	): Promise<
@@ -188,13 +222,15 @@ export async function createInitiative(
 		'website',
 		'pdfUrl',
 		'imageUrl',
+		'deadline',
 	]);
 
 	if (validateResult.type === 'error') {
 		return validateResult;
 	}
 
-	const {website, fullName, shortName, pdfUrl, imageUrl} = validateResult.data;
+	const {website, fullName, shortName, pdfUrl, imageUrl, deadline}
+		= validateResult.data;
 
 	await writeFile(pdfUrl.suggestedFilePath, new DataView(pdfUrl.body));
 	await writeFile(imageUrl.suggestedFilePath, new DataView(imageUrl.body));
@@ -208,13 +244,14 @@ export async function createInitiative(
 		website,
 		pdfUrl: pdfUrl.id,
 		imageUrl: imageUrl.id,
+		deadline,
 	};
 
 	database
 		.prepare<Initiative>(
 			`INSERT INTO initiatives
-			(id, shortName, fullName, website, pdfUrl, imageUrl) 
-			VALUES (:id, :shortName, :fullName, :website, :pdfUrl, :imageUrl)`,
+			(id, shortName, fullName, website, pdfUrl, imageUrl, deadline) 
+			VALUES (:id, :shortName, :fullName, :website, :pdfUrl, :imageUrl, :deadline)`,
 		)
 		.run(result);
 
@@ -244,7 +281,7 @@ export function getInitiative(id: string): Initiative | false {
 		.prepare<
 			{id: string},
 			Initiative
-		>('SELECT id, shortName, fullName, website, pdfUrl, imageUrl from initiatives where id = :id')
+		>('SELECT initiatives.* from initiatives where id = :id')
 		.get({id});
 
 	if (!initiative) {
@@ -328,7 +365,7 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 		.prepare<
 			{id: string},
 			Initiative
-		>('SELECT id, shortName, fullName, website, pdfUrl, imageUrl FROM initiatives WHERE id = :id')
+		>('SELECT initiatives.* FROM initiatives WHERE id = :id')
 		.get({id});
 
 	if (!oldRow) {
@@ -417,8 +454,8 @@ export const deleteInitiative: RequestHandler<{id: string}> = async (
 	const oldRow = database
 		.prepare<
 			{id: string},
-			Initiative
-		>('SELECT id, shortName, fullName, website, pdfUrl, imageUrl FROM initiatives WHERE id = :id')
+			{pdfUrl: string; imageUrl: string}
+		>('SELECT pdfUrl, imageUrl FROM initiatives WHERE id = :id')
 		.get({id});
 
 	if (!oldRow) {

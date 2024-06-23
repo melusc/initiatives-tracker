@@ -8,6 +8,7 @@
 	import ExternalLinkIcon from './icons/external-link.svelte';
 	import TrashIcon from './icons/trash.svelte';
 	import Card from './card.svelte';
+	import Calendar from './icons/calendar.svelte';
 
 	export let initiative: Initiative;
 
@@ -55,6 +56,13 @@
 			apiEndpoint={`/api/initiative/${initiative.id}`}
 		/>
 		<PatchInput
+			name="deadline"
+			label="Deadline"
+			type="date"
+			bind:value={initiative.deadline}
+			apiEndpoint={`/api/initiative/${initiative.id}`}
+		/>
+		<PatchInput
 			name="website"
 			label="Website"
 			type="text"
@@ -84,6 +92,7 @@
 			class="short-name">{initiative.shortName}</a
 		>
 		<div class="full-name">{initiative.fullName}</div>
+		<div class="deadline inline-svg"><Calendar /> {initiative.deadline}</div>
 		<a
 			class="website inline-svg"
 			href={initiative.website}
@@ -135,7 +144,8 @@
 		font-size: 1.3em;
 	}
 
-	.full-name {
+	.full-name,
+	.deadline {
 		font-size: 0.8em;
 		max-width: 30ch;
 	}
