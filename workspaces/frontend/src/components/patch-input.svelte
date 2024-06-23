@@ -2,6 +2,8 @@
 	import type {ApiResponse} from '@lusc/initiatives-tracker-util/types.js';
 	import {slide} from 'svelte/transition';
 
+	import {createSuccessState} from '../success-state.ts';
+
 	import SaveIcon from './icons/save.svelte';
 
 	export let type: 'text' | 'url' | 'date';
@@ -13,54 +15,7 @@
 	export let initialValue = value;
 	let node: HTMLInputElement;
 
-	let error: undefined | string = undefined;
-	let errorTimeout: ReturnType<typeof setTimeout> | undefined;
-
-	function setError(newError: undefined | string): void {
-		if (errorTimeout) {
-			clearTimeout(errorTimeout);
-			errorTimeout = undefined;
-		}
-
-		if (newError !== undefined) {
-			errorTimeout = setTimeout(() => {
-				setError(undefined);
-			}, 10e3);
-		}
-
-		error = newError;
-	}
-
-	let submitSuccessful: true | undefined;
-	let submitSuccessfulTimeout: ReturnType<typeof setTimeout> | undefined;
-	function setSubmitSuccessful(newSuccess: true | undefined): void {
-		// Resetting it:
-		// Do that instantly, remove timeout
-		if (!newSuccess && submitSuccessfulTimeout) {
-			clearTimeout(submitSuccessfulTimeout);
-			submitSuccessfulTimeout = undefined;
-			submitSuccessful = newSuccess;
-		}
-
-		// Setting it to true if it was already set:
-		// First reset it for 200ms, and only then set it again
-		if (newSuccess && submitSuccessfulTimeout) {
-			clearTimeout(submitSuccessfulTimeout);
-			submitSuccessful = undefined;
-			submitSuccessfulTimeout = setTimeout(() => {
-				submitSuccessfulTimeout = undefined;
-				setSubmitSuccessful(true);
-			}, 200);
-		} else if (newSuccess) {
-			// Otherwise just set it instantly and remove again after 5s
-			submitSuccessful = true;
-
-			submitSuccessfulTimeout = setTimeout(() => {
-				submitSuccessful = undefined;
-				submitSuccessfulTimeout = undefined;
-			}, 5e3);
-		}
-	}
+	const successState = createSuccessState();
 
 	async function handleSubmit(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
@@ -72,12 +27,10 @@
 		const body = (await response.json()) as ApiResponse<Record<string, string>>;
 
 		if (body.type === 'error') {
-			setSubmitSuccessful(undefined);
-			setError(body.readableError);
+			successState.setError(body.readableError);
 		} else {
-			setError(undefined);
 			value = body.data[name]!;
-			setSubmitSuccessful(true);
+			successState.setSuccess();
 		}
 	}
 </script>
@@ -86,14 +39,14 @@
 	<label for={name}>
 		{label}
 	</label>
-	{#if error}
-		<div in:slide out:slide class="error">{error}</div>
+	{#if $successState?.type === 'error'}
+		<div in:slide out:slide class="error">{$successState.error}</div>
 	{/if}
 
 	<div class="input-wrap">
 		<input
-			class:error={Boolean(error)}
-			class:success={submitSuccessful}
+			class:error={$successState?.type === 'error'}
+			class:success={$successState?.type === 'success'}
 			{type}
 			{name}
 			value={initialValue ?? value}
@@ -101,8 +54,8 @@
 			bind:this={node}
 		/><!--
 			--><button
-			class:error={Boolean(error)}
-			class:success={submitSuccessful}
+			class:error={$successState?.type === 'error'}
+			class:success={$successState?.type === 'success'}
 			type="submit"
 		>
 			<SaveIcon />
