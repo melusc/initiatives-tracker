@@ -50,5 +50,4 @@ export type LoginInfo = {
 	name: string;
 	id: string;
 	isAdmin: boolean;
-	iconKey: string;
 };

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import {colorHash} from '@lusc/initiatives-tracker-util/color-hash.js';
 
-	export let userId: string;
+	export let name: string;
+	export let iconKey: string;
 </script>
 
 <div class="user-icon">
@@ -13,13 +14,13 @@
 			}
 		</style>
 		<circle cx="64" cy="64" r="64" fill="currentColor" />
-		<circle cx="64" cy="64" r="60" fill={colorHash(userId)} />
+		<circle cx="64" cy="64" r="60" fill={colorHash(iconKey)} />
 		<text
 			x="50%"
 			y="50%"
 			fill="currentColor"
-			dominant-baseline="middle"
-			text-anchor="middle">{userId.toUpperCase()[0]}</text
+			dominant-baseline="central"
+			text-anchor="middle">{name.toUpperCase()[0]}</text
 		>
 	</svg>
 </div>

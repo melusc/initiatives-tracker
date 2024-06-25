@@ -48,7 +48,6 @@ export function loginProtect(
 						name: user.username,
 						id: session.userId,
 						isAdmin: user.isAdmin === 1,
-						iconKey: user.username + session.userId,
 					} satisfies LoginInfo,
 					writable: false,
 					configurable: false,

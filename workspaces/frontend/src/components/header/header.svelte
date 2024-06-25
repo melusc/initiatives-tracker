@@ -55,7 +55,7 @@
 			on:click={toggleMenu}
 			on:keydown={toggleMenu}
 		>
-			<UserIcon userId={loginInfo.iconKey} />
+			<UserIcon name={loginInfo.name} iconKey={loginInfo.id} />
 		</div>
 	{:else}
 		<a href={loginLink.full} class="login">Login</a>
@@ -66,7 +66,7 @@
 	<HeaderMenu close={headerMenuClose}>
 		<div slot="user-icon" class="user-info">
 			{#if loginInfo}
-				<UserIcon userId={loginInfo.iconKey} />
+				<UserIcon name={loginInfo.name} iconKey={loginInfo.id} />
 				<span>{loginInfo.name}</span>
 			{/if}
 		</div>
