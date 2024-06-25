@@ -54,10 +54,12 @@
 			successState.setError(body.readableError);
 		} else {
 			successState.setSuccess();
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			subject = body.data;
 			editEnabled = false;
 
 			// If name is normalised or otherwise modified on server
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			titleNode.textContent = subject.name;
 		}
 	}
