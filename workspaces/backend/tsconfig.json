@@ -1,10 +1,6 @@
 {
-	"extends": "@lusc/tsconfig",
+	"extends": "@lusc/tsconfig/bundler",
 	"compilerOptions": {
-		"noEmit": true,
-		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"module": "esnext",
 		"types": ["./src/types.d.ts"]
 	}
 }
