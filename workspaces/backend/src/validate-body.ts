@@ -1,17 +1,76 @@
+import {lookup} from 'node:dns/promises';
+
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import type {
 	ApiResponse,
 	ApiResponseError,
 	ApiResponseSuccess,
 } from '@lusc/initiatives-tracker-util/types.js';
+import ip from 'ip';
 
-export function isValidUrl(url: string) {
+async function isInternal(url: URL) {
+	const {hostname} = url;
+
+	try {
+		if (ip.isPrivate(hostname)) {
+			return true;
+		}
+	} catch {}
+
+	try {
+		const resolvedIp = await lookup(hostname);
+		if (ip.isPrivate(resolvedIp.address)) {
+			return true;
+		}
+	} catch {
+		// Non-existant hosts are out of scope for this function
+		// They aren't internal after all
+	}
+
+	return false;
+}
+
+function isValidUrl(url: string) {
 	if (!URL.canParse(url)) {
 		return false;
 	}
 
 	const parsed = new URL(url);
 	return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+}
+
+export async function validateUrl(
+	name: string,
+	url: unknown,
+): Promise<ApiResponse<void>> {
+	if (typeof url !== 'string') {
+		return {
+			type: 'error',
+			readableError: `Invalid type for ${name}. Expected string, got ${typeOf(url)}.`,
+			error: 'invalid-type',
+		};
+	}
+
+	if (!isValidUrl(url)) {
+		return {
+			type: 'error',
+			readableError: `${name} is not a valid URL.`,
+			error: 'invalid-url',
+		};
+	}
+
+	if (await isInternal(new URL(url))) {
+		return {
+			type: 'error',
+			readableError: `Cannot resolve url of ${name}.`,
+			error: 'unresolvable-url',
+		};
+	}
+
+	return {
+		type: 'success',
+		data: undefined,
+	};
 }
 
 type GenericValidator = Record<

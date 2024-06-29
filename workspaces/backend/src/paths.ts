@@ -4,6 +4,8 @@ import {randomUUID} from 'node:crypto';
 
 import {fileTypeFromBuffer} from 'file-type';
 
+import {validateUrl} from './validate-body.ts';
+
 export const dataDirectory = new URL('../data/', import.meta.url);
 await mkdir(dataDirectory, {recursive: true});
 
@@ -35,6 +37,12 @@ async function safeFetch(url: string) {
 		controller.abort();
 	}, 5e3);
 	const response = await fetch(url, {signal});
+
+	const urlValidity = await validateUrl('', response.url);
+	if (urlValidity.type === 'error') {
+		throw new Error('Internal url');
+	}
+
 	const body = await response.arrayBuffer();
 
 	// 10 mb

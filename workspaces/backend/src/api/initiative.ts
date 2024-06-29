@@ -20,7 +20,7 @@ import {
 	transformImageUrl,
 	transformPdfUrl,
 } from '../paths.ts';
-import {isValidUrl, makeValidator} from '../validate-body.ts';
+import {makeValidator, validateUrl} from '../validate-body.ts';
 
 function transformInitiativeUrls(initiative: Initiative): Initiative {
 	return {
@@ -77,24 +77,13 @@ const initativeKeyValidators = {
 			data: fullName,
 		};
 	},
-	website(website: unknown): ApiResponse<string> {
-		if (typeof website !== 'string') {
-			return {
-				type: 'error',
-				readableError: `Invalid type for website. Expected string, got ${typeOf(website)}`,
-				error: 'invalid-type',
-			};
+	async website(website: unknown): Promise<ApiResponse<string>> {
+		const isValidUrl = await validateUrl('website', website);
+		if (isValidUrl.type === 'error') {
+			return isValidUrl;
 		}
 
-		if (!isValidUrl(website)) {
-			return {
-				type: 'error',
-				readableError: 'Website is not valid URL.',
-				error: 'invalid-url',
-			};
-		}
-
-		const websiteUrl = new URL(website);
+		const websiteUrl = new URL(website as string);
 		websiteUrl.hash = '';
 		websiteUrl.username = '';
 		websiteUrl.password = '';
@@ -143,24 +132,13 @@ const initativeKeyValidators = {
 	): Promise<
 		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
-		if (typeof pdfUrl !== 'string') {
-			return {
-				type: 'error',
-				readableError: `Invalid type for imageUrl. Expected string, got ${typeOf(pdfUrl)}`,
-				error: 'invalid-type',
-			};
-		}
-
-		if (!isValidUrl(pdfUrl)) {
-			return {
-				type: 'error',
-				readableError: 'PDF URL is not valid URL.',
-				error: 'invalid-url',
-			};
+		const isValidUrl = await validateUrl('PDF URL', pdfUrl);
+		if (isValidUrl.type === 'error') {
+			return isValidUrl;
 		}
 
 		try {
-			const localPdf = await fetchPdf(pdfUrl);
+			const localPdf = await fetchPdf(pdfUrl as string);
 			return {
 				type: 'success',
 				data: localPdf,
@@ -178,24 +156,13 @@ const initativeKeyValidators = {
 	): Promise<
 		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
-		if (typeof imageUrl !== 'string') {
-			return {
-				type: 'error',
-				readableError: `Invalid type for imageUrl. Expected string, got ${typeOf(imageUrl)}`,
-				error: 'invalid-type',
-			};
-		}
-
-		if (!isValidUrl(imageUrl)) {
-			return {
-				type: 'error',
-				readableError: 'Image URL is not valid URL.',
-				error: 'invalid-url',
-			};
+		const isValidUrl = await validateUrl('image URL', imageUrl);
+		if (isValidUrl.type === 'error') {
+			return isValidUrl;
 		}
 
 		try {
-			const localImage = await fetchImage(imageUrl);
+			const localImage = await fetchImage(imageUrl as string);
 			return {
 				type: 'success',
 				data: localImage,

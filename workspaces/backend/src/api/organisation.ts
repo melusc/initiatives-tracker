@@ -10,7 +10,7 @@ import type {
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
 
-import {isValidUrl, makeValidator} from '../validate-body.ts';
+import {makeValidator, validateUrl} from '../validate-body.ts';
 import {fetchImage, imageOutDirectory, transformImageUrl} from '../paths.ts';
 import {database} from '../db.ts';
 
@@ -87,24 +87,13 @@ const organisationKeyValidators = {
 			};
 		}
 
-		if (typeof imageUrl !== 'string') {
-			return {
-				type: 'error',
-				readableError: `Invalid type for image. Expected string, got ${typeOf(imageUrl)}`,
-				error: 'invalid-type',
-			};
-		}
-
-		if (!isValidUrl(imageUrl)) {
-			return {
-				type: 'error',
-				readableError: 'Image URL is not valid URL.',
-				error: 'invalid-url',
-			};
+		const isValidUrl = await validateUrl('image', imageUrl);
+		if (isValidUrl.type === 'error') {
+			return isValidUrl;
 		}
 
 		try {
-			const localImage = await fetchImage(imageUrl);
+			const localImage = await fetchImage(imageUrl as string);
 			return {
 				type: 'success',
 				data: localImage,
@@ -119,7 +108,7 @@ const organisationKeyValidators = {
 		}
 	},
 
-	homepage(homepage: unknown): ApiResponse<string | null> {
+	async homepage(homepage: unknown): Promise<ApiResponse<string | null>> {
 		if (homepage === null || homepage === 'null') {
 			return {
 				type: 'success',
@@ -127,23 +116,12 @@ const organisationKeyValidators = {
 			};
 		}
 
-		if (typeof homepage !== 'string') {
-			return {
-				type: 'error',
-				readableError: `Invalid type for homepage. Expected string, got ${typeOf(homepage)}`,
-				error: 'invalid-type',
-			};
+		const isValidUrl = await validateUrl('homepage', homepage);
+		if (isValidUrl.type === 'error') {
+			return isValidUrl;
 		}
 
-		if (!isValidUrl(homepage)) {
-			return {
-				type: 'error',
-				readableError: 'homepage is not valid URL.',
-				error: 'invalid-url',
-			};
-		}
-
-		const homepageUrl = new URL(homepage);
+		const homepageUrl = new URL(homepage as string);
 		homepageUrl.hash = '';
 		homepageUrl.username = '';
 		homepageUrl.password = '';
