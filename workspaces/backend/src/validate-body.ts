@@ -11,6 +11,18 @@ import ip from 'ip';
 async function isInternal(url: URL) {
 	const {hostname} = url;
 
+	// No libraries can handle ipv6 well, I found
+	// so I must treat all as private
+	// Should be fine, because hostnames that resolve to ipv6
+	// still work
+	if (
+		hostname.includes('[')
+		|| hostname.includes(']')
+		|| ip.isV6Format(hostname)
+	) {
+		return true;
+	}
+
 	try {
 		if (ip.isPrivate(hostname)) {
 			return true;
