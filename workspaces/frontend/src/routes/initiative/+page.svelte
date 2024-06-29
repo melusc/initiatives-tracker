@@ -5,13 +5,19 @@
 	import Initiative from '../../components/initiative.svelte';
 	import StandaloneCenter from '../../components/standalone-center.svelte';
 	import Loading from '../../components/loading.svelte';
+	import SignedBy from '../../components/initiative/signed-by.svelte';
+	import AddSignature from '../../components/initiative/add-signature.svelte';
 
-	const state = getState<EnrichedInitiative>();
+	let initiative = getState<EnrichedInitiative>();
 </script>
 
 <StandaloneCenter>
-	{#if state}
-		<Initiative initiative={state} allowEdit standalone />
+	{#if initiative}
+		<Initiative bind:initiative allowEdit standalone />
+
+		<h1>Signatures</h1>
+		<SignedBy bind:initiative />
+		<AddSignature bind:initiative />
 	{:else}
 		<Loading />
 	{/if}

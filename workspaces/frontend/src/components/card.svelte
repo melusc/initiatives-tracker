@@ -10,10 +10,11 @@
 		gap: 1em;
 		box-shadow: var(--box-shadow);
 		border-radius: 1em;
-		padding: 2em 3em;
+		padding: 2em;
 		background: var(--theme-primary);
 		color: var(--text-light);
 		font-size: 1.3em;
-		width: 100%;
+		width: 400px;
+		max-width: calc(100vw - 6em);
 	}
 </style>

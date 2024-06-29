@@ -455,18 +455,25 @@ export const initiativeAddSignature: RequestHandler<{
 	initiativeId: string;
 	personId: string;
 }> = (request, response) => {
-	database
-		.prepare<{
-			initiativeId: string;
-			personId: string;
-		}>(
-			'INSERT INTO signatures (initiativeId, personId) values (:initiativeId, :personId);',
-		)
-		.run(request.params);
-
-	response.status(201).json({
-		type: 'success',
-	});
+	try {
+		database
+			.prepare<{
+				initiativeId: string;
+				personId: string;
+			}>(
+				'INSERT INTO signatures (initiativeId, personId) values (:initiativeId, :personId);',
+			)
+			.run(request.params);
+		response.status(201).json({
+			type: 'success',
+		});
+	} catch {
+		response.status(404).json({
+			type: 'error',
+			error: 'not-found',
+			readableError: 'Initiative or person not found',
+		});
+	}
 };
 
 export const initiativeRemoveSignature: RequestHandler<{

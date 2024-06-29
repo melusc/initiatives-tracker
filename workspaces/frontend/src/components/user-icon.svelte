@@ -5,7 +5,7 @@
 	export let iconKey: string;
 </script>
 
-<div class="user-icon">
+<div class="user-icon" title={name}>
 	<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
 		<style>
 			text {

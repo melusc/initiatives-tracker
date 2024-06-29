@@ -23,9 +23,14 @@
 		showEdit = !showEdit;
 	}
 
+	let confirm = false;
 	async function deleteInitiative(): Promise<void> {
-		await fetch(`/api/initiative/${initiative.id}`, {method: 'delete'});
-		location.href = '/';
+		if (confirm) {
+			await fetch(`/api/initiative/${initiative.id}`, {method: 'delete'});
+			location.href = '/';
+		} else {
+			confirm = true;
+		}
 	}
 </script>
 
@@ -109,7 +114,12 @@
 
 	{#if standalone}
 		<button class="delete inline-svg button-reset" on:click={deleteInitiative}>
-			Delete "{initiative.shortName}" <TrashIcon />
+			{#if confirm}
+				Press again to confirm
+			{:else}
+				Delete "{initiative.shortName}"
+			{/if}
+			<TrashIcon />
 		</button>
 	{/if}
 </Card>
