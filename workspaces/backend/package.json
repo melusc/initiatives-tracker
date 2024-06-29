@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"devDependencies": {
-		"@lusc/tsconfig": "^4.1.0",
+		"@lusc/tsconfig": "^5.0.0",
 		"@types/better-sqlite3": "^7.6.10",
 		"@types/cookie-parser": "^1.4.7",
 		"@types/cors": "^2.8.17",
