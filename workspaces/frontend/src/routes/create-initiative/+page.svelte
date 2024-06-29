@@ -17,7 +17,12 @@
 			type: 'text',
 			minlength: 4,
 		},
-
+		{
+			name: 'deadline',
+			label: 'Deadline',
+			type: 'date',
+			minlength: 0,
+		},
 		{
 			name: 'website',
 			label: 'Website',
