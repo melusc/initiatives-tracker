@@ -22,7 +22,7 @@ import {
 } from '../paths.ts';
 import {makeValidator, validateUrl} from '../validate-body.ts';
 
-function transformInitiativeUrls(initiative: Initiative): Initiative {
+export function transformInitiativeUrls(initiative: Initiative): Initiative {
 	return {
 		...initiative,
 		pdfUrl: transformPdfUrl(initiative.pdfUrl),

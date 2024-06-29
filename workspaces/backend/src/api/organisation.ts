@@ -14,6 +14,8 @@ import {makeValidator, validateUrl} from '../validate-body.ts';
 import {fetchImage, imageOutDirectory, transformImageUrl} from '../paths.ts';
 import {database} from '../db.ts';
 
+import {transformInitiativeUrls} from './initiative.ts';
+
 function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
 	const id = organisation.id;
 
@@ -28,7 +30,9 @@ function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
 
 	return {
 		...organisation,
-		signatures: initiatives,
+		signatures: initiatives.map(initiative =>
+			transformInitiativeUrls(initiative),
+		),
 	};
 }
 

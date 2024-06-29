@@ -11,6 +11,8 @@ import type {
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
 
+import {transformInitiativeUrls} from './initiative.ts';
+
 function enrichPerson(person: Person): EnrichedPerson {
 	const initiatives = database
 		.prepare<{personId: string}, Initiative>(
@@ -22,7 +24,9 @@ function enrichPerson(person: Person): EnrichedPerson {
 
 	return {
 		...person,
-		initiatives,
+		initiatives: initiatives.map(initiative =>
+			transformInitiativeUrls(initiative),
+		),
 	};
 }
 
