@@ -11,7 +11,12 @@
 	export let label: string;
 	export let apiEndpoint: string;
 
-	export let value: string;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	export let value: string | null;
+
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	export let transform: (s: string) => string | null = s => s;
+
 	export let initialValue = value;
 	let node: HTMLInputElement;
 
@@ -22,7 +27,7 @@
 
 		const response = await fetch(apiEndpoint, {
 			method: 'PATCH',
-			body: new URLSearchParams([[name, node.value]]),
+			body: new URLSearchParams([[name, String(transform(node.value))]]),
 		});
 		const body = (await response.json()) as ApiResponse<Record<string, string>>;
 

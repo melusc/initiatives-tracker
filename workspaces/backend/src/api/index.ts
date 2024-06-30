@@ -12,10 +12,10 @@ import {
 	patchInitiativeEndpoint,
 } from './initiative.ts';
 import {
-	createOrganisation,
+	createOrganisationEndpoint,
 	deleteOrganisation,
-	getAllOrganisations,
-	getOrganisation,
+	getAllOrganisationsEndpoint,
+	getOrganisationEndpoint,
 	patchOrganisation,
 } from './organisation.ts';
 import {userContent} from './user-content.ts';
@@ -60,9 +60,9 @@ router.get('/initiative/:id', getInitiativeEndpoint);
 router.delete('/initiative/:id', deleteInitiative);
 router.patch('/initiative/:id', patchInitiativeEndpoint);
 
-router.get('/organisations', getAllOrganisations);
-router.post('/organisation/create', createOrganisation);
-router.get('/organisation/:id', getOrganisation);
+router.get('/organisations', getAllOrganisationsEndpoint);
+router.post('/organisation/create', createOrganisationEndpoint);
+router.get('/organisation/:id', getOrganisationEndpoint);
 router.delete('/organisation/:id', deleteOrganisation);
 router.patch('/organisation/:id', patchOrganisation);
 
@@ -73,11 +73,11 @@ router.delete(
 );
 
 router.put(
-	'/initiative/:initiativeId/organisation/:organisation',
+	'/initiative/:initiativeId/organisation/:organisationId',
 	initiativeAddOrganisation,
 );
 router.delete(
-	'/initiative/:initiativeId/organisation/:organisation',
+	'/initiative/:initiativeId/organisation/:organisationId',
 	initiativeRemoveOrganisation,
 );
 

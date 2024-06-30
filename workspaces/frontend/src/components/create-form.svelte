@@ -11,6 +11,7 @@
 		label: string;
 		type: string;
 		minlength: number;
+		required?: boolean;
 	}>;
 
 	const {
@@ -36,7 +37,7 @@
 					<input
 						type={input.type}
 						name={input.name}
-						required
+						required={input.required ?? true}
 						minlength={input.minlength}
 						value={values[input.name] ?? ''}
 					/>

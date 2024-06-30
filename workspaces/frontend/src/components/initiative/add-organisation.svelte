@@ -3,7 +3,7 @@
 		ApiResponse,
 		ApiResponseSuccess,
 		EnrichedInitiative,
-		Person,
+		Organisation,
 	} from '@lusc/initiatives-tracker-util/types.js';
 
 	import {createSuccessState} from '../../success-state.ts';
@@ -11,20 +11,23 @@
 	import {browser} from '$app/environment';
 
 	export let initiative: EnrichedInitiative;
-	let people: Person[] | undefined | false;
+	let organisations: Organisation[] | undefined | false;
 
-	let personId: string | undefined;
+	let organisationId: string | undefined;
 
-	$: filteredPeople
-		= people
-		&& people.filter(
-			person =>
-				!initiative.signatures.some(signature => signature.id === person.id),
+	$: filteredOrganisations
+		= organisations
+		&& organisations.filter(
+			organisation =>
+				!initiative.organisations.some(
+					associatedOrganisation =>
+						associatedOrganisation.id === organisation.id,
+				),
 		);
 
 	const successState = createSuccessState();
 
-	async function submitSignature(event: SubmitEvent): Promise<void> {
+	async function submitAssociation(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
 
 		if (formDisabled) {
@@ -33,19 +36,19 @@
 
 		try {
 			const response = await fetch(
-				`/api/initiative/${initiative.id}/sign/${personId}`,
+				`/api/initiative/${initiative.id}/organisation/${organisationId}`,
 				{method: 'put'},
 			);
 			const body = (await response.json()) as ApiResponse<void>;
 
 			if (body.type === 'success') {
 				successState.setSuccess();
-				initiative.signatures = [
-					...initiative.signatures,
-					(people as Person[]).find(s => s.id === personId)!,
+				initiative.organisations = [
+					...initiative.organisations,
+					(organisations as Organisation[]).find(s => s.id === organisationId)!,
 				];
 
-				personId = 'add-signature';
+				organisationId = 'add-organisation';
 			}
 		} catch (error: unknown) {
 			if (error instanceof Error) {
@@ -56,37 +59,41 @@
 		}
 	}
 
-	async function fetchPeople(): Promise<void> {
+	async function fetchOrganisations(): Promise<void> {
 		try {
-			const response = await fetch('/api/people', {redirect: 'error'});
+			const response = await fetch('/api/organisations', {redirect: 'error'});
 			if (!response.ok) {
-				people = false;
+				organisations = false;
 				return;
 			}
 
-			const body = (await response.json()) as ApiResponseSuccess<Person[]>;
+			const body = (await response.json()) as ApiResponseSuccess<
+				Organisation[]
+			>;
 
-			people = body.data;
+			organisations = body.data;
 		} catch {
-			people = false;
+			organisations = false;
 		}
 	}
 
 	if (browser) {
 		// eslint-disable-next-line unicorn/prefer-top-level-await
-		void fetchPeople();
+		void fetchOrganisations();
 	}
 
-	$: formDisabled = !personId || personId === 'add-signature';
+	$: formDisabled = !organisationId || organisationId === 'add-organisation';
 </script>
 
-<form class="add-signature" on:submit={submitSignature}>
-	{#if filteredPeople && filteredPeople.length > 0}
-		<select bind:value={personId}>
-			<option disabled selected value="add-signature">Add signature</option>
+<form class="add-organisation" on:submit={submitAssociation}>
+	{#if filteredOrganisations && filteredOrganisations.length > 0}
+		<select bind:value={organisationId}>
+			<option disabled selected value="add-organisation"
+				>Add organisation</option
+			>
 
-			{#each filteredPeople as person (person.id)}
-				<option value={person.id}>{person.name}</option>
+			{#each filteredOrganisations as organisation (organisation.id)}
+				<option value={organisation.id}>{organisation.name}</option>
 			{/each}
 		</select>
 
@@ -99,13 +106,13 @@
 		/>
 	{/if}
 
-	{#if people === false}
-		<div>Could not load list of people</div>
+	{#if organisations === false}
+		<div>Could not load list of organisations</div>
 	{/if}
 </form>
 
 <style>
-	.add-signature {
+	.add-organisation {
 		margin-top: 1em;
 		display: flex;
 		flex-direction: column;

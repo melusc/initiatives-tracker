@@ -39,16 +39,6 @@ function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
 	};
 }
 
-function transformOrganisationUrls(organisation: Organisation): Organisation {
-	return {
-		...organisation,
-		image:
-			organisation.image === null
-				? null
-				: transformImageUrl(organisation.image),
-	};
-}
-
 const organisationKeyValidators = {
 	name(nameRaw: unknown): ApiResponse<string> {
 		if (typeof nameRaw !== 'string') {
@@ -87,7 +77,11 @@ const organisationKeyValidators = {
 	): Promise<
 		ApiResponse<null | {id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
-		if (imageUrl === null || imageUrl === 'null') {
+		if (
+			imageUrl === null
+			|| imageUrl === 'null'
+			|| (typeof imageUrl === 'string' && imageUrl.trim() === '')
+		) {
 			return {
 				type: 'success',
 				data: null,
@@ -116,7 +110,11 @@ const organisationKeyValidators = {
 	},
 
 	async homepage(homepage: unknown): Promise<ApiResponse<string | null>> {
-		if (homepage === null || homepage === 'null') {
+		if (
+			homepage === null
+			|| homepage === 'null'
+			|| (typeof homepage === 'string' && homepage.trim() === '')
+		) {
 			return {
 				type: 'success',
 				data: null,
@@ -142,8 +140,9 @@ const organisationKeyValidators = {
 
 const organisationValidator = makeValidator(organisationKeyValidators);
 
-export const createOrganisation: RequestHandler = async (request, response) => {
-	const body = request.body as Record<string, unknown>;
+export async function createOrganisation(
+	body: Record<string, unknown>,
+): Promise<ApiResponse<EnrichedOrganisation>> {
 	const result = await organisationValidator(body, [
 		'name',
 		'image',
@@ -151,8 +150,7 @@ export const createOrganisation: RequestHandler = async (request, response) => {
 	]);
 
 	if (result.type === 'error') {
-		response.status(400).json(result);
-		return;
+		return result;
 	}
 
 	const {name, image, homepage} = result.data;
@@ -177,13 +175,29 @@ export const createOrganisation: RequestHandler = async (request, response) => {
 		)
 		.run(organisation);
 
-	response.status(201).json({
+	return {
 		type: 'success',
 		data: enrichOrganisation(transformOrganisationUrls(organisation)),
-	});
+	};
+}
+
+export const createOrganisationEndpoint: RequestHandler = async (
+	request,
+	response,
+) => {
+	const result = await createOrganisation(
+		request.body as Record<string, unknown>,
+	);
+
+	if (result.type === 'error') {
+		response.status(400).json(result);
+		return;
+	}
+
+	response.status(201).json(result);
 };
 
-export const getAllOrganisations: RequestHandler = (_request, response) => {
+export function getAllOrganisations() {
 	const rows = database
 		.prepare<
 			[],
@@ -191,28 +205,44 @@ export const getAllOrganisations: RequestHandler = (_request, response) => {
 		>('SELECT id, name, image, homepage FROM organisations')
 		.all();
 
+	return rows.map(organisation =>
+		enrichOrganisation(transformOrganisationUrls(organisation)),
+	);
+}
+
+export const getAllOrganisationsEndpoint: RequestHandler = (
+	_request,
+	response,
+) => {
 	response.status(200).json({
 		type: 'success',
-		data: rows.map(organisation =>
-			enrichOrganisation(transformOrganisationUrls(organisation)),
-		),
+		data: getAllOrganisations(),
 	});
 };
 
-export const getOrganisation: RequestHandler<{id: string}> = (
-	request,
-	response,
-) => {
+export function getOrganisation(id: string) {
 	const organisation = database
 		.prepare<
 			{id: string},
 			Organisation
 		>('SELECT id, name, homepage, image FROM organisations WHERE id = :id')
 		.get({
-			id: request.params.id,
+			id,
 		});
 
 	if (!organisation) {
+		return false;
+	}
+
+	return enrichOrganisation(transformOrganisationUrls(organisation));
+}
+
+export const getOrganisationEndpoint: RequestHandler<{id: string}> = (
+	request,
+	response,
+) => {
+	const result = getOrganisation(request.params.id);
+	if (!result) {
 		return response.status(404).json({
 			type: 'error',
 			readableError: 'Organisation does not exist.',
@@ -222,7 +252,7 @@ export const getOrganisation: RequestHandler<{id: string}> = (
 
 	return response.status(200).json({
 		type: 'success',
-		data: enrichOrganisation(transformOrganisationUrls(organisation)),
+		data: result,
 	});
 };
 

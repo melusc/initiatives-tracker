@@ -146,8 +146,8 @@
 	}
 
 	.image-url {
-		width: 230px;
 		max-width: 100%;
+		max-height: 6em;
 	}
 
 	.short-name {

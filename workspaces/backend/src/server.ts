@@ -1,11 +1,22 @@
 import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import express, {type Request, type Response} from 'express';
+import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 
 import {apiRouter} from './api/index.ts';
+import {
+	createInitiative,
+	getAllInitiatives,
+	getInitiative,
+} from './api/initiative.ts';
+import {
+	createOrganisation,
+	getAllOrganisations,
+	getOrganisation,
+} from './api/organisation.ts';
+import {createPerson, getAllPeople, getPerson} from './api/persons.ts';
 import {database} from './db.ts';
 import {setHeaders} from './middle-ware/disable-interest-cohort.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
@@ -13,36 +24,8 @@ import {staticRoot} from './paths.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
 import {svelteKitEngine} from './svelte-kit-engine.ts';
-import {
-	createInitiative,
-	getAllInitiatives,
-	getInitiative,
-} from './api/initiative.ts';
-import {createPerson, getAllPeople, getPerson} from './api/persons.ts';
 
 const app = express();
-
-function send404(request: Request, response: Response) {
-	response.status(404);
-
-	if (request.accepts('html')) {
-		response.render('404', {login: response.locals.login, state: undefined});
-		return;
-	}
-
-	// Respond with json
-	if (request.accepts('json')) {
-		response.json({
-			type: 'error',
-			error: 'not-found',
-			readableError: `${request.method} ${request.path} not found`,
-		});
-		return;
-	}
-
-	// Default to plain-text. send()
-	response.type('txt').send('Not found');
-}
 
 app.engine('html', svelteKitEngine);
 app.set('view engine', 'html');
@@ -220,7 +203,60 @@ app.get('/person/:id', (request, response) => {
 	}
 });
 
-app.all('*', send404);
+app.get('/organisations', (_request, response) => {
+	const organisations = getAllOrganisations();
+
+	response.status(200).render('organisations', {
+		login: response.locals.login,
+		state: organisations,
+	});
+});
+
+app.get('/organisation/create', (_, response) => {
+	response.render('create-organisation', {
+		login: response.locals.login,
+		state: {values: {}},
+	});
+});
+
+app.post('/organisation/create', async (request, response) => {
+	const body = request.body as Record<string, unknown>;
+
+	const organisation = await createOrganisation(body);
+
+	if (organisation.type === 'error') {
+		response.status(400).render('create-organisation', {
+			login: response.locals.login,
+			state: {
+				error: organisation.readableError,
+				values: body,
+			},
+		});
+		return;
+	}
+
+	response.redirect(303, `/organisation/${organisation.data.id}`);
+});
+
+app.get('/organisation/:id', (request, response) => {
+	const organisation = getOrganisation(request.params.id);
+	if (organisation) {
+		response.status(200).render('organisation', {
+			login: response.locals.login,
+			state: organisation,
+		});
+	} else {
+		response
+			.status(404)
+			.render('404', {login: response.locals.login, state: undefined});
+	}
+});
+
+app.use((_request, response) => {
+	response
+		.status(404)
+		.render('404', {login: response.locals.login, state: undefined});
+});
 
 app.listen(3000, () => {
 	console.log('Listening on http://localhost:3000/');
