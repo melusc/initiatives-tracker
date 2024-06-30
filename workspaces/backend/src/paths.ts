@@ -7,6 +7,7 @@ import type {
 	Initiative,
 	Organisation,
 } from '@lusc/initiatives-tracker-util/types.js';
+import {optimize as svgoOptimise} from 'svgo';
 
 import {validateUrl} from './validate-body.ts';
 
@@ -84,8 +85,65 @@ const allowedImages: ReadonlySet<string> = new Set<string>([
 	'image/png',
 	'image/avif',
 	'image/webp',
-	'application/xml',
 ]);
+
+function handleSvg(body: ArrayBuffer): {
+	id: string;
+	suggestedFilePath: URL;
+	body: ArrayBuffer;
+} {
+	try {
+		const stringified = new TextDecoder().decode(body);
+		const optimised = svgoOptimise(stringified, {
+			multipass: true,
+			plugins: [
+				'preset-default',
+				{
+					name: 'set-dimensions',
+					fn() {
+						return {
+							element: {
+								enter(node) {
+									if (node.name === 'svg') {
+										const viewBox = node.attributes['viewBox'];
+
+										if (
+											viewBox
+											&& !('width' in node.attributes)
+											&& !('height' in node.attributes)
+										) {
+											const [width, height] = viewBox.split(/\s+/).slice(2);
+											console.log(width, height);
+											if (width && height) {
+												const w = 1000;
+												const h
+													= (Number.parseInt(height, 10)
+														/ Number.parseInt(width, 10))
+													* 1000;
+												node.attributes['width'] = String(w);
+												node.attributes['height'] = String(h);
+											}
+										}
+									}
+								},
+							},
+						};
+					},
+				},
+			],
+		});
+
+		const id = [randomUUID(), 'svg'].join('.');
+
+		return {
+			id,
+			suggestedFilePath: new URL(id, imageOutDirectory),
+			body: new TextEncoder().encode(optimised.data).buffer,
+		};
+	} catch {
+		throw new Error('Not an image.');
+	}
+}
 
 export async function fetchImage(
 	imageUrl: string,
@@ -94,22 +152,15 @@ export async function fetchImage(
 
 	const type = await fileTypeFromBuffer(body);
 
-	if (type && type.mime === 'application/xml') {
-		const stringified = new TextDecoder().decode(body);
-
-		if (!stringified.includes('<svg')) {
-			throw new Error('Not an image.');
-		}
+	if (type?.mime === 'application/xml') {
+		return handleSvg(body);
 	}
 
 	if (!type || !allowedImages.has(type.mime)) {
 		throw new Error('Not an image.');
 	}
 
-	const id = [
-		randomUUID(),
-		type.mime === 'application/xml' ? 'svg' : type.ext,
-	].join('.');
+	const id = [randomUUID(), type.ext].join('.');
 
 	return {
 		id,
