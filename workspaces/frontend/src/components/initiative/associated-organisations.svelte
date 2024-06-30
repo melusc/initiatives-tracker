@@ -40,9 +40,18 @@
 			<div class="organisation">
 				<a
 					class="organisation-image-href"
-					href={`/organisation/${organisation.id}`}
+					href="/organisation/{organisation.id}"
 				>
-					<img class="organisation-image" src={organisation.imageUrl} alt="" />
+					{#if organisation.imageUrl}
+						<img
+							class="organisation-image"
+							src={organisation.imageUrl}
+							title={organisation.name}
+							alt={organisation.name}
+						/>
+					{:else}
+						{organisation.name}
+					{/if}
 				</a>
 				<div
 					class="trash"
