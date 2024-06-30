@@ -6,9 +6,9 @@
 	import PatchInput from './patch-input.svelte';
 	import CreateIcon from './icons/create.svelte';
 	import ExternalLinkIcon from './icons/external-link.svelte';
-	import TrashIcon from './icons/trash.svelte';
 	import Card from './card.svelte';
 	import Calendar from './icons/calendar.svelte';
+	import DeleteButton from './delete-button.svelte';
 
 	export let initiative: Initiative;
 
@@ -21,16 +21,6 @@
 
 	function handleEditToggle(): void {
 		showEdit = !showEdit;
-	}
-
-	let confirm = false;
-	async function deleteInitiative(): Promise<void> {
-		if (confirm) {
-			await fetch(`/api/initiative/${initiative.id}`, {method: 'delete'});
-			location.href = '/';
-		} else {
-			confirm = true;
-		}
 	}
 </script>
 
@@ -113,14 +103,10 @@
 	{/if}
 
 	{#if standalone}
-		<button class="delete inline-svg button-reset" on:click={deleteInitiative}>
-			{#if confirm}
-				Press again to confirm
-			{:else}
-				Delete "{initiative.shortName}"
-			{/if}
-			<TrashIcon />
-		</button>
+		<DeleteButton
+			api={`/api/initiative/${initiative.id}`}
+			name={initiative.shortName}
+		/>
 	{/if}
 </Card>
 
@@ -158,20 +144,5 @@
 	.deadline {
 		font-size: 0.8em;
 		max-width: 30ch;
-	}
-
-	.delete {
-		color: var(--text-light);
-		background: var(--error);
-		box-shadow: var(--box-shadow);
-		border-radius: 5px;
-		padding: 0.3em 0.6em;
-		margin-top: 1em;
-
-		transition: 100ms ease-in-out scale;
-	}
-
-	.delete:active {
-		scale: 0.97;
 	}
 </style>

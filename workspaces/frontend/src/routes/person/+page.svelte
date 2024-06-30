@@ -5,6 +5,7 @@
 	import {getLogin, getState} from '../../state.ts';
 	import EditableTitle from '../../components/editable-title.svelte';
 	import Initiative from '../../components/initiative.svelte';
+	import DeleteButton from '../../components/delete-button.svelte';
 
 	let person = getState<EnrichedPerson>();
 	const login = getLogin();
@@ -26,6 +27,8 @@
 				{/each}
 			</div>
 		{/if}
+
+		<DeleteButton api={`/api/person/${person.id}`} name={person.name} />
 	{:else}
 		<Loading />
 	{/if}

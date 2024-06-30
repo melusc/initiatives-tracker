@@ -6,8 +6,8 @@
 	import PatchInput from './patch-input.svelte';
 	import CreateIcon from './icons/create.svelte';
 	import ExternalLinkIcon from './icons/external-link.svelte';
-	import TrashIcon from './icons/trash.svelte';
 	import Card from './card.svelte';
+	import DeleteButton from './delete-button.svelte';
 
 	export let organisation: Organisation;
 
@@ -20,16 +20,6 @@
 
 	function handleEditToggle(): void {
 		showEdit = !showEdit;
-	}
-
-	let confirm = false;
-	async function deleteOrganisation(): Promise<void> {
-		if (confirm) {
-			await fetch(`/api/organisation/${organisation.id}`, {method: 'delete'});
-			location.href = '/';
-		} else {
-			confirm = true;
-		}
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
@@ -99,17 +89,10 @@
 	{/if}
 
 	{#if standalone}
-		<button
-			class="delete inline-svg button-reset"
-			on:click={deleteOrganisation}
-		>
-			{#if confirm}
-				Press again to confirm
-			{:else}
-				Delete "{organisation.name}"
-			{/if}
-			<TrashIcon />
-		</button>
+		<DeleteButton
+			api={`/api/organisation/${organisation.id}`}
+			name={organisation.name}
+		/>
 	{/if}
 </Card>
 
@@ -141,20 +124,5 @@
 
 	.short-name {
 		font-size: 1.3em;
-	}
-
-	.delete {
-		color: var(--text-light);
-		background: var(--error);
-		box-shadow: var(--box-shadow);
-		border-radius: 5px;
-		padding: 0.3em 0.6em;
-		margin-top: 1em;
-
-		transition: 100ms ease-in-out scale;
-	}
-
-	.delete:active {
-		scale: 0.97;
 	}
 </style>
