@@ -173,6 +173,7 @@ const initativeKeyValidators = {
 const initiativeValidator = makeValidator(initativeKeyValidators);
 
 export async function createInitiative(
+	loginUserId: string,
 	body: Record<string, unknown>,
 ): Promise<ApiResponse<EnrichedInitiative>> {
 	const validateResult = await initiativeValidator(body, [
@@ -216,7 +217,7 @@ export async function createInitiative(
 
 	return {
 		type: 'success',
-		data: enrichInitiative(transformInitiativeUrls(result)),
+		data: enrichInitiative(transformInitiativeUrls(result), loginUserId),
 	};
 }
 
@@ -225,6 +226,7 @@ export const createInitiativeEndpoint: RequestHandler = async (
 	response,
 ) => {
 	const result = await createInitiative(
+		response.locals.login.id,
 		request.body as Record<string, unknown>,
 	);
 
@@ -235,7 +237,10 @@ export const createInitiativeEndpoint: RequestHandler = async (
 	return response.status(201).json(result);
 };
 
-export function getInitiative(id: string): Initiative | false {
+export function getInitiative(
+	id: string,
+	loginUserId: string,
+): Initiative | false {
 	const initiative = database
 		.prepare<
 			{id: string},
@@ -247,14 +252,14 @@ export function getInitiative(id: string): Initiative | false {
 		return false;
 	}
 
-	return enrichInitiative(transformInitiativeUrls(initiative));
+	return enrichInitiative(transformInitiativeUrls(initiative), loginUserId);
 }
 
 export const getInitiativeEndpoint: RequestHandler<{id: string}> = (
 	request,
 	response,
 ) => {
-	const initiative = getInitiative(request.params.id);
+	const initiative = getInitiative(request.params.id, response.locals.login.id);
 
 	if (!initiative) {
 		return response.status(404).json({
@@ -270,14 +275,18 @@ export const getInitiativeEndpoint: RequestHandler<{id: string}> = (
 	});
 };
 
-function enrichInitiative(initiative: Initiative): EnrichedInitiative {
+function enrichInitiative(
+	initiative: Initiative,
+	loginUserId: string,
+): EnrichedInitiative {
 	const people = database
-		.prepare<{initiativeId: string}, Person>(
+		.prepare<{initiativeId: string; loginUserId: string}, Person>(
 			`SELECT people.* FROM people
 			INNER JOIN signatures on signatures.personId = people.id
-			WHERE signatures.initiativeId = :initiativeId`,
+			WHERE signatures.initiativeId = :initiativeId
+			AND people.owner = :loginUserId`,
 		)
-		.all({initiativeId: initiative.id});
+		.all({initiativeId: initiative.id, loginUserId});
 
 	const organisations = database
 		.prepare<{initiativeId: string}, Organisation>(
@@ -296,13 +305,13 @@ function enrichInitiative(initiative: Initiative): EnrichedInitiative {
 	};
 }
 
-export function getAllInitiatives(): EnrichedInitiative[] {
+export function getAllInitiatives(loginUserId: string): EnrichedInitiative[] {
 	const rows = database
 		.prepare<[], Initiative>('SELECT initiatives.* from initiatives')
 		.all();
 
 	return rows.map(initiative =>
-		enrichInitiative(transformInitiativeUrls(initiative)),
+		enrichInitiative(transformInitiativeUrls(initiative), loginUserId),
 	);
 }
 
@@ -312,7 +321,7 @@ export const getAllInitiativesEndpoint: RequestHandler = async (
 ) => {
 	response.status(200).json({
 		type: 'success',
-		data: getAllInitiatives(),
+		data: getAllInitiatives(response.locals.login.id),
 	});
 };
 
@@ -368,7 +377,10 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 	if (Object.keys(newData).length === 0) {
 		response.status(200).json({
 			type: 'success',
-			data: enrichInitiative(transformInitiativeUrls(oldRow)),
+			data: enrichInitiative(
+				transformInitiativeUrls(oldRow),
+				response.locals.login.id,
+			),
 		});
 		return;
 	}
@@ -402,7 +414,7 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 
 	response.status(200).send({
 		type: 'success',
-		data: getInitiative(id),
+		data: getInitiative(id, response.locals.login.id),
 	});
 };
 

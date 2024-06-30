@@ -68,6 +68,7 @@ const personValidator = makeValidator(personKeyValidators);
 
 export async function createPerson(
 	body: Record<string, unknown>,
+	owner: string,
 ): Promise<ApiResponse<EnrichedPerson>> {
 	const result = await personValidator(body, ['name']);
 
@@ -77,13 +78,30 @@ export async function createPerson(
 
 	const {name} = result.data;
 
+	const sameName = database
+		.prepare<
+			{name: string; owner: string},
+			Person
+		>('SELECT id, name, owner FROM people WHERE name = :name AND owner = :owner')
+		.get({name, owner});
+	if (sameName) {
+		return {
+			type: 'error',
+			error: 'duplicate-person',
+			readableError: 'Person with that name already exists.',
+		};
+	}
+
 	const id = makeSlug(name);
 	try {
 		database
-			.prepare<Person>('INSERT INTO people (id, name) values (:id, :name)')
+			.prepare<Person>(
+				'INSERT INTO people (id, name, owner) values (:id, :name, :owner)',
+			)
 			.run({
 				id,
 				name,
+				owner,
 			});
 	} catch {
 		return {
@@ -98,6 +116,7 @@ export async function createPerson(
 		data: enrichPerson({
 			id,
 			name,
+			owner,
 		}),
 	};
 }
@@ -106,7 +125,10 @@ export const createPersonEndpoint: RequestHandler = async (
 	request,
 	response,
 ) => {
-	const result = await createPerson(request.body as Record<string, unknown>);
+	const result = await createPerson(
+		request.body as Record<string, unknown>,
+		response.locals.login.id,
+	);
 
 	if (result.type === 'error') {
 		response
@@ -118,11 +140,15 @@ export const createPersonEndpoint: RequestHandler = async (
 	return response.status(201).json(result);
 };
 
-export function getPerson(id: string): EnrichedPerson | false {
+export function getPerson(id: string, owner: string): EnrichedPerson | false {
 	const person = database
-		.prepare<{id: string}, Person>('SELECT id, name FROM people WHERE id = :id')
+		.prepare<
+			{id: string; owner: string},
+			Person
+		>('SELECT id, name, owner FROM people WHERE id = :id AND owner = :owner')
 		.get({
 			id,
+			owner,
 		});
 
 	if (!person) {
@@ -136,7 +162,7 @@ export const getPersonEndpoint: RequestHandler<{id: string}> = (
 	request,
 	response,
 ) => {
-	const result = getPerson(request.params.id);
+	const result = getPerson(request.params.id, response.locals.login.id);
 
 	if (!result) {
 		return response.status(404).json({
@@ -159,8 +185,11 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 	const {id} = request.params;
 
 	const oldRow = database
-		.prepare<{id: string}, Person>('SELECT id, name FROM people WHERE id = :id')
-		.get({id});
+		.prepare<
+			{id: string; owner: string},
+			Person
+		>('SELECT id, name, owner FROM people WHERE id = :id AND owner = :owner')
+		.get({id, owner: response.locals.login.id});
 
 	if (!oldRow) {
 		response.status(404).json({
@@ -183,6 +212,23 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 		return;
 	}
 
+	if ('name' in validateResult.data) {
+		const sameName = database
+			.prepare<
+				{name: string; owner: string},
+				Person
+			>('SELECT id, name, owner FROM people WHERE name = :name AND owner = :owner')
+			.get({name: validateResult.data.name, owner: response.locals.login.id});
+		if (sameName) {
+			response.status(400).json({
+				type: 'error',
+				error: 'duplicate-person',
+				readableError: 'Person with that name already exists.',
+			});
+			return;
+		}
+	}
+
 	const newData = validateResult.data;
 
 	if (Object.keys(newData).length === 0) {
@@ -201,16 +247,19 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 
 	try {
 		database
-			.prepare(`UPDATE people SET ${query.join(', ')} WHERE id = :id`)
+			.prepare<Person>(
+				`UPDATE people SET ${query.join(', ')} WHERE id = :id AND owner = :owner`,
+			)
 			.run({
 				...newData,
 				id,
+				owner: response.locals.login.id,
 			});
 
 		response.status(200).send({
 			type: 'success',
 			data: enrichPerson({
-				id,
+				...oldRow,
 				...newData,
 			}),
 		});
@@ -230,8 +279,11 @@ export const deletePerson: RequestHandler<{id: string}> = async (
 	const {id} = request.params;
 
 	const result = database
-		.prepare<{id: string}>('DELETE FROM people WHERE id = :id')
-		.run({id});
+		.prepare<{
+			id: string;
+			owner: string;
+		}>('DELETE FROM people WHERE id = :id AND owner = :owner')
+		.run({id, owner: response.locals.login.id});
 
 	if (result.changes === 0) {
 		response.status(404).json({
@@ -247,10 +299,17 @@ export const deletePerson: RequestHandler<{id: string}> = async (
 	});
 };
 
-export function getAllPeople() {
+export function getAllPeople(owner: string) {
 	const rows = database
-		.prepare<[], Person>('SELECT id, name from people')
-		.all();
+		.prepare<
+			{
+				owner: string;
+			},
+			Person
+		>('SELECT id, name, owner from people WHERE owner = :owner')
+		.all({
+			owner,
+		});
 
 	return rows.map(person => enrichPerson(person));
 }
@@ -261,6 +320,6 @@ export const getAllPeopleEndpoint: RequestHandler = async (
 ) => {
 	response.status(200).json({
 		type: 'success',
-		data: getAllPeople(),
+		data: getAllPeople(response.locals.login.id),
 	});
 };

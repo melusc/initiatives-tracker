@@ -33,11 +33,11 @@
 	}
 </script>
 
-{#if initiative.signatures.length > 0}
+{#if initiative.organisations.length > 0}
 	{@const {organisations} = initiative}
 	<div class="associated-organisations">
 		{#each organisations as organisation (organisation.id)}
-			<div class="signer">
+			<div class="organisation">
 				<a
 					class="organisation-image-href"
 					href={`/organisation/${organisation.id}`}
@@ -68,7 +68,7 @@
 		place-items: center;
 	}
 
-	.signer {
+	.organisation {
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-template-rows: 1fr;
@@ -102,7 +102,7 @@
 		cursor: pointer;
 	}
 
-	.signer:hover > .trash {
+	.organisation:hover > .trash {
 		display: grid;
 	}
 </style>

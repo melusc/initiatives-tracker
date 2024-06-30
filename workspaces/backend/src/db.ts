@@ -1,5 +1,5 @@
 import {randomBytes, randomUUID} from 'node:crypto';
-import {stdin, stdout} from 'node:process';
+import {stdin, stdout, argv} from 'node:process';
 import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
 
@@ -34,7 +34,9 @@ database.exec(
 
 		CREATE TABLE IF NOT EXISTS people (
 				id TEXT PRIMARY KEY,
-				name TEXT NOT NULL UNIQUE
+				name TEXT NOT NULL,
+				owner TEXT NOT NULL,
+				FOREIGN KEY(owner) REFERENCES logins(userId) ON DELETE CASCADE
 		);
 
 		CREATE TABLE IF NOT EXISTS initiatives (
@@ -83,15 +85,16 @@ const loginsRows = database
 	>('SELECT count(userId) as count from logins where isAdmin = 1;')
 	.get();
 
-if (!loginsRows || loginsRows.count === 0) {
+const createLogin = argv.includes('--create-login') || argv.includes('-c');
+if (!loginsRows || loginsRows.count === 0 || createLogin) {
 	const rl = createInterface({
 		input: stdin,
 		output: stdout,
 	});
 
-	let shouldCreateAdmin = await rl.question(
-		'No admin accounts exist. Create one? (y/n) ',
-	);
+	let shouldCreateAdmin = createLogin
+		? 'y'
+		: await rl.question('No admin accounts exist. Create one? (y/n) ');
 	shouldCreateAdmin = shouldCreateAdmin.toLowerCase().trim();
 	if (shouldCreateAdmin === 'y') {
 		const username = await rl.question('Username: ');

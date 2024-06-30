@@ -27,6 +27,7 @@ export type EnrichedOrganisation = Organisation & {
 export type Person = {
 	name: string;
 	id: string;
+	owner: string;
 };
 
 export type EnrichedPerson = Person & {

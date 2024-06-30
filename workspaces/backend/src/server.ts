@@ -110,7 +110,7 @@ app.get('/logout', logout);
 app.get('/', (_, response) => {
 	response.render('index', {
 		login: response.locals.login,
-		state: getAllInitiatives(),
+		state: getAllInitiatives(response.locals.login.id),
 	});
 });
 
@@ -124,7 +124,7 @@ app.get('/initiative/create', (_, response) => {
 app.post('/initiative/create', async (request, response) => {
 	const body = request.body as Record<string, unknown>;
 
-	const initiative = await createInitiative(body);
+	const initiative = await createInitiative(response.locals.login.id, body);
 
 	if (initiative.type === 'error') {
 		response.status(400).render('create-initiative', {
@@ -141,7 +141,7 @@ app.post('/initiative/create', async (request, response) => {
 });
 
 app.get('/initiative/:id', (request, response) => {
-	const initiative = getInitiative(request.params.id);
+	const initiative = getInitiative(request.params.id, response.locals.login.id);
 	if (initiative) {
 		response.status(200).render('initiative', {
 			login: response.locals.login,
@@ -155,7 +155,7 @@ app.get('/initiative/:id', (request, response) => {
 });
 
 app.get('/people', (_request, response) => {
-	const people = getAllPeople();
+	const people = getAllPeople(response.locals.login.id);
 
 	response.render('people', {
 		state: people,
@@ -173,7 +173,7 @@ app.get('/person/create', (_, response) => {
 app.post('/person/create', async (request, response) => {
 	const body = request.body as Record<string, unknown>;
 
-	const person = await createPerson(body);
+	const person = await createPerson(body, response.locals.login.id);
 
 	if (person.type === 'error') {
 		response.status(400).render('create-person', {
@@ -190,7 +190,7 @@ app.post('/person/create', async (request, response) => {
 });
 
 app.get('/person/:id', (request, response) => {
-	const person = getPerson(request.params.id);
+	const person = getPerson(request.params.id, response.locals.login.id);
 	if (person) {
 		response.status(200).render('person', {
 			login: response.locals.login,
