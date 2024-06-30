@@ -72,8 +72,8 @@ database.exec(
 );
 
 database
-	.prepare<[number]>('DELETE FROM sessions WHERE expires < ?')
-	.run(Date.now());
+	.prepare<{expires: number}>('DELETE FROM sessions WHERE expires < :expires')
+	.run({expires: Date.now()});
 
 const loginsRows = database
 	.prepare<

@@ -30,10 +30,12 @@ export function loginProtect(
 
 			const session = database
 				.prepare<
-					[string],
+					{sessionId: string},
 					{userId: string; expires: number}
-				>('SELECT userId, expires FROM sessions WHERE sessionId = ?')
-				.get(sessionCookie);
+				>('SELECT userId, expires FROM sessions WHERE sessionId = :sessionId')
+				.get({
+					sessionId: sessionCookie,
+				});
 
 			if (session && session.expires > Date.now()) {
 				const delta = session.expires - Date.now();
@@ -57,10 +59,10 @@ export function loginProtect(
 
 				const user = database
 					.prepare<
-						[string],
+						{userId: string},
 						{username: string; isAdmin: 0 | 1}
-					>('SELECT username, isAdmin FROM logins WHERE userId = ?')
-					.get(session.userId)!;
+					>('SELECT username, isAdmin FROM logins WHERE userId = :userId')
+					.get({userId: session.userId})!;
 
 				Object.defineProperty(response.locals, 'login', {
 					value: {

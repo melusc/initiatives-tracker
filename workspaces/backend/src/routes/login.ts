@@ -27,10 +27,10 @@ export async function loginPost(request: Request, response: Response) {
 
 	const databaseResult = database
 		.prepare<
-			[string],
+			{username: string},
 			{userId: string; passwordHash: Buffer; passwordSalt: Buffer}
-		>('SELECT userId, passwordHash, passwordSalt from logins where username = ?')
-		.get(body.data.username);
+		>('SELECT userId, passwordHash, passwordSalt from logins where username = :username')
+		.get({username: body.data.username});
 
 	if (!databaseResult) {
 		response.render('login', {
@@ -65,10 +65,18 @@ export async function loginPost(request: Request, response: Response) {
 	cookieExpires.setHours(cookieExpires.getMinutes() - 5);
 
 	database
-		.prepare<
-			[string, string, number]
-		>('INSERT INTO sessions (userId, sessionId, expires) values (?, ?, ?)')
-		.run(userId, sessionId, expires.getTime());
+		.prepare<{
+			userId: string;
+			sessionId: string;
+			expires: number;
+		}>(
+			'INSERT INTO sessions (userId, sessionId, expires) values (:userId, :sessionId, :expires)',
+		)
+		.run({
+			userId,
+			sessionId,
+			expires: expires.getTime(),
+		});
 
 	response.cookie('session', sessionId, {
 		expires: cookieExpires,
