@@ -28,7 +28,8 @@ database.exec(
 		CREATE TABLE IF NOT EXISTS sessions (
 				sessionId TEXT PRIMARY KEY,
 				userId TEXT NOT NULL,
-				expires INTEGER NOT NULL
+				expires INTEGER NOT NULL,
+				FOREIGN KEY(userId) REFERENCES logins(userId) ON DELETE CASCADE
 		);
 
 		CREATE TABLE IF NOT EXISTS people (
