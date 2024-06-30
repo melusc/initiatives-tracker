@@ -12,14 +12,14 @@
 			minlength: 4,
 		},
 		{
-			name: 'image',
-			label: 'Image',
+			name: 'imageUrl',
+			label: 'Image URL',
 			type: 'url',
 			minlength: 0,
 			required: false,
 		},
 		{
-			name: 'homepage',
+			name: 'website',
 			label: 'Website',
 			type: 'url',
 			minlength: 0,

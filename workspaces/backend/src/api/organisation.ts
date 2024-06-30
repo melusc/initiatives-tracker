@@ -72,7 +72,7 @@ const organisationKeyValidators = {
 			data: name,
 		};
 	},
-	async image(
+	async imageUrl(
 		imageUrl: unknown,
 	): Promise<
 		ApiResponse<null | {id: string; suggestedFilePath: URL; body: ArrayBuffer}>
@@ -88,7 +88,7 @@ const organisationKeyValidators = {
 			};
 		}
 
-		const isValidUrl = await validateUrl('image', imageUrl);
+		const isValidUrl = await validateUrl('Image URL', imageUrl);
 		if (isValidUrl.type === 'error') {
 			return isValidUrl;
 		}
@@ -109,11 +109,11 @@ const organisationKeyValidators = {
 		}
 	},
 
-	async homepage(homepage: unknown): Promise<ApiResponse<string | null>> {
+	async website(website: unknown): Promise<ApiResponse<string | null>> {
 		if (
-			homepage === null
-			|| homepage === 'null'
-			|| (typeof homepage === 'string' && homepage.trim() === '')
+			website === null
+			|| website === 'null'
+			|| (typeof website === 'string' && website.trim() === '')
 		) {
 			return {
 				type: 'success',
@@ -121,19 +121,19 @@ const organisationKeyValidators = {
 			};
 		}
 
-		const isValidUrl = await validateUrl('homepage', homepage);
+		const isValidUrl = await validateUrl('website', website);
 		if (isValidUrl.type === 'error') {
 			return isValidUrl;
 		}
 
-		const homepageUrl = new URL(homepage as string);
-		homepageUrl.hash = '';
-		homepageUrl.username = '';
-		homepageUrl.password = '';
+		const websiteUrl = new URL(website as string);
+		websiteUrl.hash = '';
+		websiteUrl.username = '';
+		websiteUrl.password = '';
 
 		return {
 			type: 'success',
-			data: homepageUrl.href,
+			data: websiteUrl.href,
 		};
 	},
 };
@@ -145,32 +145,32 @@ export async function createOrganisation(
 ): Promise<ApiResponse<EnrichedOrganisation>> {
 	const result = await organisationValidator(body, [
 		'name',
-		'image',
-		'homepage',
+		'imageUrl',
+		'website',
 	]);
 
 	if (result.type === 'error') {
 		return result;
 	}
 
-	const {name, image, homepage} = result.data;
-	if (image) {
-		await writeFile(image.suggestedFilePath, new DataView(image.body));
+	const {name, imageUrl, website} = result.data;
+	if (imageUrl) {
+		await writeFile(imageUrl.suggestedFilePath, new DataView(imageUrl.body));
 	}
 
 	const id = makeSlug(name);
 	const organisation: Organisation = {
 		id,
 		name,
-		image: image ? image.id : image,
-		homepage,
+		imageUrl: imageUrl ? imageUrl.id : imageUrl,
+		website,
 	};
 
 	database
 		.prepare<Organisation>(
 			`
-		INSERT INTO organisations (id, name, image, homepage)
-		values (:id, :name, :image, :homepage)
+		INSERT INTO organisations (id, name, imageUrl, website)
+		values (:id, :name, :imageUrl, :website)
 	`,
 		)
 		.run(organisation);
@@ -202,7 +202,7 @@ export function getAllOrganisations() {
 		.prepare<
 			[],
 			Organisation
-		>('SELECT id, name, image, homepage FROM organisations')
+		>('SELECT id, name, imageUrl, website FROM organisations')
 		.all();
 
 	return rows.map(organisation =>
@@ -225,7 +225,7 @@ export function getOrganisation(id: string) {
 		.prepare<
 			{id: string},
 			Organisation
-		>('SELECT id, name, homepage, image FROM organisations WHERE id = :id')
+		>('SELECT id, name, website, imageUrl FROM organisations WHERE id = :id')
 		.get({
 			id,
 		});
@@ -290,7 +290,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		.prepare<
 			{id: string},
 			Organisation
-		>('SELECT id, name, image, homepage FROM organisations WHERE id = :id')
+		>('SELECT id, name, imageUrl, website FROM organisations WHERE id = :id')
 		.get({id});
 
 	if (!oldRow) {
@@ -315,10 +315,10 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 
 	const newData = validateResult.data;
 
-	if (newData.image) {
+	if (newData.imageUrl) {
 		await writeFile(
-			newData.image.suggestedFilePath,
-			new DataView(newData.image.body),
+			newData.imageUrl.suggestedFilePath,
+			new DataView(newData.imageUrl.body),
 		);
 	}
 
@@ -333,10 +333,10 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 	const query = [];
 
 	for (const key of Object.keys(newData)) {
-		if (key === 'image' && oldRow.image !== null) {
+		if (key === 'imageUrl' && oldRow.imageUrl !== null) {
 			try {
 				// eslint-disable-next-line no-await-in-loop
-				await unlink(new URL(oldRow.image, imageOutDirectory));
+				await unlink(new URL(oldRow.imageUrl, imageOutDirectory));
 			} catch {}
 		}
 
@@ -348,7 +348,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		.run({
 			...newData,
 			id,
-			image: newData.image ? newData.image.id : null,
+			imageUrl: newData.imageUrl ? newData.imageUrl.id : null,
 		});
 
 	response.status(200).send({
@@ -356,7 +356,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		data: transformOrganisationUrls({
 			...oldRow,
 			...newData,
-			image: newData.image ? newData.image.id : null,
+			imageUrl: newData.imageUrl ? newData.imageUrl.id : null,
 		}),
 	});
 };

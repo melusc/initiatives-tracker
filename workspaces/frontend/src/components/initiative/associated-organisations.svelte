@@ -42,7 +42,7 @@
 					class="organisation-image-href"
 					href={`/organisation/${organisation.id}`}
 				>
-					<img class="organisation-image" src={organisation.image} alt="" />
+					<img class="organisation-image" src={organisation.imageUrl} alt="" />
 				</a>
 				<div
 					class="trash"

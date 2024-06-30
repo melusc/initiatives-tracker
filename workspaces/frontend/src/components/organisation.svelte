@@ -58,42 +58,42 @@
 			apiEndpoint={`/api/organisation/${organisation.id}`}
 		/>
 		<PatchInput
-			name="image"
+			name="imageUrl"
 			label="Image URL"
 			type="text"
 			transform={transformOptional}
-			bind:value={organisation.image}
+			bind:value={organisation.imageUrl}
 			apiEndpoint={`/api/organisation/${organisation.id}`}
 		/>
 		<PatchInput
-			name="homepage"
-			label="Homepage"
+			name="website"
+			label="Website"
 			type="text"
 			transform={transformOptional}
-			bind:value={organisation.homepage}
+			bind:value={organisation.website}
 			apiEndpoint={`/api/organisation/${organisation.id}`}
 		/>
-		{#if organisation.image}
-			<img class="image-url" src={organisation.image} alt="" />
+		{#if organisation.imageUrl}
+			<img class="image-url" src={organisation.imageUrl} alt="" />
 		{/if}
 	{:else}
 		<a
 			href={standalone ? undefined : `/organisation/${organisation.id}`}
 			class="short-name">{organisation.name}</a
 		>
-		{#if organisation.homepage}
+		{#if organisation.website}
 			<a
 				class="website inline-svg"
-				href={organisation.homepage}
+				href={organisation.website}
 				rel="nofollow noreferrer noopener"
 				target="_blank"
 			>
 				Website <ExternalLinkIcon />
 			</a>
 		{/if}
-		{#if organisation.image}
+		{#if organisation.imageUrl}
 			<a href={standalone ? undefined : `/organisation/${organisation.id}`}>
-				<img class="image-url" src={organisation.image} alt="" />
+				<img class="image-url" src={organisation.imageUrl} alt="" />
 			</a>
 		{/if}
 	{/if}

@@ -49,8 +49,8 @@ database.exec(
 		CREATE TABLE IF NOT EXISTS organisations (
 				id TEXT PRIMARY KEY,
 				name TEXT NOT NULL,
-				image TEXT,
-				homepage TEXT
+				imageUrl TEXT,
+				website TEXT
 		);
 
 		CREATE TABLE IF NOT EXISTS signatures (

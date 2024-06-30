@@ -16,8 +16,8 @@ export type EnrichedInitiative = Initiative & {
 export type Organisation = {
 	id: string;
 	name: string;
-	image: string | null;
-	homepage: string | null;
+	imageUrl: string | null;
+	website: string | null;
 };
 
 export type EnrichedOrganisation = Organisation & {

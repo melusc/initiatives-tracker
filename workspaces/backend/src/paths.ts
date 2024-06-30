@@ -29,10 +29,10 @@ export function transformOrganisationUrls<T extends Organisation>(
 ): T {
 	return {
 		...organisation,
-		image:
-			organisation.image === null
+		imageUrl:
+			organisation.imageUrl === null
 				? null
-				: transformImageUrl(organisation.image),
+				: transformImageUrl(organisation.imageUrl),
 	};
 }
 
