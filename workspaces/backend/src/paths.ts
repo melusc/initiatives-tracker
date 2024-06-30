@@ -87,14 +87,13 @@ const allowedImages: ReadonlySet<string> = new Set<string>([
 	'image/webp',
 ]);
 
-function handleSvg(body: ArrayBuffer): {
+function handleSvg(body: string): {
 	id: string;
 	suggestedFilePath: URL;
 	body: ArrayBuffer;
 } {
 	try {
-		const stringified = new TextDecoder().decode(body);
-		const optimised = svgoOptimise(stringified, {
+		const optimised = svgoOptimise(body, {
 			multipass: true,
 			plugins: [
 				'preset-default',
@@ -150,10 +149,12 @@ export async function fetchImage(
 ): Promise<{id: string; suggestedFilePath: URL; body: ArrayBuffer}> {
 	const body = await safeFetch(imageUrl);
 
+	const stringified = new TextDecoder().decode(body);
+
 	const type = await fileTypeFromBuffer(body);
 
-	if (type?.mime === 'application/xml') {
-		return handleSvg(body);
+	if (type?.mime === 'application/xml' || stringified.includes('<svg')) {
+		return handleSvg(stringified);
 	}
 
 	if (!type || !allowedImages.has(type.mime)) {
