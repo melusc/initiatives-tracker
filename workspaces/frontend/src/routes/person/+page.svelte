@@ -16,7 +16,7 @@
 		<EditableTitle
 			bind:subject={person}
 			canEdit={login?.isAdmin ?? false}
-			patchApi={`/api/person/${person.id}`}
+			patchApi="/api/person/{person.id}"
 		/>
 
 		{#if person?.initiatives.length > 0}
@@ -28,7 +28,7 @@
 			</div>
 		{/if}
 
-		<DeleteButton api={`/api/person/${person.id}`} name={person.name} />
+		<DeleteButton api="/api/person/{person.id}" name={person.name} />
 	{:else}
 		<Loading />
 	{/if}

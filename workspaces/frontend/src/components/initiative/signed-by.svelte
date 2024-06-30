@@ -39,7 +39,7 @@
 	<div class="signed-by">
 		{#each people as person (person.id)}
 			<div class="signer">
-				<a class="user-icon" href={`/person/${person.id}`}>
+				<a class="user-icon" href="/person/{person.id}">
 					<UserIcon name={person.name} iconKey={person.id} />
 				</a>
 				<div

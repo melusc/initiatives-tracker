@@ -41,28 +41,28 @@
 			label="Short name"
 			type="text"
 			bind:value={initiative.shortName}
-			apiEndpoint={`/api/initiative/${initiative.id}`}
+			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
 		<PatchInput
 			name="fullName"
 			label="Full name"
 			type="text"
 			bind:value={initiative.fullName}
-			apiEndpoint={`/api/initiative/${initiative.id}`}
+			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
 		<PatchInput
 			name="deadline"
 			label="Deadline"
 			type="date"
 			bind:value={initiative.deadline}
-			apiEndpoint={`/api/initiative/${initiative.id}`}
+			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
 		<PatchInput
 			name="website"
 			label="Website"
 			type="text"
 			bind:value={initiative.website}
-			apiEndpoint={`/api/initiative/${initiative.id}`}
+			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
 		<PatchInput
 			name="pdfUrl"
@@ -70,7 +70,7 @@
 			type="text"
 			bind:value={initiative.pdfUrl}
 			initialValue=""
-			apiEndpoint={`/api/initiative/${initiative.id}`}
+			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
 		<PatchInput
 			name="imageUrl"
@@ -78,7 +78,7 @@
 			type="text"
 			bind:value={initiative.imageUrl}
 			initialValue=""
-			apiEndpoint={`/api/initiative/${initiative.id}`}
+			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
 		<img class="image-url" src={initiative.imageUrl} alt="" />
 	{:else}
@@ -104,7 +104,7 @@
 
 	{#if standalone}
 		<DeleteButton
-			api={`/api/initiative/${initiative.id}`}
+			api="/api/initiative/{initiative.id}"
 			name={initiative.shortName}
 		/>
 	{/if}

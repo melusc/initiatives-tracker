@@ -20,7 +20,7 @@
 				<div class="cell">No. signed initiatives</div>
 			</div>
 			{#each people as person (person.id)}
-				<a href={`/person/${person.id}`} class="href">
+				<a href="/person/{person.id}" class="href">
 					<div class="cell">
 						<UserIcon name={person.name} iconKey={person.id} />
 					</div>

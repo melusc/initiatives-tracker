@@ -45,7 +45,7 @@
 			label="Name"
 			type="text"
 			bind:value={organisation.name}
-			apiEndpoint={`/api/organisation/${organisation.id}`}
+			apiEndpoint="/api/organisation/{organisation.id}"
 		/>
 		<PatchInput
 			name="imageUrl"
@@ -53,7 +53,7 @@
 			type="text"
 			transform={transformOptional}
 			bind:value={organisation.imageUrl}
-			apiEndpoint={`/api/organisation/${organisation.id}`}
+			apiEndpoint="/api/organisation/{organisation.id}"
 		/>
 		<PatchInput
 			name="website"
@@ -61,7 +61,7 @@
 			type="text"
 			transform={transformOptional}
 			bind:value={organisation.website}
-			apiEndpoint={`/api/organisation/${organisation.id}`}
+			apiEndpoint="/api/organisation/{organisation.id}"
 		/>
 		{#if organisation.imageUrl}
 			<img class="image-url" src={organisation.imageUrl} alt="" />
@@ -90,7 +90,7 @@
 
 	{#if standalone}
 		<DeleteButton
-			api={`/api/organisation/${organisation.id}`}
+			api="/api/organisation/{organisation.id}"
 			name={organisation.name}
 		/>
 	{/if}
