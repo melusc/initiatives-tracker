@@ -36,6 +36,25 @@ export function loginProtect(
 				.get(sessionCookie);
 
 			if (session && session.expires > Date.now()) {
+				const delta = session.expires - Date.now();
+
+				if (delta < 1.5 * 24 * 60 * 60 * 1000) {
+					const expires = new Date();
+					expires.setDate(expires.getDate() + 2);
+
+					database
+						.prepare<{
+							sessionId: string;
+							expires: number;
+						}>(
+							'UPDATE sessions SET expires = :expires WHERE sessionId = :sessionId',
+						)
+						.run({
+							sessionId: sessionCookie,
+							expires: expires.getTime(),
+						});
+				}
+
 				const user = database
 					.prepare<
 						[string],
