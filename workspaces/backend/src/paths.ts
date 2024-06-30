@@ -58,6 +58,7 @@ const allowedImages: ReadonlySet<string> = new Set<string>([
 	'image/png',
 	'image/avif',
 	'image/webp',
+	'application/xml',
 ]);
 
 export async function fetchImage(
@@ -67,11 +68,22 @@ export async function fetchImage(
 
 	const type = await fileTypeFromBuffer(body);
 
+	if (type && type.mime === 'application/xml') {
+		const stringified = new TextDecoder().decode(body);
+
+		if (!stringified.includes('<svg')) {
+			throw new Error('Not an image.');
+		}
+	}
+
 	if (!type || !allowedImages.has(type.mime)) {
 		throw new Error('Not an image.');
 	}
 
-	const id = [randomUUID(), type.ext].join('.');
+	const id = [
+		randomUUID(),
+		type.mime === 'application/xml' ? 'svg' : type.ext,
+	].join('.');
 
 	return {
 		id,
