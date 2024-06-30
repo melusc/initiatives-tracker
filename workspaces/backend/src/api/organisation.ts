@@ -11,10 +11,13 @@ import type {
 } from '@lusc/initiatives-tracker-util/types.js';
 
 import {makeValidator, validateUrl} from '../validate-body.ts';
-import {fetchImage, imageOutDirectory, transformImageUrl} from '../paths.ts';
+import {
+	fetchImage,
+	imageOutDirectory,
+	transformInitiativeUrls,
+	transformOrganisationUrls,
+} from '../paths.ts';
 import {database} from '../db.ts';
-
-import {transformInitiativeUrls} from './initiative.ts';
 
 function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
 	const id = organisation.id;

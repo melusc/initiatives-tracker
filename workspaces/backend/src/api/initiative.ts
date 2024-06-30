@@ -17,18 +17,10 @@ import {
 	fetchPdf,
 	imageOutDirectory,
 	pdfOutDirectory,
-	transformImageUrl,
-	transformPdfUrl,
+	transformInitiativeUrls,
+	transformOrganisationUrls,
 } from '../paths.ts';
 import {makeValidator, validateUrl} from '../validate-body.ts';
-
-export function transformInitiativeUrls(initiative: Initiative): Initiative {
-	return {
-		...initiative,
-		pdfUrl: transformPdfUrl(initiative.pdfUrl),
-		imageUrl: transformImageUrl(initiative.imageUrl),
-	};
-}
 
 const initativeKeyValidators = {
 	shortName(shortName: unknown): ApiResponse<string> {
@@ -298,7 +290,9 @@ function enrichInitiative(initiative: Initiative): EnrichedInitiative {
 	return {
 		...initiative,
 		signatures: people,
-		organisations,
+		organisations: organisations.map(organisation =>
+			transformOrganisationUrls(organisation),
+		),
 	};
 }
 

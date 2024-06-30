@@ -3,6 +3,10 @@ import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
 
 import {fileTypeFromBuffer} from 'file-type';
+import type {
+	Initiative,
+	Organisation,
+} from '@lusc/initiatives-tracker-util/types.js';
 
 import {validateUrl} from './validate-body.ts';
 
@@ -18,6 +22,28 @@ await mkdir(imageOutDirectory, {recursive: true});
 export const staticRoot = fileURLToPath(
 	import.meta.resolve('@lusc/initiatives-tracker-frontend'),
 );
+
+export function transformOrganisationUrls<T extends Organisation>(
+	organisation: T,
+): T {
+	return {
+		...organisation,
+		image:
+			organisation.image === null
+				? null
+				: transformImageUrl(organisation.image),
+	};
+}
+
+export function transformInitiativeUrls<T extends Initiative>(
+	initiative: T,
+): T {
+	return {
+		...initiative,
+		pdfUrl: transformPdfUrl(initiative.pdfUrl),
+		imageUrl: transformImageUrl(initiative.imageUrl),
+	};
+}
 
 export function transformImageUrl(imageUrl: string) {
 	return `/api/user-content/image/${imageUrl}`;

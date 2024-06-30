@@ -10,8 +10,7 @@ import type {
 
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
-
-import {transformInitiativeUrls} from './initiative.ts';
+import {transformInitiativeUrls} from '../paths.ts';
 
 function enrichPerson(person: Person): EnrichedPerson {
 	const initiatives = database
