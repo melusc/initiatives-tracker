@@ -1,7 +1,8 @@
 import {randomBytes, randomUUID} from 'node:crypto';
-import {stdin, stdout, argv} from 'node:process';
+import {stdin, stdout} from 'node:process';
 import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
+import {parseArgs} from 'node:util';
 
 import Database, {type Database as DatabaseT} from 'better-sqlite3';
 
@@ -11,6 +12,22 @@ import {scrypt} from './promisified.ts';
 export const database: DatabaseT = new Database(
 	fileURLToPath(new URL('initiatives-tracker.db', dataDirectory)),
 );
+
+const {
+	values: {createLogin: shouldCreateLogin},
+} = parseArgs({
+	options: {
+		createLogin: {
+			type: 'boolean',
+			short: 'c',
+			default: false,
+		},
+		username: {
+			type: 'string',
+			short: 'u',
+		},
+	},
+});
 
 database.pragma('journal_mode = WAL');
 database.pragma('foreign_keys = ON');
@@ -78,58 +95,48 @@ database
 	.prepare<{expires: number}>('DELETE FROM sessions WHERE expires < :expires')
 	.run({expires: Date.now()});
 
-const loginsRows = database
-	.prepare<
-		[],
-		{count: number}
-	>('SELECT count(userId) as count from logins where isAdmin = 1;')
-	.get();
-
-const createLogin = argv.includes('--create-login') || argv.includes('-c');
-if (!loginsRows || loginsRows.count === 0 || createLogin) {
+if (shouldCreateLogin) {
 	const rl = createInterface({
 		input: stdin,
 		output: stdout,
 	});
 
-	let shouldCreateAdmin = createLogin
-		? 'y'
-		: await rl.question('No admin accounts exist. Create one? (y/n) ');
-	shouldCreateAdmin = shouldCreateAdmin.toLowerCase().trim();
-	if (shouldCreateAdmin === 'y') {
-		const username = await rl.question('Username: ');
-		const password = await rl.question('Password: ');
+	const username = await rl.question('Username: ');
+	const password = await rl.question('Password: ');
+	const isAdminAnswer = await rl.question('Admin? (y/n) ');
+	const isAdmin = ['y', 'yes'].includes(isAdminAnswer.trim().toLowerCase());
 
-		rl.close();
+	rl.close();
 
-		const salt = randomBytes(64);
-		const passwordHash = await scrypt(password, salt, 64);
+	const salt = randomBytes(64);
+	const passwordHash = await scrypt(password, salt, 64);
 
-		database
-			.prepare<{
-				userId: string;
-				username: string;
-				passwordHash: Buffer;
-				salt: Buffer;
-			}>(
-				`
+	database
+		.prepare<{
+			userId: string;
+			username: string;
+			passwordHash: Buffer;
+			salt: Buffer;
+			isAdmin: 1 | 0;
+		}>(
+			`
 			INSERT INTO logins
 				(userId, username, passwordHash, passwordSalt, isAdmin)
 				values
-				(:userId, :username, :passwordHash, :salt, 1);
+				(:userId, :username, :passwordHash, :salt, :isAdmin);
 		`,
-			)
-			.run({
-				userId: randomUUID(),
-				username,
-				passwordHash,
-				salt,
-			});
+		)
+		.run({
+			userId: randomUUID(),
+			username,
+			passwordHash,
+			salt,
+			isAdmin: isAdmin ? 1 : 0,
+		});
 
-		console.log('Created admin account "%s"', username);
-	} else if (shouldCreateAdmin !== 'n') {
-		rl.close();
-
-		throw new Error(`Invalid input ${shouldCreateAdmin}. Expected y/n`);
-	}
+	console.log(
+		'Created %s "%s"',
+		isAdmin ? 'admin account' : 'account',
+		username,
+	);
 }
