@@ -27,8 +27,8 @@
 
 	const successState = createSuccessState();
 
-	async function submitAssociation(event: SubmitEvent): Promise<void> {
-		event.preventDefault();
+	async function submitAssociation(event?: SubmitEvent): Promise<void> {
+		event?.preventDefault();
 
 		if (formDisabled) {
 			return;
@@ -56,6 +56,12 @@
 			} else {
 				successState.setError('Unknown error occurred');
 			}
+		}
+	}
+
+	function handleKeydown(event: KeyboardEvent): void {
+		if (event.key === 'Enter') {
+			void submitAssociation();
 		}
 	}
 
@@ -87,7 +93,7 @@
 
 <form class="add-organisation" on:submit={submitAssociation}>
 	{#if filteredOrganisations && filteredOrganisations.length > 0}
-		<select bind:value={organisationId}>
+		<select bind:value={organisationId} on:keydown={handleKeydown}>
 			<option disabled selected value="add-organisation"
 				>Add organisation</option
 			>

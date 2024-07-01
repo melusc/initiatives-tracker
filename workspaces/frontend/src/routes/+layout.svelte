@@ -40,4 +40,8 @@
 	.App > :global(*) {
 		max-width: 100vw;
 	}
+
+	main {
+		padding: 3em;
+	}
 </style>

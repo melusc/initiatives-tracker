@@ -2,8 +2,11 @@
 	import {type EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
 
 	import Trash from '../icons/trash.svelte';
+	import {getLogin} from '../../state.ts';
 
 	export let initiative: EnrichedInitiative;
+
+	const login = getLogin();
 
 	function handleKeyboardRemove(id: string): (event: KeyboardEvent) => void {
 		return (event: KeyboardEvent) => {
@@ -53,15 +56,17 @@
 						{organisation.name}
 					{/if}
 				</a>
-				<div
-					class="trash"
-					on:click={handleClickRemove(organisation.id)}
-					on:keydown={handleKeyboardRemove(organisation.id)}
-					role="button"
-					tabindex="0"
-				>
-					<Trash />
-				</div>
+				{#if login?.isAdmin}
+					<div
+						class="trash"
+						on:click={handleClickRemove(organisation.id)}
+						on:keydown={handleKeyboardRemove(organisation.id)}
+						role="button"
+						tabindex="0"
+					>
+						<Trash />
+					</div>
+				{/if}
 			</div>
 		{/each}
 	</div>

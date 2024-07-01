@@ -1,8 +1,13 @@
 <script lang="ts">
+	import {getLogin} from '../state.ts';
+
 	import TrashIcon from './icons/trash.svelte';
 
 	export let api: string;
 	export let name: string;
+	export let nonAdminAllowed = false;
+
+	const login = getLogin();
 
 	let confirmed = false;
 	async function deleteOrganisation(): Promise<void> {
@@ -15,14 +20,16 @@
 	}
 </script>
 
-<button class="delete inline-svg button-reset" on:click={deleteOrganisation}>
-	{#if confirmed}
-		Press again to confirm
-	{:else}
-		Delete "{name}"
-	{/if}
-	<TrashIcon />
-</button>
+{#if nonAdminAllowed || login?.isAdmin}
+	<button class="delete inline-svg button-reset" on:click={deleteOrganisation}>
+		{#if confirmed}
+			Press again to confirm
+		{:else}
+			Delete "{name}"
+		{/if}
+		<TrashIcon />
+	</button>
+{/if}
 
 <style>
 	.inline-svg {

@@ -9,10 +9,10 @@
 	const people = getState<EnrichedPerson[]>();
 </script>
 
-<CreateButton text="Create person" href="/person/create" />
+<CreateButton text="Create person" href="/person/create" nonAdminAllowed />
 
 <div class="people">
-	{#if people}
+	{#if people && people.length > 0}
 		<div class="table">
 			<div class="thead">
 				<div class="cell" />
@@ -29,17 +29,12 @@
 				<div class="cell">{person.initiatives.length}</div>
 			{/each}
 		</div>
-	{:else}
+	{:else if !people}
 		<Loading />
 	{/if}
 </div>
 
 <style>
-	.people {
-		padding: 3em;
-		padding-top: 0;
-	}
-
 	.table {
 		display: grid;
 		grid-template-columns: repeat(3, max-content);

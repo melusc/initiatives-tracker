@@ -1,13 +1,20 @@
 <script lang="ts">
+	import {getLogin} from '../state.ts';
+
 	import AddIcon from './icons/add.svelte';
 
 	export let text: string;
 	export let href: string;
+	export let nonAdminAllowed = false;
+
+	const login = getLogin();
 </script>
 
-<div class="button">
-	<a class="href" {href}>{text} <AddIcon /></a>
-</div>
+{#if nonAdminAllowed || login?.isAdmin}
+	<div class="button">
+		<a class="href" {href}>{text} <AddIcon /></a>
+	</div>
+{/if}
 
 <style>
 	.button {
@@ -15,6 +22,7 @@
 		flex-direction: row;
 
 		justify-content: flex-end;
+		padding-bottom: 2em;
 	}
 
 	.href {
@@ -27,8 +35,6 @@
 		text-decoration: none;
 		font-size: 20px;
 
-		margin-top: 3em;
-		margin-right: 3em;
 		padding: 0.3em 0.5em;
 
 		border: 1px solid var(--text-dark);

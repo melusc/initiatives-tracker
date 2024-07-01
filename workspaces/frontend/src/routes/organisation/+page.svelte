@@ -9,14 +9,14 @@
 	let organisation = getState<EnrichedOrganisation>();
 </script>
 
-<div class="initiatives">
+<div class="organisation">
 	{#if organisation}
 		<h1 class="name">{organisation.name}</h1>
 		<Organisation bind:organisation allowEdit standalone />
 
 		{#if organisation.signatures.length > 0}
 			<h1 class="initiatives-title">Initiatives</h1>
-			<div class="signed-initiatives">
+			<div class="initiatives">
 				{#each organisation.signatures as initiative (initiative.id)}
 					<Initiative {initiative} allowEdit={false} standalone={false} />
 				{/each}
@@ -28,12 +28,11 @@
 </div>
 
 <style>
-	.initiatives {
-		padding: 3em;
+	.organisation {
 		width: 100%;
 	}
 
-	.signed-initiatives {
+	.initiatives {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 2em;

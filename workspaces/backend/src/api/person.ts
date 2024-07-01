@@ -1,6 +1,6 @@
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
-import type {RequestHandler} from 'express';
+import {Router, type RequestHandler} from 'express';
 import type {
 	EnrichedPerson,
 	Initiative,
@@ -212,7 +212,10 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 		return;
 	}
 
-	if ('name' in validateResult.data) {
+	if (
+		'name' in validateResult.data
+		&& validateResult.data.name !== oldRow.name
+	) {
 		const sameName = database
 			.prepare<
 				{name: string; owner: string},
@@ -323,3 +326,12 @@ export const getAllPeopleEndpoint: RequestHandler = async (
 		data: getAllPeople(response.locals.login.id),
 	});
 };
+
+// eslint-disable-next-line new-cap
+export const personRouter = Router();
+
+personRouter.get('/people', getAllPeopleEndpoint);
+personRouter.post('/person/create', createPersonEndpoint);
+personRouter.get('/person/:id', getPersonEndpoint);
+personRouter.delete('/person/:id', deletePerson);
+personRouter.patch('/person/:id', patchPerson);

@@ -2,22 +2,17 @@
 	import type {EnrichedPerson} from '@lusc/initiatives-tracker-util/types.js';
 
 	import Loading from '../../components/loading.svelte';
-	import {getLogin, getState} from '../../state.ts';
-	import EditableTitle from '../../components/editable-title.svelte';
+	import {getState} from '../../state.ts';
+	import EditableTitle from '../../components/person/editable-title.svelte';
 	import Initiative from '../../components/initiative.svelte';
 	import DeleteButton from '../../components/delete-button.svelte';
 
 	let person = getState<EnrichedPerson>();
-	const login = getLogin();
 </script>
 
 <div class="person" data-person={person?.id}>
 	{#if person}
-		<EditableTitle
-			bind:subject={person}
-			canEdit={login?.isAdmin ?? false}
-			patchApi="/api/person/{person.id}"
-		/>
+		<EditableTitle bind:subject={person} patchApi="/api/person/{person.id}" />
 
 		{#if person?.initiatives.length > 0}
 			<h1>Signed Initiatives</h1>
@@ -28,21 +23,22 @@
 			</div>
 		{/if}
 
-		<DeleteButton api="/api/person/{person.id}" name={person.name} />
+		<DeleteButton
+			api="/api/person/{person.id}"
+			name={person.name}
+			nonAdminAllowed
+		/>
 	{:else}
 		<Loading />
 	{/if}
 </div>
 
 <style>
-	.person {
-		padding: 3em;
-	}
-
 	.signed-initiatives {
-		padding: 3em;
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1em;
+
+		margin-bottom: 2em;
 	}
 </style>

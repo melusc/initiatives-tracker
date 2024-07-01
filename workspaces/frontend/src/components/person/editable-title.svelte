@@ -3,12 +3,10 @@
 	import {afterUpdate} from 'svelte';
 	import {slide} from 'svelte/transition';
 
-	import {createSuccessState} from '../success-state.ts';
+	import {createSuccessState} from '../../success-state.ts';
+	import CreateIcon from '../icons/create.svelte';
+	import Save from '../icons/save.svelte';
 
-	import CreateIcon from './icons/create.svelte';
-	import Save from './icons/save.svelte';
-
-	export let canEdit: boolean;
 	export let subject: T;
 	export let patchApi: string;
 
@@ -76,25 +74,23 @@
 		{subject.name}
 	</h1>
 
-	{#if canEdit}
-		{#if editEnabled}
-			<button
-				class="save inline-svg remove-style"
-				type="submit"
-				class:success={$successState?.type === 'success'}
-				class:error={$successState?.type === 'error'}
-				on:click={handleSave}
-			>
-				<Save />
-			</button>
-		{:else}
-			<button
-				class="enable-edit inline-svg remove-style"
-				class:success={$successState?.type === 'success'}
-				class:error={$successState?.type === 'error'}
-				on:click={enableEdit}><CreateIcon /></button
-			>
-		{/if}
+	{#if editEnabled}
+		<button
+			class="save inline-svg remove-style"
+			type="submit"
+			class:success={$successState?.type === 'success'}
+			class:error={$successState?.type === 'error'}
+			on:click={handleSave}
+		>
+			<Save />
+		</button>
+	{:else}
+		<button
+			class="enable-edit inline-svg remove-style"
+			class:success={$successState?.type === 'success'}
+			class:error={$successState?.type === 'error'}
+			on:click={enableEdit}><CreateIcon /></button
+		>
 	{/if}
 </div>
 

@@ -24,8 +24,8 @@
 
 	const successState = createSuccessState();
 
-	async function submitSignature(event: SubmitEvent): Promise<void> {
-		event.preventDefault();
+	async function submitSignature(event?: SubmitEvent): Promise<void> {
+		event?.preventDefault();
 
 		if (formDisabled) {
 			return;
@@ -56,6 +56,12 @@
 		}
 	}
 
+	function handleKeydown(event: KeyboardEvent): void {
+		if (event.key === 'Enter') {
+			void submitSignature();
+		}
+	}
+
 	async function fetchPeople(): Promise<void> {
 		try {
 			const response = await fetch('/api/people', {redirect: 'error'});
@@ -82,7 +88,7 @@
 
 <form class="add-signature" on:submit={submitSignature}>
 	{#if filteredPeople && filteredPeople.length > 0}
-		<select bind:value={personId}>
+		<select bind:value={personId} on:keydown={handleKeydown}>
 			<option disabled selected value="add-signature">Add signature</option>
 
 			{#each filteredPeople as person (person.id)}

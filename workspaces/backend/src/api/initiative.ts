@@ -2,7 +2,7 @@ import {unlink, writeFile} from 'node:fs/promises';
 
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
-import type {RequestHandler} from 'express';
+import {Router, type RequestHandler} from 'express';
 import type {
 	Initiative,
 	EnrichedInitiative,
@@ -21,6 +21,7 @@ import {
 	transformOrganisationUrls,
 } from '../paths.ts';
 import {makeValidator, validateUrl} from '../validate-body.ts';
+import {requireAdmin} from '../middle-ware/require-admin.ts';
 
 const initativeKeyValidators = {
 	shortName(shortName: unknown): ApiResponse<string> {
@@ -553,3 +554,42 @@ export const initiativeRemoveOrganisation: RequestHandler<{
 		type: 'success',
 	});
 };
+
+// eslint-disable-next-line new-cap
+export const initiativeRouter = Router();
+
+/* NON-ADMIN */
+initiativeRouter.put(
+	'/initiative/:initiativeId/sign/:personId',
+	initiativeAddSignature,
+);
+initiativeRouter.delete(
+	'/initiative/:initiativeId/sign/:personId',
+	initiativeRemoveSignature,
+);
+
+/* ADMIN (expect GET) */
+initiativeRouter.get('/initiatives', getAllInitiativesEndpoint);
+initiativeRouter.post(
+	'/initiative/create',
+	requireAdmin(),
+	createInitiativeEndpoint,
+);
+initiativeRouter.get('/initiative/:id', getInitiativeEndpoint);
+initiativeRouter.delete('/initiative/:id', requireAdmin(), deleteInitiative);
+initiativeRouter.patch(
+	'/initiative/:id',
+	requireAdmin(),
+	patchInitiativeEndpoint,
+);
+
+initiativeRouter.put(
+	'/initiative/:initiativeId/organisation/:organisationId',
+	requireAdmin(),
+	initiativeAddOrganisation,
+);
+initiativeRouter.delete(
+	'/initiative/:initiativeId/organisation/:organisationId',
+	requireAdmin(),
+	initiativeRemoveOrganisation,
+);

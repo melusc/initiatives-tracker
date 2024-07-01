@@ -1,6 +1,6 @@
 import {unlink, writeFile} from 'node:fs/promises';
 
-import type {RequestHandler} from 'express';
+import {Router, type RequestHandler} from 'express';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import type {
@@ -18,6 +18,7 @@ import {
 	transformOrganisationUrls,
 } from '../paths.ts';
 import {database} from '../db.ts';
+import {requireAdmin} from '../middle-ware/require-admin.ts';
 
 function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
 	const id = organisation.id;
@@ -360,3 +361,24 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		}),
 	});
 };
+
+// eslint-disable-next-line new-cap
+export const organisationRouter = Router();
+
+organisationRouter.get('/organisations', getAllOrganisationsEndpoint);
+organisationRouter.post(
+	'/organisation/create',
+	requireAdmin(),
+	createOrganisationEndpoint,
+);
+organisationRouter.get('/organisation/:id', getOrganisationEndpoint);
+organisationRouter.delete(
+	'/organisation/:id',
+	requireAdmin(),
+	deleteOrganisation,
+);
+organisationRouter.patch(
+	'/organisation/:id',
+	requireAdmin(),
+	patchOrganisation,
+);

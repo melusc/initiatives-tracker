@@ -16,7 +16,7 @@ import {
 	getAllOrganisations,
 	getOrganisation,
 } from './api/organisation.ts';
-import {createPerson, getAllPeople, getPerson} from './api/persons.ts';
+import {createPerson, getAllPeople, getPerson} from './api/person.ts';
 import {database} from './db.ts';
 import {setHeaders} from './middle-ware/disable-interest-cohort.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
@@ -24,6 +24,7 @@ import {staticRoot} from './paths.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
 import {svelteKitEngine} from './svelte-kit-engine.ts';
+import {requireAdmin} from './middle-ware/require-admin.ts';
 
 const app = express();
 
@@ -114,14 +115,14 @@ app.get('/', (_, response) => {
 	});
 });
 
-app.get('/initiative/create', (_, response) => {
+app.get('/initiative/create', requireAdmin(), (_, response) => {
 	response.render('create-initiative', {
 		login: response.locals.login,
 		state: {values: {}},
 	});
 });
 
-app.post('/initiative/create', async (request, response) => {
+app.post('/initiative/create', requireAdmin(), async (request, response) => {
 	const body = request.body as Record<string, unknown>;
 
 	const initiative = await createInitiative(response.locals.login.id, body);
@@ -212,14 +213,14 @@ app.get('/organisations', (_request, response) => {
 	});
 });
 
-app.get('/organisation/create', (_, response) => {
+app.get('/organisation/create', requireAdmin(), (_, response) => {
 	response.render('create-organisation', {
 		login: response.locals.login,
 		state: {values: {}},
 	});
 });
 
-app.post('/organisation/create', async (request, response) => {
+app.post('/organisation/create', requireAdmin(), async (request, response) => {
 	const body = request.body as Record<string, unknown>;
 
 	const organisation = await createOrganisation(body);

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type {EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
 
-	import {getState} from '../../state.ts';
+	import {getLogin, getState} from '../../state.ts';
 	import Initiative from '../../components/initiative.svelte';
 	import Loading from '../../components/loading.svelte';
 	import SignedBy from '../../components/initiative/signed-by.svelte';
@@ -10,6 +10,8 @@
 	import AddOrganisation from '../../components/initiative/add-organisation.svelte';
 
 	let initiative = getState<EnrichedInitiative>();
+
+	const login = getLogin();
 </script>
 
 <div class="initiative">
@@ -21,9 +23,14 @@
 		<SignedBy bind:initiative />
 		<AddSignature bind:initiative />
 
-		<h1>Organisations</h1>
-		<AssociatedOrganisations bind:initiative />
-		<AddOrganisation bind:initiative />
+		{#if login?.isAdmin}
+			<h1>Organisations</h1>
+			<AssociatedOrganisations bind:initiative />
+			<AddOrganisation bind:initiative />
+		{:else if initiative.organisations.length > 0}
+			<h1>Organisations</h1>
+			<AssociatedOrganisations bind:initiative />
+		{/if}
 	{:else}
 		<Loading />
 	{/if}
@@ -31,7 +38,6 @@
 
 <style>
 	.initiative {
-		padding: 3em;
 		width: 100%;
 	}
 

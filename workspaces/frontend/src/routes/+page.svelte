@@ -27,10 +27,8 @@
 
 <style>
 	.index {
-		padding: 3em;
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 		gap: 2em;
-		padding-top: 1em;
 	}
 </style>
