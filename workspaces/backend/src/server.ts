@@ -18,7 +18,7 @@ import {
 } from './api/organisation.ts';
 import {createPerson, getAllPeople, getPerson} from './api/person.ts';
 import {database} from './db.ts';
-import {setHeaders} from './middle-ware/disable-interest-cohort.ts';
+import {setHeaders} from './middle-ware/set-headers.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
 import {staticRoot} from './paths.ts';
 import {loginPost} from './routes/login.ts';
