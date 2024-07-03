@@ -9,7 +9,7 @@ export function makeSlug(s: string) {
 	s += '-' + randomBytes(4).toString('hex');
 
 	// Merge many "-", "_", and spaces into single "-"
-	s = s.replaceAll(/[\s_\-\/]+/g, '-');
+	s = s.replaceAll(/[\s_\-/]+/g, '-');
 
 	s = s.replaceAll(/[^\da-z-]/g, '');
 
