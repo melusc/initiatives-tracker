@@ -49,7 +49,7 @@ const personKeyValidators = {
 			};
 		}
 
-		if (!/^[a-züöäéèëï][a-züöäéèëï\d\- .]+$/i.test(name)) {
+		if (!/^[a-züöäéèëï][a-züöäéèëï\d\-/ .]+$/i.test(name)) {
 			return {
 				type: 'error',
 				readableError: 'Name must contain only latin letters.',
