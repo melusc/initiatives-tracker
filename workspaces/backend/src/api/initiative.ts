@@ -3,6 +3,11 @@ import {unlink, writeFile} from 'node:fs/promises';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import {Router, type RequestHandler} from 'express';
+import {
+	sortInitiatives,
+	sortOrganisations,
+	sortPeople,
+} from '@lusc/initiatives-tracker-util/sort.js';
 import type {
 	Initiative,
 	EnrichedInitiative,
@@ -299,8 +304,8 @@ function enrichInitiative(
 
 	return {
 		...initiative,
-		signatures: people,
-		organisations: organisations.map(organisation =>
+		signatures: sortPeople(people),
+		organisations: sortOrganisations(organisations).map(organisation =>
 			transformOrganisationUrls(organisation),
 		),
 	};
@@ -308,10 +313,10 @@ function enrichInitiative(
 
 export function getAllInitiatives(loginUserId: string): EnrichedInitiative[] {
 	const rows = database
-		.prepare<[], Initiative>('SELECT initiatives.* from initiatives')
+		.prepare<[], Initiative>('SELECT initiatives.* FROM initiatives')
 		.all();
 
-	return rows.map(initiative =>
+	return sortInitiatives(rows).map(initiative =>
 		enrichInitiative(transformInitiativeUrls(initiative), loginUserId),
 	);
 }

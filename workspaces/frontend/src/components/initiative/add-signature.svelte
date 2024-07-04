@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {sortPeople} from '@lusc/initiatives-tracker-util/sort.js';
 	import type {
 		ApiResponse,
 		ApiResponseSuccess,
@@ -40,10 +41,10 @@
 
 			if (body.type === 'success') {
 				successState.setSuccess();
-				initiative.signatures = [
+				initiative.signatures = sortPeople([
 					...initiative.signatures,
 					(people as Person[]).find(s => s.id === personId)!,
-				];
+				]);
 
 				personId = 'add-signature';
 			}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import {sortOrganisations} from '@lusc/initiatives-tracker-util/sort.js';
 	import type {
 		ApiResponse,
 		ApiResponseSuccess,
@@ -43,10 +44,10 @@
 
 			if (body.type === 'success') {
 				successState.setSuccess();
-				initiative.organisations = [
+				initiative.organisations = sortOrganisations([
 					...initiative.organisations,
 					(organisations as Organisation[]).find(s => s.id === organisationId)!,
-				];
+				]);
 
 				organisationId = 'add-organisation';
 			}

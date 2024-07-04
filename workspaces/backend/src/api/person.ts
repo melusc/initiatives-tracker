@@ -7,6 +7,10 @@ import type {
 	Person,
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
+import {
+	sortInitiatives,
+	sortPeople,
+} from '@lusc/initiatives-tracker-util/sort.js';
 
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
@@ -23,7 +27,7 @@ function enrichPerson(person: Person): EnrichedPerson {
 
 	return {
 		...person,
-		initiatives: initiatives.map(initiative =>
+		initiatives: sortInitiatives(initiatives).map(initiative =>
 			transformInitiativeUrls(initiative),
 		),
 	};
@@ -309,12 +313,12 @@ export function getAllPeople(owner: string) {
 				owner: string;
 			},
 			Person
-		>('SELECT id, name, owner from people WHERE owner = :owner')
+		>('SELECT id, name, owner FROM people WHERE owner = :owner')
 		.all({
 			owner,
 		});
 
-	return rows.map(person => enrichPerson(person));
+	return sortPeople(rows).map(person => enrichPerson(person));
 }
 
 export const getAllPeopleEndpoint: RequestHandler = async (

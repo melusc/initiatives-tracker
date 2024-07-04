@@ -2,6 +2,10 @@ import {unlink, writeFile} from 'node:fs/promises';
 
 import {Router, type RequestHandler} from 'express';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
+import {
+	sortInitiatives,
+	sortOrganisations,
+} from '@lusc/initiatives-tracker-util/sort.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
 import type {
 	Initiative,
@@ -27,14 +31,14 @@ function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
 		.prepare<{organisationId: string}, Initiative>(
 			`SELECT initiatives.* FROM initiatives
 			INNER JOIN initiativeOrganisations
-			on initiativeOrganisations.initiativeId = initiatives.id
-			where initiativeOrganisations.organisationId = :organisationId`,
+			ON initiativeOrganisations.initiativeId = initiatives.id
+			WHERE initiativeOrganisations.organisationId = :organisationId`,
 		)
 		.all({organisationId: id});
 
 	return {
 		...organisation,
-		signatures: initiatives.map(initiative =>
+		signatures: sortInitiatives(initiatives).map(initiative =>
 			transformInitiativeUrls(initiative),
 		),
 	};
@@ -206,7 +210,7 @@ export function getAllOrganisations() {
 		>('SELECT id, name, imageUrl, website FROM organisations')
 		.all();
 
-	return rows.map(organisation =>
+	return sortOrganisations(rows).map(organisation =>
 		enrichOrganisation(transformOrganisationUrls(organisation)),
 	);
 }
