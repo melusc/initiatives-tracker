@@ -46,7 +46,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: build
-          path: .
+          path: |
+            .
+            !./node_modules
 
   upload:
     runs-on: ubuntu-latest
@@ -57,6 +59,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
+      - run: ls -R
       - name: Pre upload cleanup
         uses: appleboy/ssh-action@v1.0.3
         with:
