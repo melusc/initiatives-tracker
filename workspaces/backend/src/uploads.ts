@@ -1,3 +1,4 @@
+import {Buffer} from 'node:buffer';
 import {mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
 import {randomUUID} from 'node:crypto';
@@ -8,6 +9,8 @@ import type {
 	Organisation,
 } from '@lusc/initiatives-tracker-util/types.js';
 import {optimize as svgoOptimise} from 'svgo';
+import multer, {memoryStorage} from 'multer';
+import type {Request} from 'express';
 
 import {validateUrl} from './validate-body.ts';
 
@@ -24,15 +27,29 @@ export const staticRoot = fileURLToPath(
 	import.meta.resolve('@lusc/initiatives-tracker-frontend'),
 );
 
+const fileSizeLimit = 10_485_760; // 10 MB
+const allowedImages: ReadonlySet<string> = new Set<string>([
+	'image/jpeg',
+	'image/png',
+	'image/avif',
+	'image/webp',
+]);
+export const multerUpload = multer({
+	storage: memoryStorage(),
+	limits: {
+		fileSize: fileSizeLimit,
+	},
+});
+
 export function transformOrganisationUrls<T extends Organisation>(
 	organisation: T,
 ): T {
 	return {
 		...organisation,
-		imageUrl:
-			organisation.imageUrl === null
+		image:
+			organisation.image === null
 				? null
-				: transformImageUrl(organisation.imageUrl),
+				: transformImageUrl(organisation.image),
 	};
 }
 
@@ -41,8 +58,8 @@ export function transformInitiativeUrls<T extends Initiative>(
 ): T {
 	return {
 		...initiative,
-		pdfUrl: transformPdfUrl(initiative.pdfUrl),
-		imageUrl: transformImageUrl(initiative.imageUrl),
+		pdf: transformPdfUrl(initiative.pdf),
+		image: transformImageUrl(initiative.image),
 	};
 }
 
@@ -57,7 +74,7 @@ export function transformPdfUrl(pdfUrl: string) {
 /**
  * Timeout after five seconds. Disallow files greater than 10 mb
  */
-async function safeFetch(url: string) {
+async function safeFetch(url: URL) {
 	const controller = new AbortController();
 	const {signal} = controller;
 	setTimeout(() => {
@@ -72,20 +89,12 @@ async function safeFetch(url: string) {
 
 	const body = await response.arrayBuffer();
 
-	// 10 mb
-	if (body.byteLength > 10_485_760) {
+	if (body.byteLength > fileSizeLimit) {
 		throw new Error('File is too large');
 	}
 
 	return body;
 }
-
-const allowedImages: ReadonlySet<string> = new Set<string>([
-	'image/jpeg',
-	'image/png',
-	'image/avif',
-	'image/webp',
-]);
 
 function handleSvg(body: string): {
 	id: string;
@@ -144,10 +153,18 @@ function handleSvg(body: string): {
 	}
 }
 
-export async function fetchImage(
-	imageUrl: string,
-): Promise<{id: string; suggestedFilePath: URL; body: ArrayBuffer}> {
-	const body = await safeFetch(imageUrl);
+export type FetchedFile = {
+	id: string;
+	suggestedFilePath: URL;
+	body: ArrayBuffer;
+};
+
+export async function fetchImage(image: URL | Buffer): Promise<FetchedFile> {
+	const body = Buffer.isBuffer(image) ? image.buffer : await safeFetch(image);
+
+	if (body.byteLength > fileSizeLimit) {
+		throw new Error('File is too large');
+	}
 
 	const stringified = new TextDecoder().decode(body);
 
@@ -170,10 +187,12 @@ export async function fetchImage(
 	};
 }
 
-export async function fetchPdf(
-	pdfUrl: string,
-): Promise<{id: string; suggestedFilePath: URL; body: ArrayBuffer}> {
-	const body = await safeFetch(pdfUrl);
+export async function fetchPdf(pdf: URL | Buffer): Promise<FetchedFile> {
+	const body = Buffer.isBuffer(pdf) ? pdf.buffer : await safeFetch(pdf);
+
+	if (body.byteLength > fileSizeLimit) {
+		throw new Error('File is too large');
+	}
 
 	const type = await fileTypeFromBuffer(body);
 
@@ -188,4 +207,24 @@ export async function fetchPdf(
 		suggestedFilePath: new URL(id, pdfOutDirectory),
 		body,
 	};
+}
+
+export function mergeExpressBodyFile(request: Request, keys: string[]) {
+	const files = request.files as unknown as Record<
+		string,
+		Express.Multer.File[]
+	>;
+
+	const body = {
+		...(request.body as Record<string, unknown>),
+	};
+
+	for (const key of keys) {
+		const item = files[key]?.[0]?.buffer;
+		if (item) {
+			body[key] = item;
+		}
+	}
+
+	return body;
 }

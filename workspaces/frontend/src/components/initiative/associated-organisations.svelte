@@ -45,10 +45,10 @@
 					class="organisation-image-href"
 					href="/organisation/{organisation.id}"
 				>
-					{#if organisation.imageUrl}
+					{#if organisation.image}
 						<img
 							class="organisation-image"
-							src={organisation.imageUrl}
+							src={organisation.image}
 							title={organisation.name}
 							alt={organisation.name}
 						/>

@@ -9,6 +9,7 @@
 	import Card from './card.svelte';
 	import Calendar from './icons/calendar.svelte';
 	import DeleteButton from './delete-button.svelte';
+	import PatchInputFile from './patch-input-file.svelte';
 
 	export let initiative: Initiative;
 
@@ -64,23 +65,21 @@
 			bind:value={initiative.website}
 			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
-		<PatchInput
-			name="pdfUrl"
+		<PatchInputFile
+			name="pdf"
 			label="PDF Url"
-			type="text"
-			bind:value={initiative.pdfUrl}
+			bind:value={initiative.pdf}
 			initialValue=""
 			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
-		<PatchInput
-			name="imageUrl"
+		<PatchInputFile
+			name="image"
 			label="Image Url"
-			type="text"
-			bind:value={initiative.imageUrl}
+			bind:value={initiative.image}
 			initialValue=""
 			apiEndpoint="/api/initiative/{initiative.id}"
 		/>
-		<img class="image-url" src={initiative.imageUrl} alt="" />
+		<img class="image-url" src={initiative.image} alt="" />
 	{:else}
 		<a
 			href={standalone ? undefined : `/initiative/${initiative.id}`}
@@ -96,9 +95,9 @@
 		>
 			Initiative website <ExternalLinkIcon />
 		</a>
-		<a class="pdf-url" href={initiative.pdfUrl}>Download initiative as PDF</a>
+		<a class="pdf-url" href={initiative.pdf}>Download initiative as PDF</a>
 		<a href={standalone ? undefined : `/initiative/${initiative.id}`}>
-			<img class="image-url" src={initiative.imageUrl} alt="" />
+			<img class="image-url" src={initiative.image} alt="" />
 		</a>
 	{/if}
 

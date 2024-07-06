@@ -1,6 +1,6 @@
 import {unlink, writeFile} from 'node:fs/promises';
 
-import {Router, type RequestHandler} from 'express';
+import {Router, type Request, type RequestHandler} from 'express';
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
 import {
 	sortInitiatives,
@@ -18,9 +18,11 @@ import {makeValidator, validateUrl} from '../validate-body.ts';
 import {
 	fetchImage,
 	imageOutDirectory,
+	mergeExpressBodyFile,
 	transformInitiativeUrls,
 	transformOrganisationUrls,
-} from '../paths.ts';
+	type FetchedFile,
+} from '../uploads.ts';
 import {database} from '../db.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
 
@@ -77,15 +79,15 @@ const organisationKeyValidators = {
 			data: name,
 		};
 	},
-	async imageUrl(
-		imageUrl: unknown,
+	async image(
+		image: unknown,
 	): Promise<
 		ApiResponse<null | {id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
 		if (
-			imageUrl === null
-			|| imageUrl === 'null'
-			|| (typeof imageUrl === 'string' && imageUrl.trim() === '')
+			image === null
+			|| image === 'null'
+			|| (typeof image === 'string' && image.trim() === '')
 		) {
 			return {
 				type: 'success',
@@ -93,13 +95,20 @@ const organisationKeyValidators = {
 			};
 		}
 
-		const isValidUrl = await validateUrl('Image URL', imageUrl);
-		if (isValidUrl.type === 'error') {
-			return isValidUrl;
-		}
-
 		try {
-			const localImage = await fetchImage(imageUrl as string);
+			let localImage: FetchedFile;
+
+			if (Buffer.isBuffer(image)) {
+				localImage = await fetchImage(image);
+			} else {
+				const isValidUrl = await validateUrl('Image URL', image);
+				if (isValidUrl.type === 'error') {
+					return isValidUrl;
+				}
+
+				localImage = await fetchImage(new URL(image as string));
+			}
+
 			return {
 				type: 'success',
 				data: localImage,
@@ -146,11 +155,13 @@ const organisationKeyValidators = {
 const organisationValidator = makeValidator(organisationKeyValidators);
 
 export async function createOrganisation(
-	body: Record<string, unknown>,
+	request: Request,
 ): Promise<ApiResponse<EnrichedOrganisation>> {
+	const body = mergeExpressBodyFile(request, ['image']);
+
 	const result = await organisationValidator(body, [
 		'name',
-		'imageUrl',
+		'image',
 		'website',
 	]);
 
@@ -158,24 +169,24 @@ export async function createOrganisation(
 		return result;
 	}
 
-	const {name, imageUrl, website} = result.data;
-	if (imageUrl) {
-		await writeFile(imageUrl.suggestedFilePath, new DataView(imageUrl.body));
+	const {name, image, website} = result.data;
+	if (image) {
+		await writeFile(image.suggestedFilePath, new DataView(image.body));
 	}
 
 	const id = makeSlug(name);
 	const organisation: Organisation = {
 		id,
 		name,
-		imageUrl: imageUrl ? imageUrl.id : imageUrl,
+		image: image ? image.id : image,
 		website,
 	};
 
 	database
 		.prepare<Organisation>(
 			`
-		INSERT INTO organisations (id, name, imageUrl, website)
-		values (:id, :name, :imageUrl, :website)
+		INSERT INTO organisations (id, name, image, website)
+		values (:id, :name, :image, :website)
 	`,
 		)
 		.run(organisation);
@@ -190,9 +201,7 @@ export const createOrganisationEndpoint: RequestHandler = async (
 	request,
 	response,
 ) => {
-	const result = await createOrganisation(
-		request.body as Record<string, unknown>,
-	);
+	const result = await createOrganisation(request);
 
 	if (result.type === 'error') {
 		response.status(400).json(result);
@@ -207,7 +216,7 @@ export function getAllOrganisations() {
 		.prepare<
 			[],
 			Organisation
-		>('SELECT id, name, imageUrl, website FROM organisations')
+		>('SELECT id, name, image, website FROM organisations')
 		.all();
 
 	return sortOrganisations(rows).map(organisation =>
@@ -230,7 +239,7 @@ export function getOrganisation(id: string) {
 		.prepare<
 			{id: string},
 			Organisation
-		>('SELECT id, name, website, imageUrl FROM organisations WHERE id = :id')
+		>('SELECT id, name, website, image FROM organisations WHERE id = :id')
 		.get({
 			id,
 		});
@@ -295,7 +304,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		.prepare<
 			{id: string},
 			Organisation
-		>('SELECT id, name, imageUrl, website FROM organisations WHERE id = :id')
+		>('SELECT id, name, image, website FROM organisations WHERE id = :id')
 		.get({id});
 
 	if (!oldRow) {
@@ -307,7 +316,8 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		return;
 	}
 
-	const body = request.body as Record<string, unknown>;
+	const body = mergeExpressBodyFile(request, ['image']);
+
 	const validateResult = await organisationValidator(
 		body,
 		Object.keys(body) as Array<keyof typeof organisationKeyValidators>,
@@ -320,10 +330,16 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 
 	const newData = validateResult.data;
 
-	if (newData.imageUrl) {
+	if (newData.image) {
+		if (oldRow.image !== null) {
+			try {
+				await unlink(new URL(oldRow.image, imageOutDirectory));
+			} catch {}
+		}
+
 		await writeFile(
-			newData.imageUrl.suggestedFilePath,
-			new DataView(newData.imageUrl.body),
+			newData.image.suggestedFilePath,
+			new DataView(newData.image.body),
 		);
 	}
 
@@ -338,22 +354,17 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 	const query = [];
 
 	for (const key of Object.keys(newData)) {
-		if (key === 'imageUrl' && oldRow.imageUrl !== null) {
-			try {
-				// eslint-disable-next-line no-await-in-loop
-				await unlink(new URL(oldRow.imageUrl, imageOutDirectory));
-			} catch {}
-		}
-
 		query.push(`${key} = :${key}`);
 	}
 
 	database
-		.prepare(`UPDATE organisations SET ${query.join(', ')} WHERE id = :id`)
+		.prepare<Organisation>(
+			`UPDATE organisations SET ${query.join(', ')} WHERE id = :id`,
+		)
 		.run({
 			...newData,
 			id,
-			imageUrl: newData.imageUrl ? newData.imageUrl.id : null,
+			image: newData.image ? newData.image.id : null,
 		});
 
 	response.status(200).send({
@@ -361,7 +372,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 		data: transformOrganisationUrls({
 			...oldRow,
 			...newData,
-			imageUrl: newData.imageUrl ? newData.imageUrl.id : null,
+			image: newData.image ? newData.image.id : null,
 		}),
 	});
 };

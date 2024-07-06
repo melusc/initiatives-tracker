@@ -2,7 +2,7 @@ import {fileURLToPath} from 'node:url';
 
 import {Router} from 'express';
 
-import {imageOutDirectory, pdfOutDirectory} from '../paths.ts';
+import {imageOutDirectory, pdfOutDirectory} from '../uploads.ts';
 
 // eslint-disable-next-line new-cap
 const router = Router();

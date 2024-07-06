@@ -48,11 +48,11 @@
 			apiEndpoint="/api/organisation/{organisation.id}"
 		/>
 		<PatchInput
-			name="imageUrl"
+			name="image"
 			label="Image URL"
 			type="text"
 			transform={transformOptional}
-			bind:value={organisation.imageUrl}
+			bind:value={organisation.image}
 			apiEndpoint="/api/organisation/{organisation.id}"
 		/>
 		<PatchInput
@@ -63,8 +63,8 @@
 			bind:value={organisation.website}
 			apiEndpoint="/api/organisation/{organisation.id}"
 		/>
-		{#if organisation.imageUrl}
-			<img class="image-url" src={organisation.imageUrl} alt="" />
+		{#if organisation.image}
+			<img class="image-url" src={organisation.image} alt="" />
 		{/if}
 	{:else}
 		<a
@@ -81,9 +81,9 @@
 				Website <ExternalLinkIcon />
 			</a>
 		{/if}
-		{#if organisation.imageUrl}
+		{#if organisation.image}
 			<a href={standalone ? undefined : `/organisation/${organisation.id}`}>
-				<img class="image-url" src={organisation.imageUrl} alt="" />
+				<img class="image-url" src={organisation.image} alt="" />
 			</a>
 		{/if}
 	{/if}

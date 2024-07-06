@@ -31,13 +31,13 @@
 		},
 
 		{
-			name: 'pdfUrl',
+			name: 'pdf',
 			label: 'PDF URL',
 			type: 'url',
 			minlength: 10,
 		},
 		{
-			name: 'imageUrl',
+			name: 'image',
 			label: 'Image URL',
 			type: 'url',
 			minlength: 10,

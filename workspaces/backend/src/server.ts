@@ -20,7 +20,7 @@ import {createPerson, getAllPeople, getPerson} from './api/person.ts';
 import {database} from './db.ts';
 import {setHeaders} from './middle-ware/set-headers.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
-import {staticRoot} from './paths.ts';
+import {staticRoot} from './uploads.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
 import {svelteKitEngine} from './svelte-kit-engine.ts';
@@ -223,7 +223,7 @@ app.get('/organisation/create', requireAdmin(), (_, response) => {
 app.post('/organisation/create', requireAdmin(), async (request, response) => {
 	const body = request.body as Record<string, unknown>;
 
-	const organisation = await createOrganisation(body);
+	const organisation = await createOrganisation(request);
 
 	if (organisation.type === 'error') {
 		response.status(400).render('create-organisation', {

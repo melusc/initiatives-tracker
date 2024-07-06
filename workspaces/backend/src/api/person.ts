@@ -14,7 +14,7 @@ import {
 
 import {database} from '../db.ts';
 import {makeValidator} from '../validate-body.ts';
-import {transformInitiativeUrls} from '../paths.ts';
+import {transformInitiativeUrls} from '../uploads.ts';
 
 function enrichPerson(person: Person): EnrichedPerson {
 	const initiatives = database

@@ -12,7 +12,7 @@
 			minlength: 4,
 		},
 		{
-			name: 'imageUrl',
+			name: 'image',
 			label: 'Image URL',
 			type: 'url',
 			minlength: 0,

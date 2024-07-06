@@ -21,10 +21,13 @@ import {
 	fetchImage,
 	fetchPdf,
 	imageOutDirectory,
+	mergeExpressBodyFile,
+	multerUpload,
 	pdfOutDirectory,
 	transformInitiativeUrls,
 	transformOrganisationUrls,
-} from '../paths.ts';
+	type FetchedFile,
+} from '../uploads.ts';
 import {makeValidator, validateUrl} from '../validate-body.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
 
@@ -125,18 +128,24 @@ const initativeKeyValidators = {
 			data: deadline,
 		};
 	},
-	async pdfUrl(
-		pdfUrl: unknown,
+	async pdf(
+		pdf: unknown,
 	): Promise<
 		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
-		const isValidUrl = await validateUrl('PDF URL', pdfUrl);
-		if (isValidUrl.type === 'error') {
-			return isValidUrl;
-		}
-
 		try {
-			const localPdf = await fetchPdf(pdfUrl as string);
+			let localPdf: FetchedFile;
+			if (Buffer.isBuffer(pdf)) {
+				localPdf = await fetchPdf(pdf);
+			} else {
+				const isValidUrl = await validateUrl('PDF URL', pdf);
+				if (isValidUrl.type === 'error') {
+					return isValidUrl;
+				}
+
+				localPdf = await fetchPdf(new URL(pdf as string));
+			}
+
 			return {
 				type: 'success',
 				data: localPdf,
@@ -149,18 +158,24 @@ const initativeKeyValidators = {
 			};
 		}
 	},
-	async imageUrl(
-		imageUrl: unknown,
+	async image(
+		image: unknown,
 	): Promise<
 		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
-		const isValidUrl = await validateUrl('image URL', imageUrl);
-		if (isValidUrl.type === 'error') {
-			return isValidUrl;
-		}
-
 		try {
-			const localImage = await fetchImage(imageUrl as string);
+			let localImage: FetchedFile;
+			if (Buffer.isBuffer(image)) {
+				localImage = await fetchImage(image);
+			} else {
+				const isValidUrl = await validateUrl('image URL', image);
+				if (isValidUrl.type === 'error') {
+					return isValidUrl;
+				}
+
+				localImage = await fetchImage(new URL(image as string));
+			}
+
 			return {
 				type: 'success',
 				data: localImage,
@@ -186,8 +201,8 @@ export async function createInitiative(
 		'shortName',
 		'fullName',
 		'website',
-		'pdfUrl',
-		'imageUrl',
+		'pdf',
+		'image',
 		'deadline',
 	]);
 
@@ -195,11 +210,11 @@ export async function createInitiative(
 		return validateResult;
 	}
 
-	const {website, fullName, shortName, pdfUrl, imageUrl, deadline}
+	const {website, fullName, shortName, pdf, image, deadline}
 		= validateResult.data;
 
-	await writeFile(pdfUrl.suggestedFilePath, new DataView(pdfUrl.body));
-	await writeFile(imageUrl.suggestedFilePath, new DataView(imageUrl.body));
+	await writeFile(pdf.suggestedFilePath, new DataView(pdf.body));
+	await writeFile(image.suggestedFilePath, new DataView(image.body));
 
 	const id = makeSlug(shortName);
 
@@ -208,16 +223,16 @@ export async function createInitiative(
 		shortName,
 		fullName,
 		website,
-		pdfUrl: pdfUrl.id,
-		imageUrl: imageUrl.id,
+		pdf: pdf.id,
+		image: image.id,
 		deadline,
 	};
 
 	database
 		.prepare<Initiative>(
 			`INSERT INTO initiatives
-			(id, shortName, fullName, website, pdfUrl, imageUrl, deadline) 
-			VALUES (:id, :shortName, :fullName, :website, :pdfUrl, :imageUrl, :deadline)`,
+			(id, shortName, fullName, website, pdf, image, deadline) 
+			VALUES (:id, :shortName, :fullName, :website, :pdf, :image, :deadline)`,
 		)
 		.run(result);
 
@@ -231,10 +246,9 @@ export const createInitiativeEndpoint: RequestHandler = async (
 	request,
 	response,
 ) => {
-	const result = await createInitiative(
-		response.locals.login.id,
-		request.body as Record<string, unknown>,
-	);
+	const body = mergeExpressBodyFile(request, ['pdf', 'image']);
+
+	const result = await createInitiative(response.locals.login.id, body);
 
 	if (result.type === 'error') {
 		return response.status(400).json(result);
@@ -353,7 +367,8 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 		return;
 	}
 
-	const body = request.body as Record<string, unknown>;
+	const body = mergeExpressBodyFile(request, ['pdf', 'image']);
+
 	const validateResult = await initiativeValidator(
 		body,
 		Object.keys(body) as Array<keyof typeof initativeKeyValidators>,
@@ -366,17 +381,25 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 
 	const newData = validateResult.data;
 
-	if (newData.pdfUrl) {
+	if (newData.pdf) {
+		try {
+			await unlink(new URL(oldRow.pdf, pdfOutDirectory));
+		} catch {}
+
 		await writeFile(
-			newData.pdfUrl.suggestedFilePath,
-			new DataView(newData.pdfUrl.body),
+			newData.pdf.suggestedFilePath,
+			new DataView(newData.pdf.body),
 		);
 	}
 
-	if (newData.imageUrl) {
+	if (newData.image) {
+		try {
+			await unlink(new URL(oldRow.image, pdfOutDirectory));
+		} catch {}
+
 		await writeFile(
-			newData.imageUrl.suggestedFilePath,
-			new DataView(newData.imageUrl.body),
+			newData.image.suggestedFilePath,
+			new DataView(newData.image.body),
 		);
 	}
 
@@ -394,28 +417,18 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 	const query = [];
 
 	for (const key of Object.keys(newData)) {
-		if (key === 'pdfUrl') {
-			try {
-				// eslint-disable-next-line no-await-in-loop
-				await unlink(new URL(oldRow.pdfUrl, pdfOutDirectory));
-			} catch {}
-		} else if (key === 'imageUrl') {
-			try {
-				// eslint-disable-next-line no-await-in-loop
-				await unlink(new URL(oldRow.imageUrl, imageOutDirectory));
-			} catch {}
-		}
-
 		query.push(`${key} = :${key}`);
 	}
 
 	database
-		.prepare(`UPDATE initiatives SET ${query.join(', ')} WHERE id = :id`)
+		.prepare<Initiative>(
+			`UPDATE initiatives SET ${query.join(', ')} WHERE id = :id`,
+		)
 		.run({
 			...newData,
 			id,
-			pdfUrl: newData.pdfUrl?.id,
-			imageUrl: newData.imageUrl?.id,
+			pdf: newData.pdf?.id,
+			image: newData.image?.id,
 		});
 
 	response.status(200).send({
@@ -433,8 +446,8 @@ export const deleteInitiative: RequestHandler<{id: string}> = async (
 	const oldRow = database
 		.prepare<
 			{id: string},
-			{pdfUrl: string; imageUrl: string}
-		>('SELECT pdfUrl, imageUrl FROM initiatives WHERE id = :id')
+			{pdf: string; image: string}
+		>('SELECT pdf, image FROM initiatives WHERE id = :id')
 		.get({id});
 
 	if (!oldRow) {
@@ -447,11 +460,11 @@ export const deleteInitiative: RequestHandler<{id: string}> = async (
 	}
 
 	try {
-		await unlink(new URL(oldRow.pdfUrl, pdfOutDirectory));
+		await unlink(new URL(oldRow.pdf, pdfOutDirectory));
 	} catch {}
 
 	try {
-		await unlink(new URL(oldRow.imageUrl, imageOutDirectory));
+		await unlink(new URL(oldRow.image, imageOutDirectory));
 	} catch {}
 
 	database
@@ -578,6 +591,16 @@ initiativeRouter.get('/initiatives', getAllInitiativesEndpoint);
 initiativeRouter.post(
 	'/initiative/create',
 	requireAdmin(),
+	multerUpload.fields([
+		{
+			name: 'pdf',
+			maxCount: 1,
+		},
+		{
+			name: 'image',
+			maxCount: 1,
+		},
+	]),
 	createInitiativeEndpoint,
 );
 initiativeRouter.get('/initiative/:id', getInitiativeEndpoint);
@@ -585,6 +608,16 @@ initiativeRouter.delete('/initiative/:id', requireAdmin(), deleteInitiative);
 initiativeRouter.patch(
 	'/initiative/:id',
 	requireAdmin(),
+	multerUpload.fields([
+		{
+			name: 'pdf',
+			maxCount: 1,
+		},
+		{
+			name: 'image',
+			maxCount: 1,
+		},
+	]),
 	patchInitiativeEndpoint,
 );
 
