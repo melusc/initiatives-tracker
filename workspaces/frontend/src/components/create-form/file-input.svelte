@@ -10,15 +10,10 @@
 	let file: File | undefined;
 	let fileInputElement: HTMLInputElement;
 
-	// The only way to reset a file input is using
-	//   1. form.reset()
-	//   2. setting
-	let fileResetterKey = 0;
-
 	function clickUpload(): void {
 		if (file) {
 			file = undefined;
-			++fileResetterKey;
+			fileInputElement.value = '';
 		} else {
 			fileInputElement.click();
 		}
@@ -48,15 +43,13 @@
 			<UploadIcon />
 		{/if}
 	</button>
-	{#key fileResetterKey}
-		<input
-			class="hidden"
-			type="file"
-			name={input.name}
-			on:input={handleFileInput}
-			bind:this={fileInputElement}
-		/>
-	{/key}
+	<input
+		class="hidden"
+		type="file"
+		name={input.name}
+		on:input={handleFileInput}
+		bind:this={fileInputElement}
+	/>
 </div>
 
 <style>
