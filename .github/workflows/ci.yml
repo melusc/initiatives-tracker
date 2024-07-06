@@ -89,4 +89,5 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /home/${{ secrets.SSH_USERNAME }}/initiatives-tracker
+            corepack prepare
             yarn workspaces focus --all --production
