@@ -26,6 +26,7 @@ import {
 	pdfOutDirectory,
 	transformInitiativeUrls,
 	transformOrganisationUrls,
+	type FetchedFile,
 } from '../uploads.ts';
 import {makeValidator, validateUrl} from '../validate-body.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
@@ -127,11 +128,7 @@ const initativeKeyValidators = {
 			data: deadline,
 		};
 	},
-	async pdf(
-		pdf: unknown,
-	): Promise<
-		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
-	> {
+	async pdf(pdf: unknown): Promise<ApiResponse<FetchedFile>> {
 		try {
 			if (Buffer.isBuffer(pdf)) {
 				const localPdf = await fetchPdf(pdf);
@@ -160,11 +157,7 @@ const initativeKeyValidators = {
 			};
 		}
 	},
-	async image(
-		image: unknown,
-	): Promise<
-		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
-	> {
+	async image(image: unknown): Promise<ApiResponse<FetchedFile>> {
 		try {
 			if (Buffer.isBuffer(image)) {
 				const localImage = await fetchImage(image);
@@ -218,8 +211,8 @@ export async function createInitiative(
 	const {website, fullName, shortName, pdf, image, deadline}
 		= validateResult.data;
 
-	await writeFile(pdf.suggestedFilePath, new DataView(pdf.body));
-	await writeFile(image.suggestedFilePath, new DataView(image.body));
+	await writeFile(pdf.suggestedFilePath, pdf.body);
+	await writeFile(image.suggestedFilePath, image.body);
 
 	const id = makeSlug(shortName);
 
@@ -391,10 +384,7 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 			await unlink(new URL(oldRow.pdf, pdfOutDirectory));
 		} catch {}
 
-		await writeFile(
-			newData.pdf.suggestedFilePath,
-			new DataView(newData.pdf.body),
-		);
+		await writeFile(newData.pdf.suggestedFilePath, newData.pdf.body);
 	}
 
 	if (newData.image) {
@@ -402,10 +392,7 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 			await unlink(new URL(oldRow.image, pdfOutDirectory));
 		} catch {}
 
-		await writeFile(
-			newData.image.suggestedFilePath,
-			new DataView(newData.image.body),
-		);
+		await writeFile(newData.image.suggestedFilePath, newData.image.body);
 	}
 
 	if (Object.keys(newData).length === 0) {

@@ -19,8 +19,10 @@ import {
 	fetchImage,
 	imageOutDirectory,
 	mergeExpressBodyFile,
+	multerUpload,
 	transformInitiativeUrls,
 	transformOrganisationUrls,
+	type FetchedFile,
 } from '../uploads.ts';
 import {database} from '../db.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
@@ -78,11 +80,7 @@ const organisationKeyValidators = {
 			data: name,
 		};
 	},
-	async image(
-		image: unknown,
-	): Promise<
-		ApiResponse<null | {id: string; suggestedFilePath: URL; body: ArrayBuffer}>
-	> {
+	async image(image: unknown): Promise<ApiResponse<null | FetchedFile>> {
 		if (
 			image === null
 			|| image === 'null'
@@ -173,7 +171,7 @@ export async function createOrganisation(
 
 	const {name, image, website} = result.data;
 	if (image) {
-		await writeFile(image.suggestedFilePath, new DataView(image.body));
+		await writeFile(image.suggestedFilePath, image.body);
 	}
 
 	const id = makeSlug(name);
@@ -339,10 +337,7 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 			} catch {}
 		}
 
-		await writeFile(
-			newData.image.suggestedFilePath,
-			new DataView(newData.image.body),
-		);
+		await writeFile(newData.image.suggestedFilePath, newData.image.body);
 	}
 
 	if (Object.keys(newData).length === 0) {
@@ -386,6 +381,12 @@ organisationRouter.get('/organisations', getAllOrganisationsEndpoint);
 organisationRouter.post(
 	'/organisation/create',
 	requireAdmin(),
+	multerUpload.fields([
+		{
+			name: 'image',
+			maxCount: 1,
+		},
+	]),
 	createOrganisationEndpoint,
 );
 organisationRouter.get('/organisation/:id', getOrganisationEndpoint);

@@ -93,14 +93,10 @@ async function safeFetch(url: URL) {
 		throw new Error('File is too large');
 	}
 
-	return body;
+	return Buffer.from(body);
 }
 
-function handleSvg(body: string): {
-	id: string;
-	suggestedFilePath: URL;
-	body: ArrayBuffer;
-} {
+function handleSvg(body: string): FetchedFile {
 	try {
 		const optimised = svgoOptimise(body, {
 			multipass: true,
@@ -121,7 +117,6 @@ function handleSvg(body: string): {
 											&& !('height' in node.attributes)
 										) {
 											const [width, height] = viewBox.split(/\s+/).slice(2);
-											console.log(width, height);
 											if (width && height) {
 												const w = 1000;
 												const h
@@ -146,7 +141,7 @@ function handleSvg(body: string): {
 		return {
 			id,
 			suggestedFilePath: new URL(id, imageOutDirectory),
-			body: new TextEncoder().encode(optimised.data).buffer,
+			body: Buffer.from(optimised.data),
 		};
 	} catch {
 		throw new Error('Not an image.');
@@ -156,17 +151,17 @@ function handleSvg(body: string): {
 export type FetchedFile = {
 	id: string;
 	suggestedFilePath: URL;
-	body: ArrayBuffer;
+	body: Buffer;
 };
 
 export async function fetchImage(image: URL | Buffer): Promise<FetchedFile> {
-	const body = Buffer.isBuffer(image) ? image.buffer : await safeFetch(image);
+	const body = Buffer.isBuffer(image) ? image : await safeFetch(image);
 
 	if (body.byteLength > fileSizeLimit) {
 		throw new Error('File is too large');
 	}
 
-	const stringified = new TextDecoder().decode(body);
+	const stringified = Buffer.from(body).toString();
 
 	const type = await fileTypeFromBuffer(body);
 
@@ -188,7 +183,7 @@ export async function fetchImage(image: URL | Buffer): Promise<FetchedFile> {
 }
 
 export async function fetchPdf(pdf: URL | Buffer): Promise<FetchedFile> {
-	const body = Buffer.isBuffer(pdf) ? pdf.buffer : await safeFetch(pdf);
+	const body = Buffer.isBuffer(pdf) ? pdf : await safeFetch(pdf);
 
 	if (body.byteLength > fileSizeLimit) {
 		throw new Error('File is too large');
@@ -220,9 +215,9 @@ export function mergeExpressBodyFile(request: Request, keys: string[]) {
 	};
 
 	for (const key of keys) {
-		const item = files[key]?.[0]?.buffer;
+		const item = files?.[key]?.[0]?.buffer;
 		if (item) {
-			body[key] = item;
+			body[key] = Buffer.from(item);
 		}
 	}
 
