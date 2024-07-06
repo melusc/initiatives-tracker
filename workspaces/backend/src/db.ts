@@ -109,8 +109,8 @@ if (shouldPrune) {
 
 	for (const diskImage of diskImages) {
 		if (!images.has(diskImage)) {
+			// eslint-disable-next-line no-await-in-loop
 			await unlink(new URL(diskImage, imageOutDirectory));
-
 		}
 	}
 
@@ -124,7 +124,7 @@ if (shouldPrune) {
 
 	for (const diskPdf of diskPdfs) {
 		if (!pdf.has(diskPdf)) {
-			console.log('Could delete', diskPdf);
+			// eslint-disable-next-line no-await-in-loop
 			await unlink(new URL(diskPdf, pdfOutDirectory));
 		}
 	}
