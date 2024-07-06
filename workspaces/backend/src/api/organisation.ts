@@ -21,7 +21,6 @@ import {
 	mergeExpressBodyFile,
 	transformInitiativeUrls,
 	transformOrganisationUrls,
-	type FetchedFile,
 } from '../uploads.ts';
 import {database} from '../db.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
@@ -96,18 +95,21 @@ const organisationKeyValidators = {
 		}
 
 		try {
-			let localImage: FetchedFile;
-
 			if (Buffer.isBuffer(image)) {
-				localImage = await fetchImage(image);
-			} else {
-				const isValidUrl = await validateUrl('Image URL', image);
-				if (isValidUrl.type === 'error') {
-					return isValidUrl;
-				}
+				const localImage = await fetchImage(image);
 
-				localImage = await fetchImage(new URL(image as string));
+				return {
+					type: 'success',
+					data: localImage,
+				};
 			}
+
+			const isValidUrl = await validateUrl('Image URL', image);
+			if (isValidUrl.type === 'error') {
+				return isValidUrl;
+			}
+
+			const localImage = await fetchImage(new URL(image as string));
 
 			return {
 				type: 'success',

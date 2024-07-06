@@ -26,7 +26,6 @@ import {
 	pdfOutDirectory,
 	transformInitiativeUrls,
 	transformOrganisationUrls,
-	type FetchedFile,
 } from '../uploads.ts';
 import {makeValidator, validateUrl} from '../validate-body.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
@@ -134,17 +133,20 @@ const initativeKeyValidators = {
 		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
 		try {
-			let localPdf: FetchedFile;
 			if (Buffer.isBuffer(pdf)) {
-				localPdf = await fetchPdf(pdf);
-			} else {
-				const isValidUrl = await validateUrl('PDF URL', pdf);
-				if (isValidUrl.type === 'error') {
-					return isValidUrl;
-				}
-
-				localPdf = await fetchPdf(new URL(pdf as string));
+				const localPdf = await fetchPdf(pdf);
+				return {
+					type: 'success',
+					data: localPdf,
+				};
 			}
+
+			const isValidUrl = await validateUrl('PDF URL', pdf);
+			if (isValidUrl.type === 'error') {
+				return isValidUrl;
+			}
+
+			const localPdf = await fetchPdf(new URL(pdf as string));
 
 			return {
 				type: 'success',
@@ -164,17 +166,20 @@ const initativeKeyValidators = {
 		ApiResponse<{id: string; suggestedFilePath: URL; body: ArrayBuffer}>
 	> {
 		try {
-			let localImage: FetchedFile;
 			if (Buffer.isBuffer(image)) {
-				localImage = await fetchImage(image);
-			} else {
-				const isValidUrl = await validateUrl('image URL', image);
-				if (isValidUrl.type === 'error') {
-					return isValidUrl;
-				}
-
-				localImage = await fetchImage(new URL(image as string));
+				const localImage = await fetchImage(image);
+				return {
+					type: 'success',
+					data: localImage,
+				};
 			}
+
+			const isValidUrl = await validateUrl('image URL', image);
+			if (isValidUrl.type === 'error') {
+				return isValidUrl;
+			}
+
+			const localImage = await fetchImage(new URL(image as string));
 
 			return {
 				type: 'success',
