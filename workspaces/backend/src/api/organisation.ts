@@ -330,13 +330,13 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 
 	const newData = validateResult.data;
 
-	if (newData.image) {
-		if (oldRow.image !== null) {
-			try {
-				await unlink(new URL(oldRow.image, imageOutDirectory));
-			} catch {}
-		}
+	if ('image' in newData && oldRow.image !== null) {
+		try {
+			await unlink(new URL(oldRow.image, imageOutDirectory));
+		} catch {}
+	}
 
+	if (newData.image) {
 		await writeFile(newData.image.suggestedFilePath, newData.image.body);
 	}
 
