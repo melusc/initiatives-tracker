@@ -6,6 +6,10 @@ on:
   workflow_dispatch:
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -72,7 +76,7 @@ jobs:
             cd /home/${{ secrets.SSH_USERNAME }}
             mkdir -p initiatives-tracker
             cd initiatives-tracker
-            find . -type f | grep -v data | xargs -d '\n' rm
+            find . -type f | grep -v data | xargs -r -d '\n' rm
       - name: Copy file via ssh
         uses: appleboy/scp-action@v0.1.7
         with:
