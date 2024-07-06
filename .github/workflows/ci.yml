@@ -97,3 +97,4 @@ jobs:
             cd initiatives-tracker
             corepack prepare
             yarn workspaces focus --all --production
+            pm2 restart initiatives-tracker
