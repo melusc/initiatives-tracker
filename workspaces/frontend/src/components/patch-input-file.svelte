@@ -16,7 +16,6 @@
 	export let value: string | null;
 
 	let file: File | undefined;
-	let formElement: HTMLFormElement;
 	let fileInputElement: HTMLInputElement;
 
 	export let initialValue = value;
@@ -27,7 +26,6 @@
 	function clickUpload(): void {
 		if (file) {
 			file = undefined;
-			formElement.reset();
 		} else {
 			fileInputElement.click();
 		}
@@ -52,7 +50,6 @@
 		if (body.type === 'error') {
 			successState.setError(body.readableError);
 		} else {
-			formElement.reset();
 			file = undefined;
 			value = body.data[name]!;
 			successState.setSuccess();
@@ -60,7 +57,7 @@
 	}
 </script>
 
-<form on:submit={handleSubmit} bind:this={formElement}>
+<form on:submit={handleSubmit}>
 	<label for={name}>
 		{label}
 	</label>
@@ -86,7 +83,14 @@
 				value={initialValue ?? value}
 				on:input
 				bind:this={node}
-			/>{/if}
+			/>
+			<input
+				class="hidden"
+				type="file"
+				on:input={handleFileInput}
+				bind:this={fileInputElement}
+			/>
+		{/if}
 		<button
 			class:error={$successState?.type === 'error'}
 			class:success={$successState?.type === 'success'}
@@ -99,12 +103,7 @@
 				<UploadIcon />
 			{/if}
 		</button>
-		<input
-			class="hidden"
-			type="file"
-			on:input={handleFileInput}
-			bind:this={fileInputElement}
-		/>
+
 		<button
 			class:error={$successState?.type === 'error'}
 			class:success={$successState?.type === 'success'}

@@ -1,18 +1,23 @@
-<script lang="ts">
-	import {getState} from '../state.ts';
-
-	import Card from './card.svelte';
-	import StandaloneCenter from './standalone-center.svelte';
-
-	export let title: string;
-
-	export let inputs: Array<{
+<script context="module" lang="ts">
+	export type Input = {
 		name: string;
 		label: string;
 		type: string;
 		minlength: number;
 		required?: boolean;
-	}>;
+	};
+</script>
+
+<script lang="ts">
+	import {getState} from '../../state.ts';
+	import Card from '../card.svelte';
+	import StandaloneCenter from '../standalone-center.svelte';
+
+	import FileInput from './file-input.svelte';
+
+	export let title: string;
+
+	export let inputs: Input[];
 
 	const {
 		error,
@@ -24,7 +29,7 @@
 </script>
 
 <StandaloneCenter>
-	<form method="POST">
+	<form method="POST" enctype="multipart/form-data">
 		<Card>
 			<h1>{title}</h1>
 			{#if error}
@@ -32,15 +37,19 @@
 			{/if}
 
 			{#each inputs as input (input.name)}
-				<label>
+				<label for={input.name}>
 					{input.label}
-					<input
-						type={input.type}
-						name={input.name}
-						required={input.required ?? true}
-						minlength={input.minlength}
-						value={values[input.name] ?? ''}
-					/>
+					{#if input.type === 'file'}
+						<FileInput {values} {input} />
+					{:else}
+						<input
+							type={input.type}
+							name={input.name}
+							required={input.required ?? true}
+							minlength={input.minlength}
+							value={values[input.name] ?? ''}
+						/>
+					{/if}
 				</label>
 			{/each}
 
@@ -69,7 +78,8 @@
 
 	input {
 		color: var(--text-dark);
-		font-size: inherit;
+		border-radius: 0.5em;
+		padding: 0.3em 0.5em;
 	}
 
 	.submit {
