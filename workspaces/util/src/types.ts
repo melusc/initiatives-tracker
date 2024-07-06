@@ -3,8 +3,8 @@ export type Initiative = {
 	shortName: string;
 	fullName: string;
 	website: string;
-	pdfUrl: string;
-	imageUrl: string;
+	pdf: string;
+	image: string;
 	deadline: string;
 };
 
@@ -16,7 +16,7 @@ export type EnrichedInitiative = Initiative & {
 export type Organisation = {
 	id: string;
 	name: string;
-	imageUrl: string | null;
+	image: string | null;
 	website: string | null;
 };
 

@@ -20,7 +20,7 @@ import {createPerson, getAllPeople, getPerson} from './api/person.ts';
 import {database} from './db.ts';
 import {setHeaders} from './middle-ware/set-headers.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
-import {staticRoot} from './paths.ts';
+import {mergeExpressBodyFile, multerUpload, staticRoot} from './uploads.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
 import {svelteKitEngine} from './svelte-kit-engine.ts';
@@ -122,24 +122,38 @@ app.get('/initiative/create', requireAdmin(), (_, response) => {
 	});
 });
 
-app.post('/initiative/create', requireAdmin(), async (request, response) => {
-	const body = request.body as Record<string, unknown>;
+app.post(
+	'/initiative/create',
+	requireAdmin(),
+	multerUpload.fields([
+		{
+			name: 'pdf',
+			maxCount: 1,
+		},
+		{
+			name: 'image',
+			maxCount: 1,
+		},
+	]),
+	async (request, response) => {
+		const body = mergeExpressBodyFile(request, ['pdf', 'image']);
 
-	const initiative = await createInitiative(response.locals.login.id, body);
+		const initiative = await createInitiative(response.locals.login.id, body);
 
-	if (initiative.type === 'error') {
-		response.status(400).render('create-initiative', {
-			login: response.locals.login,
-			state: {
-				error: initiative.readableError,
-				values: body,
-			},
-		});
-		return;
-	}
+		if (initiative.type === 'error') {
+			response.status(400).render('create-initiative', {
+				login: response.locals.login,
+				state: {
+					error: initiative.readableError,
+					values: request.body as Record<string, unknown>,
+				},
+			});
+			return;
+		}
 
-	response.redirect(303, `/initiative/${initiative.data.id}`);
-});
+		response.redirect(303, `/initiative/${initiative.data.id}`);
+	},
+);
 
 app.get('/initiative/:id', (request, response) => {
 	const initiative = getInitiative(request.params.id, response.locals.login.id);
@@ -181,7 +195,7 @@ app.post('/person/create', async (request, response) => {
 			login: response.locals.login,
 			state: {
 				error: person.readableError,
-				values: body,
+				values: request.body as Record<string, unknown>,
 			},
 		});
 		return;
@@ -220,24 +234,34 @@ app.get('/organisation/create', requireAdmin(), (_, response) => {
 	});
 });
 
-app.post('/organisation/create', requireAdmin(), async (request, response) => {
-	const body = request.body as Record<string, unknown>;
+app.post(
+	'/organisation/create',
+	requireAdmin(),
+	multerUpload.fields([
+		{
+			name: 'image',
+			maxCount: 1,
+		},
+	]),
+	async (request, response) => {
+		const body = mergeExpressBodyFile(request, ['image']);
 
-	const organisation = await createOrganisation(body);
+		const organisation = await createOrganisation(request);
 
-	if (organisation.type === 'error') {
-		response.status(400).render('create-organisation', {
-			login: response.locals.login,
-			state: {
-				error: organisation.readableError,
-				values: body,
-			},
-		});
-		return;
-	}
+		if (organisation.type === 'error') {
+			response.status(400).render('create-organisation', {
+				login: response.locals.login,
+				state: {
+					error: organisation.readableError,
+					values: body,
+				},
+			});
+			return;
+		}
 
-	response.redirect(303, `/organisation/${organisation.data.id}`);
-});
+		response.redirect(303, `/organisation/${organisation.data.id}`);
+	},
+);
 
 app.get('/organisation/:id', (request, response) => {
 	const organisation = getOrganisation(request.params.id);

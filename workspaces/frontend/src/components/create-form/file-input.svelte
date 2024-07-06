@@ -1,0 +1,107 @@
+<script lang="ts">
+	import UploadIcon from '../icons/upload.svelte';
+	import TrashIcon from '../icons/trash.svelte';
+
+	import type {Input} from './create-form.svelte';
+
+	export let input: Input;
+	export let values: Record<string, string>;
+
+	let file: File | undefined;
+	let fileInputElement: HTMLInputElement;
+
+	function clickUpload(): void {
+		if (file) {
+			file = undefined;
+			fileInputElement.value = '';
+		} else {
+			fileInputElement.click();
+		}
+	}
+
+	function handleFileInput(): void {
+		file = fileInputElement.files?.[0];
+	}
+</script>
+
+<div class="input-wrap">
+	{#if file}
+		<input type="text" value={file.name} readonly />
+	{:else}
+		<input
+			type="url"
+			name={input.name}
+			value={values[input.name] ?? ''}
+			on:input
+			placeholder="Input a url or upload a file"
+		/>
+	{/if}
+	<button type="button" on:click={clickUpload}>
+		{#if file}
+			<TrashIcon />
+		{:else}
+			<UploadIcon />
+		{/if}
+	</button>
+	<input
+		class="hidden"
+		type="file"
+		name={input.name}
+		on:input={handleFileInput}
+		bind:this={fileInputElement}
+	/>
+</div>
+
+<style>
+	button > :global(svg) {
+		height: 1em;
+		width: 1em;
+	}
+
+	.input-wrap {
+		display: flex;
+		flex-direction: row;
+		gap: 0;
+		height: max-content;
+	}
+
+	button,
+	input {
+		transition:
+			0.4s ease-out border-color,
+			0.4s ease-out color;
+
+		padding: 0.3em 0.5em;
+		border: 1px solid var(--text-light);
+		background: #fff;
+		color: var(--text-dark);
+		font-size: 0.8em;
+	}
+
+	input {
+		border-radius: 0.5em 0 0 0.5em;
+		border-right: none;
+		width: 100%;
+		padding: 0.3em 0.5em;
+
+		margin-right: 0;
+	}
+
+	button {
+		border-left: none;
+		border-radius: 0 0.5em 0.5em 0;
+
+		margin-left: 0;
+		padding-left: 0;
+
+		cursor: pointer;
+
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.hidden {
+		display: none;
+	}
+</style>

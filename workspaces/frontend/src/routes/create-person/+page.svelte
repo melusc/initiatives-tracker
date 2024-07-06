@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CreateForm from '../../components/create-form.svelte';
+	import CreateForm from '../../components/create-form/create-form.svelte';
 </script>
 
 <CreateForm

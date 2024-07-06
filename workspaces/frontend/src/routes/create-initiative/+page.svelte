@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CreateForm from '../../components/create-form.svelte';
+	import CreateForm from '../../components/create-form/create-form.svelte';
 </script>
 
 <CreateForm
@@ -31,15 +31,15 @@
 		},
 
 		{
-			name: 'pdfUrl',
+			name: 'pdf',
 			label: 'PDF URL',
-			type: 'url',
+			type: 'file',
 			minlength: 10,
 		},
 		{
-			name: 'imageUrl',
+			name: 'image',
 			label: 'Image URL',
-			type: 'url',
+			type: 'file',
 			minlength: 10,
 		},
 	]}

@@ -6,7 +6,7 @@ import {parseArgs} from 'node:util';
 
 import Database, {type Database as DatabaseT} from 'better-sqlite3';
 
-import {dataDirectory} from './paths.ts';
+import {dataDirectory} from './uploads.ts';
 import {scrypt} from './promisified.ts';
 
 export const database: DatabaseT = new Database(
@@ -61,15 +61,15 @@ database.exec(
 				shortName TEXT NOT NULL,
 				fullName TEXT NOT NULL,
 				website TEXT NOT NULL,
-				pdfUrl TEXT NOT NULL,
-				imageUrl TEXT NOT NULL,
+				pdf TEXT NOT NULL,
+				image TEXT NOT NULL,
 				deadline TEXT NOT NULL
 		);
 
 		CREATE TABLE IF NOT EXISTS organisations (
 				id TEXT PRIMARY KEY,
 				name TEXT NOT NULL,
-				imageUrl TEXT,
+				image TEXT,
 				website TEXT
 		);
 

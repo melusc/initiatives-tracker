@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CreateForm from '../../components/create-form.svelte';
+	import CreateForm from '../../components/create-form/create-form.svelte';
 </script>
 
 <CreateForm
@@ -12,7 +12,7 @@
 			minlength: 4,
 		},
 		{
-			name: 'imageUrl',
+			name: 'image',
 			label: 'Image URL',
 			type: 'url',
 			minlength: 0,
