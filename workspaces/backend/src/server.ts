@@ -41,6 +41,10 @@ app.use(
 				'script-src': ["'self'", "'unsafe-inline'"],
 			},
 		},
+
+		// nginx already sets the following
+		xContentTypeOptions: false,
+		strictTransportSecurity: false,
 	}),
 );
 app.use(cors());

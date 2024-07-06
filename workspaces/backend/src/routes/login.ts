@@ -81,6 +81,7 @@ export async function loginPost(request: Request, response: Response) {
 	response.cookie('session', sessionId, {
 		expires: cookieExpires,
 		httpOnly: true,
+		secure: true,
 	});
 
 	if (request.search.has('redirect')) {

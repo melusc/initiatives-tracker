@@ -84,6 +84,7 @@ export function loginProtect(
 		});
 		response.clearCookie('session', {
 			httpOnly: true,
+			secure: true,
 		});
 		response.redirect(302, '/login?' + searchParameters.toString());
 	};
