@@ -3,10 +3,11 @@ import {stdin, stdout} from 'node:process';
 import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
+import {readdir, unlink} from 'node:fs/promises';
 
 import Database, {type Database as DatabaseT} from 'better-sqlite3';
 
-import {dataDirectory} from './uploads.ts';
+import {dataDirectory, imageOutDirectory, pdfOutDirectory} from './uploads.ts';
 import {scrypt} from './promisified.ts';
 
 export const database: DatabaseT = new Database(
@@ -14,7 +15,7 @@ export const database: DatabaseT = new Database(
 );
 
 const {
-	values: {createLogin: shouldCreateLogin},
+	values: {createLogin: shouldCreateLogin, prune: shouldPrune},
 } = parseArgs({
 	options: {
 		createLogin: {
@@ -22,9 +23,9 @@ const {
 			short: 'c',
 			default: false,
 		},
-		username: {
-			type: 'string',
-			short: 'u',
+		prune: {
+			type: 'boolean',
+			default: false,
 		},
 	},
 });
@@ -94,6 +95,40 @@ database.exec(
 database
 	.prepare<{expires: number}>('DELETE FROM sessions WHERE expires < :expires')
 	.run({expires: Date.now()});
+
+if (shouldPrune) {
+	const images = new Set(
+		database
+			.prepare<[], {image: string | null}>(
+				'SELECT image FROM initiatives UNION SELECT image FROM organisations',
+			)
+			.all()
+			.map(image => image.image),
+	);
+	const diskImages = await readdir(imageOutDirectory);
+
+	for (const diskImage of diskImages) {
+		if (!images.has(diskImage)) {
+			// eslint-disable-next-line no-await-in-loop
+			await unlink(new URL(diskImage, imageOutDirectory));
+		}
+	}
+
+	const pdf = new Set(
+		database
+			.prepare<[], {pdf: string}>('SELECT pdf FROM initiatives')
+			.all()
+			.map(pdf => pdf.pdf),
+	);
+	const diskPdfs = await readdir(pdfOutDirectory);
+
+	for (const diskPdf of diskPdfs) {
+		if (!pdf.has(diskPdf)) {
+			// eslint-disable-next-line no-await-in-loop
+			await unlink(new URL(diskPdf, pdfOutDirectory));
+		}
+	}
+}
 
 if (shouldCreateLogin) {
 	const rl = createInterface({
