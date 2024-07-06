@@ -109,6 +109,7 @@
 			class:error={$successState?.type === 'error'}
 			class:success={$successState?.type === 'success'}
 			type="submit"
+			class="submit"
 		>
 			<SaveIcon />
 		</button>
@@ -158,7 +159,6 @@
 
 	button {
 		border-left: none;
-		border-radius: 0 0.5em 0.5em 0;
 
 		margin-left: 0;
 		padding-left: 0;
@@ -168,6 +168,10 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	button.submit {
+		border-radius: 0 0.5em 0.5em 0;
 	}
 
 	button.error,
