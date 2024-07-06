@@ -80,6 +80,7 @@
 		color: var(--text-dark);
 		border-radius: 0.5em;
 		padding: 0.3em 0.5em;
+		font-size: 0.8em;
 	}
 
 	.submit {
