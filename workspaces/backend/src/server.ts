@@ -45,6 +45,8 @@ app.use(
 		// Nginx already sets the following
 		xContentTypeOptions: false,
 		strictTransportSecurity: false,
+		xFrameOptions: false,
+		xXssProtection: false,
 	}),
 );
 app.use(cors());
