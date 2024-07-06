@@ -12,7 +12,7 @@
 	"type": "module",
 	"devDependencies": {
 		"@lusc/tsconfig": "^5.1.0",
-		"@types/node": "^20.14.9",
+		"@types/node": "^20.14.10",
 		"typescript": "^5.5.3",
 		"xo": "^0.58.0"
 	},
