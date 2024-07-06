@@ -42,7 +42,7 @@ app.use(
 			},
 		},
 
-		// nginx already sets the following
+		// Nginx already sets the following
 		xContentTypeOptions: false,
 		strictTransportSecurity: false,
 	}),
