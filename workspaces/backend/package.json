@@ -37,8 +37,8 @@
 		"build": "tsc && node --run esbuild",
 		"esbuild": "esbuild --outdir=dist --format=esm --platform=node --bundle --sourcemap --packages=external src/server.ts",
 		"build:w": "node --run esbuild -- --watch",
-		"start": "node dist/server.js",
-		"start:w": "node --watch dist/server.js",
+		"start": "node --env-file=.env dist/server.js",
+		"start:w": "node --env-file=.env --watch dist/server.js",
 		"dev": "concurrently 'yarn:start:w' 'yarn:build:w'"
 	}
 }
