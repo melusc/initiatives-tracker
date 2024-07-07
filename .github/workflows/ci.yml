@@ -72,7 +72,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd /home/${{ secrets.SSH_USERNAME }}
+            cd /var/www
             mkdir -p initiatives-tracker
             cd initiatives-tracker
             find . -type f | grep -Fv data | grep -Fv .env | xargs -r -d '\n' rm
@@ -83,7 +83,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_KEY }}
           source: 'workspaces/*,package.json,.yarnrc.yml'
-          target: '/home/${{ secrets.SSH_USERNAME }}/initiatives-tracker'
+          target: '/var/www/initiatives-tracker'
       - name: Install
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -93,7 +93,7 @@ jobs:
           script: |
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-            cd initiatives-tracker
+            cd /var/www/initiatives-tracker
             corepack prepare
             yarn workspaces focus --all --production
             pm2 restart initiatives-tracker
