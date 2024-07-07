@@ -96,7 +96,7 @@
 			Initiative website <ExternalLinkIcon />
 		</a>
 		<a class="pdf-url" href={initiative.pdf}>Download initiative as PDF</a>
-		<a href={standalone ? undefined : `/initiative/${initiative.id}`}>
+		<a href={standalone ? initiative.website : `/initiative/${initiative.id}`}>
 			<img class="image-url" src={initiative.image} alt="" />
 		</a>
 	{/if}
@@ -132,7 +132,8 @@
 
 	.image-url {
 		max-width: 100%;
-		max-height: 6em;
+		height: 6em;
+		object-fit: contain;
 	}
 
 	.short-name {

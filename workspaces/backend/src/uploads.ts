@@ -98,49 +98,17 @@ async function safeFetch(url: URL) {
 
 function handleSvg(body: string): FetchedFile {
 	try {
-		const optimised = svgoOptimise(body, {
-			multipass: true,
-			plugins: [
-				'preset-default',
-				{
-					name: 'set-dimensions',
-					fn() {
-						return {
-							element: {
-								enter(node) {
-									if (node.name === 'svg') {
-										const viewBox = node.attributes['viewBox'];
-
-										if (
-											viewBox
-											&& !('width' in node.attributes)
-											&& !('height' in node.attributes)
-										) {
-											const [width, height] = viewBox.split(/\s+/).slice(2);
-											if (width && height) {
-												const w = 1000;
-												const h
-													= (Number.parseInt(height, 10)
-														/ Number.parseInt(width, 10))
-													* 1000;
-												node.attributes['width'] = String(w);
-												node.attributes['height'] = String(h);
-											}
-										}
-									}
-								},
-							},
-						};
-					},
-				},
-			],
-		});
-
 		const id = [randomUUID(), 'svg'].join('.');
+		const suggestedFilePath = new URL(id, imageOutDirectory);
+
+		const optimised = svgoOptimise(body, {
+			path: fileURLToPath(suggestedFilePath),
+			multipass: true,
+		});
 
 		return {
 			id,
-			suggestedFilePath: new URL(id, imageOutDirectory),
+			suggestedFilePath,
 			body: Buffer.from(optimised.data),
 		};
 	} catch {

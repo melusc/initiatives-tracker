@@ -82,7 +82,11 @@
 			</a>
 		{/if}
 		{#if organisation.image}
-			<a href={standalone ? undefined : `/organisation/${organisation.id}`}>
+			<a
+				href={standalone
+					? organisation.website
+					: `/organisation/${organisation.id}`}
+			>
 				<img class="image-url" src={organisation.image} alt="" />
 			</a>
 		{/if}
@@ -118,8 +122,9 @@
 	}
 
 	.image-url {
+		height: 5em;
 		max-width: 100%;
-		max-height: 6em;
+		object-fit: contain;
 	}
 
 	.short-name {

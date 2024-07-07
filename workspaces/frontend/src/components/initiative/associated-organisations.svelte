@@ -94,8 +94,10 @@
 	}
 
 	.organisation-image {
-		max-height: 4em;
+		max-height: max-content;
+		height: 4em;
 		max-width: 200px;
+		object-fit: contain;
 	}
 
 	.trash {
