@@ -14,7 +14,7 @@
 		{
 			name: 'image',
 			label: 'Image URL',
-			type: 'url',
+			type: 'file',
 			minlength: 0,
 			required: false,
 		},

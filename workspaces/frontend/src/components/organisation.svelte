@@ -8,6 +8,7 @@
 	import ExternalLinkIcon from './icons/external-link.svelte';
 	import Card from './card.svelte';
 	import DeleteButton from './delete-button.svelte';
+	import PatchInputFile from './patch-input-file.svelte';
 
 	export let organisation: Organisation;
 
@@ -47,11 +48,10 @@
 			bind:value={organisation.name}
 			apiEndpoint="/api/organisation/{organisation.id}"
 		/>
-		<PatchInput
+		<PatchInputFile
 			name="image"
 			label="Image URL"
-			type="text"
-			transform={transformOptional}
+			allowNull
 			bind:value={organisation.image}
 			apiEndpoint="/api/organisation/{organisation.id}"
 		/>

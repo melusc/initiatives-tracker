@@ -398,5 +398,11 @@ organisationRouter.delete(
 organisationRouter.patch(
 	'/organisation/:id',
 	requireAdmin(),
+	multerUpload.fields([
+		{
+			name: 'image',
+			maxCount: 1,
+		},
+	]),
 	patchOrganisation,
 );

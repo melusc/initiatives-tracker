@@ -11,6 +11,7 @@
 	export let name: string;
 	export let label: string;
 	export let apiEndpoint: string;
+	export let allowNull = false;
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	export let value: string | null;
@@ -38,8 +39,13 @@
 	async function handleSubmit(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
 
+		let transformedValue: string | File = file ?? node.value.trim();
+		if (allowNull && !transformedValue) {
+			transformedValue = 'null';
+		}
+
 		const patchBody = new FormData();
-		patchBody.set(name, file ?? node.value);
+		patchBody.set(name, file ?? transformedValue);
 
 		const response = await fetch(apiEndpoint, {
 			method: 'PATCH',
