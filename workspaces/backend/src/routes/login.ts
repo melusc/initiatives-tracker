@@ -10,7 +10,7 @@ import {scrypt} from '../promisified.ts';
 export async function loginPost(request: Request, response: Response) {
 	const body = z
 		.object({
-			username: z.string().min(1),
+			username: z.string().trim().toLowerCase().min(1),
 			password: z.string().min(1),
 		})
 		.safeParse(request.body);
@@ -29,7 +29,7 @@ export async function loginPost(request: Request, response: Response) {
 		.prepare<
 			{username: string},
 			{userId: string; passwordHash: Buffer; passwordSalt: Buffer}
-		>('SELECT userId, passwordHash, passwordSalt from logins where username = :username')
+		>('SELECT userId, passwordHash, passwordSalt from logins where LOWER(username) = :username')
 		.get({username: body.data.username});
 
 	if (!databaseResult) {
