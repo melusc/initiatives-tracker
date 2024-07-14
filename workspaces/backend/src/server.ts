@@ -25,6 +25,7 @@ import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
 import {svelteKitEngine} from './svelte-kit-engine.ts';
 import {requireAdmin} from './middle-ware/require-admin.ts';
+import {changePassword, changeUsername} from './routes/account.ts';
 
 const app = express();
 
@@ -112,7 +113,9 @@ app.get('/login', (_request, response) => {
 });
 app.post('/login', loginPost);
 
-app.get('/logout', logout);
+app.get('/logout', (request, response) => {
+	logout(request, response, '/');
+});
 
 app.get('/', (_, response) => {
 	response.render('index', {
@@ -283,6 +286,103 @@ app.get('/organisation/:id', (request, response) => {
 	}
 });
 
+app.get('/account', (_request, response) => {
+	response.render('account', {
+		login: response.locals.login,
+		state: {
+			values: {},
+		},
+	});
+});
+
+app.post('/account', async (request, response) => {
+	const body = request.body as Record<string, string>;
+	if ('username' in body) {
+		const username = body['username'];
+		if (typeof username !== 'string') {
+			response.status(400).render('account', {
+				login: response.locals.login,
+				state: {
+					error: {
+						username: 'Username was not a string.',
+					},
+				},
+			});
+			return;
+		}
+
+		try {
+			changeUsername(username, response.locals.login.id);
+			response.status(200).render('account', {
+				login: {
+					...response.locals.login,
+					name: username.trim(),
+				},
+				state: {
+					success: {
+						username: 'Username changed successfully.',
+					},
+				},
+			});
+		} catch (error: unknown) {
+			const message
+				= error instanceof Error ? error.message : 'Something went wrong.';
+			response.status(400).render('account', {
+				login: response.locals.login,
+				state: {
+					values: {username},
+					error: {
+						username: message,
+					},
+				},
+			});
+		}
+
+		return;
+	}
+
+	const currentPassword = body['currentPassword'];
+	const newPassword = body['newPassword'];
+	const newPasswordRepeat = body['newPasswordRepeat'];
+
+	if (
+		typeof currentPassword !== 'string'
+		|| typeof newPassword !== 'string'
+		|| typeof newPasswordRepeat !== 'string'
+	) {
+		response.status(400).render('account', {
+			login: response.locals.login,
+			state: {
+				error: {
+					password: 'Please fill in all inputs.',
+				},
+			},
+		});
+		return;
+	}
+
+	try {
+		await changePassword(
+			response.locals.login.id,
+			currentPassword,
+			newPassword,
+			newPasswordRepeat,
+		);
+		logout(request, response, '/account');
+	} catch (error: unknown) {
+		const message
+			= error instanceof Error ? error.message : 'Something went wrong.';
+		response.status(400).render('account', {
+			login: response.locals.login,
+			state: {
+				error: {
+					password: message,
+				},
+			},
+		});
+	}
+});
+
 app.use((_request, response) => {
 	response
 		.status(404)
@@ -290,5 +390,5 @@ app.use((_request, response) => {
 });
 
 app.listen(3129, () => {
-	console.log('Listening on http://localhost:3000/');
+	console.log('Listening on http://localhost:3129/');
 });
