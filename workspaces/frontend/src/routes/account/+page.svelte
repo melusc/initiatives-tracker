@@ -26,6 +26,7 @@
 			name="username"
 			value={state?.values?.['username'] ?? login?.name}
 			required
+			minlength="4"
 		/>
 	</label>
 	<input type="submit" name="submit" value="Save" />
@@ -112,5 +113,13 @@
 
 	input[type='submit']:active {
 		scale: 0.9;
+	}
+
+	.success {
+		color: var(--success);
+	}
+
+	.error {
+		color: var(--error);
 	}
 </style>
