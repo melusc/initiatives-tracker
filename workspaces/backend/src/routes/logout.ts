@@ -2,7 +2,11 @@ import type {Request, Response} from 'express';
 
 import {database} from '../db.ts';
 
-export function logout(request: Request, response: Response) {
+export function logout(
+	request: Request,
+	response: Response,
+	redirectPath: string,
+) {
 	const session = request.cookies['session'] as string | undefined;
 
 	if (typeof session === 'string') {
@@ -17,5 +21,5 @@ export function logout(request: Request, response: Response) {
 		.clearCookie('session', {
 			httpOnly: true,
 		})
-		.redirect(302, '/');
+		.redirect(302, redirectPath);
 }

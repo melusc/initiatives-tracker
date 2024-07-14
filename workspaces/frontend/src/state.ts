@@ -1,6 +1,6 @@
 /* eslint-disable unicorn/no-typeof-undefined */
 
-import {type LoginInfo} from '@lusc/initiatives-tracker-util/types.js';
+import type {LoginInfo} from '@lusc/initiatives-tracker-util/types.js';
 
 declare const state: unknown;
 
