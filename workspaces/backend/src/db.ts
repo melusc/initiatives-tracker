@@ -5,6 +5,7 @@ import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 import {readdir, unlink} from 'node:fs/promises';
 
+import {generatePassword} from '@lusc/initiatives-tracker-util/pw.js';
 import Database, {type Database as DatabaseT} from 'better-sqlite3';
 
 import {dataDirectory, imageOutDirectory, pdfOutDirectory} from './uploads.ts';
@@ -15,10 +16,10 @@ export const database: DatabaseT = new Database(
 );
 
 const {
-	values: {createLogin: shouldCreateLogin, prune: shouldPrune},
+	values: {'create-login': shouldCreateLogin, prune: shouldPrune},
 } = parseArgs({
 	options: {
-		createLogin: {
+		'create-login': {
 			type: 'boolean',
 			short: 'c',
 			default: false,
@@ -137,7 +138,7 @@ if (shouldCreateLogin) {
 	});
 
 	const username = await rl.question('Username: ');
-	const password = await rl.question('Password: ');
+	const password = generatePassword(16);
 	const isAdminAnswer = await rl.question('Admin? (y/n) ');
 	const isAdmin = ['y', 'yes'].includes(isAdminAnswer.trim().toLowerCase());
 
@@ -170,8 +171,9 @@ if (shouldCreateLogin) {
 		});
 
 	console.log(
-		'Created %s "%s"',
+		'Created %s "%s", password %s',
 		isAdmin ? 'admin account' : 'account',
 		username,
+		password,
 	);
 }
