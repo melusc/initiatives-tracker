@@ -214,7 +214,7 @@ app.post('/person/create', async (request, response) => {
 });
 
 app.get('/person/:id', (request, response) => {
-	const person = getPerson(request.params.id, response.locals.login.id);
+	const person = getPerson(request.params.id, response.locals.login);
 	if (person) {
 		response.status(200).render('person', {
 			login: response.locals.login,
