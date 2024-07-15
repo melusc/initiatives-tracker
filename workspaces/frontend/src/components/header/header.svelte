@@ -77,7 +77,9 @@
 	header {
 		width: 100%;
 		padding: 1em;
-		display: grid;
+
+		position: sticky;
+		top: 0;
 
 		display: flex;
 		flex-direction: row;
