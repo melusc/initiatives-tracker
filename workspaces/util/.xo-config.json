@@ -1,10 +1,6 @@
 {
-	"overrides": [
-		{
-			"files": "**/*.ts",
-			"rules": {
-				"@typescript-eslint/ban-types": "off"
-			}
-		}
-	]
+	"rules": {
+		"@typescript-eslint/ban-types": "off",
+		"n/file-extension-in-import": "off"
+	}
 }
