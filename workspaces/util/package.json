@@ -13,9 +13,9 @@
 	"type": "module",
 	"devDependencies": {
 		"@lusc/tsconfig": "^5.1.0",
-		"@types/node": "^20.14.11",
-		"typescript": "^5.5.3",
-		"xo": "^0.59.0"
+		"@types/node": "^20.14.12",
+		"typescript": "^5.5.4",
+		"xo": "^0.59.2"
 	},
 	"scripts": {
 		"fmt": "xo --fix",
