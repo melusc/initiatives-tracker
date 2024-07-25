@@ -65,35 +65,34 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build
-      - name: Pre upload cleanup
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
+      - name: Write ssh key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/ssh-key
+          chmod 600 ~/.ssh/ssh-key
+        env:
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+      - name: Sync
+        run: |
+          # Make all directories
+          ssh -i ~/.ssh/ssh-key -o StrictHostKeyChecking=accept-new "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}" "
             cd /var/www
-            mkdir -p initiatives-tracker
-            cd initiatives-tracker
-            find . -type f | grep -Fv data | grep -Fv .env | xargs -r -d '\n' rm
-      - name: Copy file via ssh
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          source: 'workspaces/*,package.json,.yarnrc.yml'
-          target: '/var/www/initiatives-tracker'
-      - name: Install
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
+            mkdir -p initiatives-tracker/workspaces/{backend,util,frontend}
+          "
+
+          # rsync all relevant files
+          for d in workspaces/{backend,util,frontend}/{dist,package.json} package.json
+          do
+            rsync -vha --delete -e "ssh -i ~/.ssh/ssh-key" "$d" "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}:/var/www/iniatives-tracker/$d"
+          done
+
+          ssh -i ~/.ssh/ssh-key "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}" "
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/initiatives-tracker
             corepack prepare
             yarn workspaces focus --all --production
             pm2 restart initiatives-tracker
+          "
+      - run: rm ~/.ssh/ssh-key
