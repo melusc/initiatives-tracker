@@ -79,17 +79,17 @@ jobs:
           "
 
           # rsync all relevant files
-          for d in workspaces/{backend,util,frontend}/{dist/,package.json} package.json
+          for d in workspaces/{backend,util,frontend}/{dist/,package.json} package.json .yarnrc.yml
           do
             rsync -vha --delete -e "ssh -i ~/.ssh/ssh-key" "$d" "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}:/var/www/initiatives-tracker/$d"
           done
 
-          ssh -i ~/.ssh/ssh-key "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}" "
+          ssh -i ~/.ssh/ssh-key "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}" /bin/bash << 'EOF'
             export NVM_DIR="$HOME/.nvm"
             [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
             cd /var/www/initiatives-tracker
             corepack prepare
             yarn workspaces focus --all --production
             pm2 restart initiatives-tracker
-          "
+          EOF
       - run: rm ~/.ssh/ssh-key
