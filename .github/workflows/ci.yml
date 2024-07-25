@@ -79,10 +79,7 @@ jobs:
           "
 
           # rsync all relevant files
-          for d in workspaces/{backend,util,frontend}/{dist/,package.json} package.json .yarnrc.yml
-          do
-            rsync -vha --delete -e "ssh -i ~/.ssh/ssh-key" "$d" "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}:/var/www/initiatives-tracker/$d"
-          done
+          rsync -vha --delete -e "ssh -i ~/.ssh/ssh-key" workspaces/{backend,util,frontend}/{dist/,package.json} package.json .yarnrc.yml "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}:/var/www/initiatives-tracker/"
 
           ssh -i ~/.ssh/ssh-key "${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST}}" /bin/bash << 'EOF'
             export NVM_DIR="$HOME/.nvm"
