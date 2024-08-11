@@ -2,7 +2,7 @@ import {randomBytes, timingSafeEqual} from 'node:crypto';
 
 import type {Request, Response} from 'express';
 import z from 'zod';
-import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
+import {RelativeUrl} from '@lusc/util/relative-url';
 
 import {database} from '../db.ts';
 import {scrypt} from '../promisified.ts';
@@ -88,7 +88,7 @@ export async function loginPost(request: Request, response: Response) {
 		// Avoid redirects to other websites
 		const redirectUrl = new RelativeUrl(request.search.get('redirect')!);
 
-		response.redirect(302, redirectUrl.path);
+		response.redirect(302, redirectUrl.href);
 	} else {
 		response.redirect(302, '/');
 	}

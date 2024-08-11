@@ -1,5 +1,5 @@
 <script lang="ts">
-	import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
+	import {RelativeUrl} from '@lusc/util/relative-url';
 
 	import UserIcon from '../user-icon.svelte';
 	import {getLogin} from '../../state.ts';
@@ -17,7 +17,7 @@
 	if (currentLink.path === '/login') {
 		loginLink.searchParams.set('redirect', '/');
 	} else {
-		loginLink.searchParams.set('redirect', currentLink.full);
+		loginLink.searchParams.set('redirect', currentLink.href);
 	}
 
 	function toggleMenu(event: MouseEvent | KeyboardEvent): void {
@@ -58,7 +58,7 @@
 			<UserIcon name={loginInfo.name} iconKey={loginInfo.id} />
 		</div>
 	{:else}
-		<a href={loginLink.full} class="login">Login</a>
+		<a href={loginLink.href} class="login">Login</a>
 	{/if}
 </header>
 

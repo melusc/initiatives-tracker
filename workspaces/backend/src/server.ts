@@ -1,4 +1,4 @@
-import {RelativeUrl} from '@lusc/initiatives-tracker-util/relative-url.js';
+import {RelativeUrl} from '@lusc/util/relative-url';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express from 'express';

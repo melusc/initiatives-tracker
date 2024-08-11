@@ -529,6 +529,7 @@ __metadata:
     "@lusc/initiatives-tracker-frontend": "workspace:^"
     "@lusc/initiatives-tracker-util": "workspace:^"
     "@lusc/tsconfig": "npm:^5.1.0"
+    "@lusc/util": "npm:^1.1.1"
     "@types/better-sqlite3": "npm:^7.6.11"
     "@types/cookie-parser": "npm:^1.4.7"
     "@types/cors": "npm:^2.8.17"
@@ -561,6 +562,7 @@ __metadata:
   dependencies:
     "@lusc/initiatives-tracker-util": "workspace:^"
     "@lusc/tsconfig": "npm:^5.1.0"
+    "@lusc/util": "npm:^1.1.1"
     "@sveltejs/adapter-static": "npm:^3.0.2"
     "@sveltejs/kit": "npm:^2.5.18"
     "@sveltejs/vite-plugin-svelte": "npm:^3.1.1"
@@ -593,6 +595,13 @@ __metadata:
   version: 5.1.0
   resolution: "@lusc/tsconfig@npm:5.1.0"
   checksum: 10c0/e32e2a8bbe7e8d361fbadb781684cf1e1e041334b0eaf3a18ff9ad181b9b437c4c0babe620b13e3d6f6a0d1032083dd96b0f6f8c802252d813cd64a7689ed466
+  languageName: node
+  linkType: hard
+
+"@lusc/util@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "@lusc/util@npm:1.1.1"
+  checksum: 10c0/bc57c2a827c7e6a1f9d7bac50b7d3510e4c3f59313e661769a2ea75c8468adb452cced2bcc4fff0b15f6f945f188e00158b2c5d9dc94d3d6d947a4192747f179
   languageName: node
   linkType: hard
 
