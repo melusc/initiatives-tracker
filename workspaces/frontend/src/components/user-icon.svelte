@@ -7,12 +7,6 @@
 
 <div class="user-icon" title={name}>
 	<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
-		<style>
-			text {
-				font-size: 70px;
-				font-family: 'Open Sans', sans-serif;
-			}
-		</style>
 		<circle cx="64" cy="64" r="64" fill="currentColor" />
 		<circle cx="64" cy="64" r="60" fill={colorHash(iconKey)} />
 		<text
@@ -35,5 +29,10 @@
 		user-select: none;
 
 		color: var(--text-light);
+	}
+
+	text {
+		font-size: 70px;
+		font-family: 'Open Sans', sans-serif;
 	}
 </style>
