@@ -12,7 +12,7 @@
 		"@types/morgan": "^1.9.9",
 		"@types/multer": "^1.4.12",
 		"@types/node": "^22.5.0",
-		"concurrently": "^8.2.2",
+		"concurrently": "^9.0.1",
 		"esbuild": "^0.23.1",
 		"typescript": "^5.5.4",
 		"xo": "^0.59.3"
