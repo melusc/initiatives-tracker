@@ -41,5 +41,14 @@
 		"start": "node --env-file=.env dist/server.js",
 		"start:w": "node --env-file=.env --watch dist/server.js",
 		"dev": "concurrently 'yarn:start:w' 'yarn:build:w'"
+	},
+	"author": {
+		"email": "oss@lusc.ch",
+		"name": "melusc",
+		"url": "https://github.com/melusc"
+	},
+	"license": "GPL-3.0-only",
+	"repository": {
+		"url": "https://github.com/melusc/initiatives-tracker.git"
 	}
 }

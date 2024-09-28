@@ -8,6 +8,15 @@
 	"workspaces": [
 		"workspaces/*"
 	],
+	"author": {
+		"email": "oss@lusc.ch",
+		"name": "melusc",
+		"url": "https://github.com/melusc"
+	},
+	"license": "GPL-3.0-only",
+	"repository": {
+		"url": "https://github.com/melusc/initiatives-tracker.git"
+	},
 	"scripts": {
 		"fmt": "prettier -w . && yarn workspaces foreach -A run fmt",
 		"build": "yarn workspaces foreach -A --topological-dev run build",

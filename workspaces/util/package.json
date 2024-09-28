@@ -20,5 +20,14 @@
 		"fmt": "xo --fix",
 		"build": "tsc",
 		"test": "tsc && node --test dist/*.test.js"
+	},
+	"author": {
+		"email": "oss@lusc.ch",
+		"name": "melusc",
+		"url": "https://github.com/melusc"
+	},
+	"license": "GPL-3.0-only",
+	"repository": {
+		"url": "https://github.com/melusc/initiatives-tracker.git"
 	}
 }
