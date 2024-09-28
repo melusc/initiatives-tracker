@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <footer>
 	<div>
 		<a href="https://github.com/melusc">gh/melusc</a>
-		<a href="/open-source-licenses.txt">Open Source Licenses</a>
+		<a href="/static/open-source-licenses.txt">Open Source Licenses</a>
 	</div>
 </footer>
 
@@ -29,8 +29,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		background: var(--theme-primary);
 		color: var(--text-light);
 		padding: 2em 1em;
-		display: grid;
-		place-items: center;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: center;
+		gap: 2em;
 
 		box-shadow: var(--box-shadow-top);
 	}
