@@ -16,10 +16,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <footer>
-	<div>
-		<a href="https://github.com/melusc">gh/melusc</a>
-		<a href="/static/open-source-licenses.txt">Open Source Licenses</a>
-	</div>
+	<a href="https://github.com/melusc">gh/melusc</a>
+	<a href="/static/open-source-licenses.txt">Open Source Licenses</a>
 </footer>
 
 <style>
