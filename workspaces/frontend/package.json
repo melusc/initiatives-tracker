@@ -15,7 +15,7 @@
 	"devDependencies": {
 		"@lusc/tsconfig": "^5.1.0",
 		"@sveltejs/adapter-static": "^3.0.5",
-		"@sveltejs/kit": "^2.6.1",
+		"@sveltejs/kit": "^2.6.2",
 		"@sveltejs/vite-plugin-svelte": "^3.1.2",
 		"@tsconfig/svelte": "^5.0.4",
 		"@typescript-eslint/eslint-plugin": "^8.8.0",
