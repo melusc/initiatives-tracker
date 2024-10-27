@@ -64,6 +64,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		class="hidden"
 		type="file"
 		name={input.name}
+		accept={input.accept?.join(',')}
 		on:input={handleFileInput}
 		bind:this={fileInputElement}
 	/>
