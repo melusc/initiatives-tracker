@@ -71,6 +71,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			allowNull
 			bind:value={organisation.image}
 			apiEndpoint="/api/organisation/{organisation.id}"
+			accept={[
+				'image/jpeg',
+				'image/png',
+				'image/avif',
+				'image/webp',
+				'image/svg+xml',
+			]}
 		/>
 		<PatchInput
 			name="website"

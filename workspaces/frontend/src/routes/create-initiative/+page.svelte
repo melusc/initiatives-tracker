@@ -53,6 +53,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			label: 'PDF URL',
 			type: 'file',
 			minlength: 10,
+			accept: ['application/pdf'],
 		},
 		{
 			name: 'image',
@@ -60,6 +61,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			type: 'file',
 			minlength: 10,
 			required: false,
+			accept: [
+				'image/jpeg',
+				'image/png',
+				'image/avif',
+				'image/webp',
+				'image/svg+xml',
+			],
 		},
 	]}
 />

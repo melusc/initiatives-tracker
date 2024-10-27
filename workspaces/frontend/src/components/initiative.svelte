@@ -95,6 +95,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			bind:value={initiative.pdf}
 			initialValue=""
 			apiEndpoint="/api/initiative/{initiative.id}"
+			accept={['application/pdf']}
 		/>
 		<PatchInputFile
 			name="image"
@@ -103,6 +104,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			initialValue=""
 			apiEndpoint="/api/initiative/{initiative.id}"
 			allowNull
+			accept={[
+				'image/jpeg',
+				'image/png',
+				'image/avif',
+				'image/webp',
+				'image/svg+xml',
+			]}
 		/>
 		<img class="image-url" src={initiative.image} alt="" />
 	{:else}

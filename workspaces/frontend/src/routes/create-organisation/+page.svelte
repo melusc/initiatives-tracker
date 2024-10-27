@@ -34,6 +34,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			type: 'file',
 			minlength: 0,
 			required: false,
+			accept: [
+				'image/jpeg',
+				'image/png',
+				'image/avif',
+				'image/webp',
+				'image/svg+xml',
+			],
 		},
 		{
 			name: 'website',

@@ -39,6 +39,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	function handleFileInput(): void {
 		file = fileInputElement.files?.[0];
 	}
+
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+	$: acceptJoined = input.accept?.join(',');
 </script>
 
 <div class="input-wrap">
@@ -64,6 +67,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		class="hidden"
 		type="file"
 		name={input.name}
+		accept={acceptJoined}
 		on:input={handleFileInput}
 		bind:this={fileInputElement}
 	/>

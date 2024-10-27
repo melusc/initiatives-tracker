@@ -29,6 +29,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	export let label: string;
 	export let apiEndpoint: string;
 	export let allowNull = false;
+	export let accept: string[] | undefined;
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	export let value: string | null;
@@ -110,6 +111,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			<input
 				class="hidden"
 				type="file"
+				accept={accept?.join(',')}
 				on:input={handleFileInput}
 				bind:this={fileInputElement}
 			/>
