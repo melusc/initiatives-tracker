@@ -79,10 +79,10 @@ database.exec(
 				id TEXT PRIMARY KEY,
 				shortName TEXT NOT NULL,
 				fullName TEXT NOT NULL,
-				website TEXT NOT NULL,
+				website TEXT,
 				pdf TEXT NOT NULL,
-				image TEXT NOT NULL,
-				deadline TEXT NOT NULL
+				image TEXT,
+				deadline TEXT
 		);
 
 		CREATE TABLE IF NOT EXISTS organisations (

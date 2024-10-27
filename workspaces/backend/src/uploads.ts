@@ -80,7 +80,11 @@ export function transformInitiativeUrls<T extends Initiative>(
 	};
 }
 
-export function transformImageUrl(imageUrl: string) {
+export function transformImageUrl(imageUrl: string | null) {
+	if (imageUrl === null) {
+		return null;
+	}
+
 	return `/api/user-content/image/${imageUrl}`;
 }
 

@@ -19,10 +19,10 @@ export type Initiative = {
 	id: string;
 	shortName: string;
 	fullName: string;
-	website: string;
+	website: string | null;
 	pdf: string;
-	image: string;
-	deadline: string;
+	image: string | null;
+	deadline: string | null;
 };
 
 export type EnrichedInitiative = Initiative & {

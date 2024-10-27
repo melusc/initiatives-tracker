@@ -31,7 +31,7 @@ import type {
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
 
-import {makeValidator, validateUrl} from '../validate-body.ts';
+import {isNullish, makeValidator, validateUrl} from '../validate-body.ts';
 import {
 	fetchImage,
 	imageOutDirectory,
@@ -98,11 +98,7 @@ const organisationKeyValidators = {
 		};
 	},
 	async image(image: unknown): Promise<ApiResponse<null | FetchedFile>> {
-		if (
-			image === null
-			|| image === 'null'
-			|| (typeof image === 'string' && image.trim() === '')
-		) {
+		if (isNullish(image)) {
 			return {
 				type: 'success',
 				data: null,
@@ -141,11 +137,7 @@ const organisationKeyValidators = {
 	},
 
 	async website(website: unknown): Promise<ApiResponse<string | null>> {
-		if (
-			website === null
-			|| website === 'null'
-			|| (typeof website === 'string' && website.trim() === '')
-		) {
+		if (isNullish(website)) {
 			return {
 				type: 'success',
 				data: null,

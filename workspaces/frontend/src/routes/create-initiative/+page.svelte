@@ -39,14 +39,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			label: 'Deadline',
 			type: 'date',
 			minlength: 0,
+			required: false,
 		},
 		{
 			name: 'website',
 			label: 'Website',
 			type: 'url',
 			minlength: 10,
+			required: false,
 		},
-
 		{
 			name: 'pdf',
 			label: 'PDF URL',
@@ -58,6 +59,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			label: 'Image URL',
 			type: 'file',
 			minlength: 10,
+			required: false,
 		},
 	]}
 />

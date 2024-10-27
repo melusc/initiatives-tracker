@@ -45,7 +45,7 @@ import {
 	transformOrganisationUrls,
 	type FetchedFile,
 } from '../uploads.ts';
-import {makeValidator, validateUrl} from '../validate-body.ts';
+import {isNullish, makeValidator, validateUrl} from '../validate-body.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
 
 const initativeKeyValidators = {
@@ -95,7 +95,14 @@ const initativeKeyValidators = {
 			data: fullName,
 		};
 	},
-	async website(website: unknown): Promise<ApiResponse<string>> {
+	async website(website: unknown): Promise<ApiResponse<string | null>> {
+		if (isNullish(website)) {
+			return {
+				type: 'success',
+				data: null,
+			};
+		}
+
 		const isValidUrl = await validateUrl('website', website);
 		if (isValidUrl.type === 'error') {
 			return isValidUrl;
@@ -111,7 +118,14 @@ const initativeKeyValidators = {
 			data: websiteUrl.href,
 		};
 	},
-	deadline(input: unknown): ApiResponse<string> {
+	deadline(input: unknown): ApiResponse<string | null> {
+		if (isNullish(input)) {
+			return {
+				type: 'success',
+				data: null,
+			};
+		}
+
 		if (typeof input !== 'string') {
 			return {
 				type: 'error',
@@ -174,7 +188,14 @@ const initativeKeyValidators = {
 			};
 		}
 	},
-	async image(image: unknown): Promise<ApiResponse<FetchedFile>> {
+	async image(image: unknown): Promise<ApiResponse<FetchedFile | null>> {
+		if (isNullish(image)) {
+			return {
+				type: 'success',
+				data: null,
+			};
+		}
+
 		try {
 			if (Buffer.isBuffer(image)) {
 				const localImage = await fetchImage(image);
@@ -229,7 +250,10 @@ export async function createInitiative(
 		= validateResult.data;
 
 	await writeFile(pdf.suggestedFilePath, pdf.body);
-	await writeFile(image.suggestedFilePath, image.body);
+
+	if (image) {
+		await writeFile(image.suggestedFilePath, image.body);
+	}
 
 	const id = makeSlug(shortName);
 
@@ -239,7 +263,7 @@ export async function createInitiative(
 		fullName,
 		website,
 		pdf: pdf.id,
-		image: image.id,
+		image: image?.id ?? null,
 		deadline,
 	};
 
@@ -406,7 +430,9 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 
 	if (newData.image) {
 		try {
-			await unlink(new URL(oldRow.image, pdfOutDirectory));
+			if (oldRow.image) {
+				await unlink(new URL(oldRow.image, pdfOutDirectory));
+			}
 		} catch {}
 
 		await writeFile(newData.image.suggestedFilePath, newData.image.body);
@@ -437,7 +463,7 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 			...newData,
 			id,
 			pdf: newData.pdf?.id,
-			image: newData.image?.id,
+			image: newData.image?.id ?? null,
 		});
 
 	response.status(200).send({

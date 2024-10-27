@@ -40,6 +40,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	function handleEditToggle(): void {
 		showEdit = !showEdit;
 	}
+
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	function transformOptional(s: string): string | null {
+		return s.trim() === '' ? null : s;
+	}
 </script>
 
 <Card>
@@ -74,6 +79,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			type="date"
 			bind:value={initiative.deadline}
 			apiEndpoint="/api/initiative/{initiative.id}"
+			transform={transformOptional}
 		/>
 		<PatchInput
 			name="website"
@@ -81,6 +87,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			type="text"
 			bind:value={initiative.website}
 			apiEndpoint="/api/initiative/{initiative.id}"
+			transform={transformOptional}
 		/>
 		<PatchInputFile
 			name="pdf"
@@ -95,6 +102,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			bind:value={initiative.image}
 			initialValue=""
 			apiEndpoint="/api/initiative/{initiative.id}"
+			allowNull
 		/>
 		<img class="image-url" src={initiative.image} alt="" />
 	{:else}
@@ -103,19 +111,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			class="short-name">{initiative.shortName}</a
 		>
 		<div class="full-name">{initiative.fullName}</div>
-		<div class="deadline inline-svg"><Calendar /> {initiative.deadline}</div>
-		<a
-			class="website inline-svg"
-			href={initiative.website}
-			rel="nofollow noreferrer noopener"
-			target="_blank"
-		>
-			Initiative website <ExternalLinkIcon />
-		</a>
+		{#if initiative.deadline}
+			<div class="deadline inline-svg"><Calendar /> {initiative.deadline}</div>
+		{/if}
+		{#if initiative.website}
+			<a
+				class="website inline-svg"
+				href={initiative.website}
+				rel="nofollow noreferrer noopener"
+				target="_blank"
+			>
+				Initiative website <ExternalLinkIcon />
+			</a>
+		{/if}
 		<a class="pdf-url" href={initiative.pdf}>Download initiative as PDF</a>
-		<a href={standalone ? initiative.website : `/initiative/${initiative.id}`}>
-			<img class="image-url" src={initiative.image} alt="" />
-		</a>
+		{#if initiative.image}
+			<a
+				href={standalone ? initiative.website : `/initiative/${initiative.id}`}
+			>
+				<img class="image-url" src={initiative.image} alt="" />
+			</a>
+		{/if}
 	{/if}
 
 	{#if standalone}

@@ -22,11 +22,15 @@ type KeysMatching<T, V> = {
 }[keyof T];
 
 function makeSorter<R extends Record<string, unknown>>(
-	keys: Array<{key: KeysMatching<R, string>; reverse: boolean}>,
+	keys: Array<{key: KeysMatching<R, string | null>; reverse: boolean}>,
 ) {
 	return (array: R[]) =>
 		array.toSorted((a, b) => {
 			for (const {key, reverse} of keys) {
+				if (a[key] === null || b[key] === null) {
+					return a[key] === null ? (b[key] === null ? 0 : 1) : -1;
+				}
+
 				const result = (a[key] as string).localeCompare(
 					b[key] as string,
 					undefined,
