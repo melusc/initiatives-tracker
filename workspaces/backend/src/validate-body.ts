@@ -107,6 +107,14 @@ type GenericValidator = Record<
 	(value: unknown) => Promise<ApiResponse<unknown>> | ApiResponse<unknown>
 >;
 
+export function isNullish(input: unknown): boolean {
+	return (
+		input === null
+		|| input === 'null'
+		|| (typeof input === 'string' && input.trim() === '')
+	);
+}
+
 export function makeValidator<Validators extends GenericValidator>(
 	validators: Validators,
 ) {
