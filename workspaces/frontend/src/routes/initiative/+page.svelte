@@ -26,7 +26,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import AssociatedOrganisations from '../../components/initiative/associated-organisations.svelte';
 	import AddOrganisation from '../../components/initiative/add-organisation.svelte';
 
-	let initiative = getState<EnrichedInitiative>();
+	let initiative = $state(getState<EnrichedInitiative>());
 
 	const login = getLogin();
 </script>

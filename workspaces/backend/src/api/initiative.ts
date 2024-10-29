@@ -270,7 +270,7 @@ export async function createInitiative(
 	database
 		.prepare<Initiative>(
 			`INSERT INTO initiatives
-			(id, shortName, fullName, website, pdf, image, deadline) 
+			(id, shortName, fullName, website, pdf, image, deadline)
 			VALUES (:id, :shortName, :fullName, :website, :pdf, :image, :deadline)`,
 		)
 		.run(result);

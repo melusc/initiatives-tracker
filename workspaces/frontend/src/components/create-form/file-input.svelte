@@ -19,29 +19,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import UploadIcon from '../icons/upload.svelte';
 	import TrashIcon from '../icons/trash.svelte';
 
-	import type {Input} from './create-form.svelte';
+	import type {Input} from './create-form.d.ts';
 
-	export let input: Input;
-	export let values: Record<string, string>;
+	const {input, values}: {input: Input; values: Record<string, string>}
+		= $props();
 
-	let file: File | undefined;
-	let fileInputElement: HTMLInputElement;
+	let file = $state<File>();
+	let fileInputElement = $state<HTMLInputElement>();
 
 	function clickUpload(): void {
 		if (file) {
 			file = undefined;
-			fileInputElement.value = '';
+			fileInputElement!.value = '';
 		} else {
-			fileInputElement.click();
+			fileInputElement!.click();
 		}
 	}
 
 	function handleFileInput(): void {
-		file = fileInputElement.files?.[0];
+		file = fileInputElement!.files?.[0];
 	}
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-	$: acceptJoined = input.accept?.join(',');
+	const acceptJoined = $derived(input.accept?.join(','));
 </script>
 
 <div class="input-wrap">
@@ -52,11 +51,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			type="url"
 			name={input.name}
 			value={values[input.name] ?? ''}
-			on:input
 			placeholder="Input a url or upload a file"
 		/>
 	{/if}
-	<button type="button" on:click={clickUpload}>
+	<button type="button" onclick={clickUpload}>
 		{#if file}
 			<TrashIcon />
 		{:else}
@@ -68,7 +66,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		type="file"
 		name={input.name}
 		accept={acceptJoined}
-		on:input={handleFileInput}
+		oninput={handleFileInput}
 		bind:this={fileInputElement}
 	/>
 </div>

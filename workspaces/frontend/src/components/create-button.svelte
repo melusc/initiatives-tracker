@@ -20,9 +20,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import AddIcon from './icons/add.svelte';
 
-	export let text: string;
-	export let href: string;
-	export let nonAdminAllowed = false;
+	const {
+		text,
+		href,
+		nonAdminAllowed = false,
+	}: {text: string; href: string; nonAdminAllowed?: boolean} = $props();
 
 	const login = getLogin();
 </script>

@@ -15,12 +15,16 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<script>
+<script lang="ts">
+	import type {Snippet} from 'svelte';
+
 	import Header from '../components/header/header.svelte';
 	import Footer from '../components/footer.svelte';
 	import '../common/sanitise.css';
 	import '../common/theme.css';
 	import '../common/font.css';
+
+	const {children}: {children: Snippet} = $props();
 </script>
 
 <svelte:head>
@@ -40,7 +44,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	<Header />
 
 	<main>
-		<slot />
+		{@render children()}
 	</main>
 
 	<Footer />

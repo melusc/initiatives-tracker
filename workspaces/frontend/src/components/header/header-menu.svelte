@@ -16,11 +16,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
+	import type {Snippet} from 'svelte';
 	import {fly} from 'svelte/transition';
 
 	import X from '../icons/x.svelte';
 
-	export let close: () => void;
+	const {close, userIcon}: {close: () => void; userIcon: Snippet} = $props();
 
 	function handleKeydown(event: KeyboardEvent): void {
 		if (event.key === 'Enter' || event.key === ' ') {
@@ -31,10 +32,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 <div
 	class="background"
-	on:click={close}
-	on:touchend={close}
+	onclick={close}
+	ontouchend={close}
 	aria-hidden="true"
-/>
+></div>
 
 <div
 	class="header-menu"
@@ -47,11 +48,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 >
 	<div class="top-row">
 		<a href="/account">
-			<slot name="user-icon" />
+			{@render userIcon()}
 		</a>
 		<div
-			on:click={close}
-			on:keydown={handleKeydown}
+			onclick={close}
+			onkeydown={handleKeydown}
 			role="button"
 			tabindex="0"
 			class="close"
@@ -60,12 +61,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		</div>
 	</div>
 
-	<div class="hr" />
+	<div class="hr"></div>
 	<a href="/">Initiatives</a>
 	<a href="/people">People</a>
 	<a href="/organisations">Organisations</a>
 
-	<div class="hr" />
+	<div class="hr"></div>
 	<a href="/account">Account</a>
 	<a href="/logout">Logout</a>
 </div>

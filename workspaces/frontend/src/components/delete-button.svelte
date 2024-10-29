@@ -20,13 +20,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import TrashIcon from './icons/trash.svelte';
 
-	export let api: string;
-	export let name: string;
-	export let nonAdminAllowed = false;
+	const {
+		api,
+		name,
+		nonAdminAllowed = false,
+	}: {api: string; name: string; nonAdminAllowed?: boolean} = $props();
 
 	const login = getLogin();
 
-	let confirmed = false;
+	let confirmed = $state(false);
 	async function deleteOrganisation(): Promise<void> {
 		if (confirmed) {
 			await fetch(api, {method: 'delete'});
@@ -38,7 +40,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 {#if nonAdminAllowed || login?.isAdmin}
-	<button class="delete inline-svg button-reset" on:click={deleteOrganisation}>
+	<button class="delete inline-svg button-reset" onclick={deleteOrganisation}>
 		{#if confirmed}
 			Press again to confirm
 		{:else}

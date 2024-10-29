@@ -17,25 +17,25 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 <script lang="ts" generics="T extends {name: string}">
 	import type {ApiResponse} from '@lusc/initiatives-tracker-util/types.js';
-	import {afterUpdate} from 'svelte';
 	import {slide} from 'svelte/transition';
 
 	import {createSuccessState} from '../../success-state.ts';
 	import CreateIcon from '../icons/create.svelte';
 	import Save from '../icons/save.svelte';
 
-	export let subject: T;
-	export let patchApi: string;
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+	let {subject = $bindable(), patchApi}: {subject: T; patchApi: string}
+		= $props();
 
 	const successState = createSuccessState();
 
-	let titleNode: HTMLHeadingElement;
-	let editEnabled = false;
+	let titleNode = $state<HTMLHeadingElement>();
+	let editEnabled = $state(false);
 
-	afterUpdate(() => {
+	$effect(() => {
 		if (editEnabled) {
 			const range = document.createRange();
-			range.selectNodeContents(titleNode);
+			range.selectNodeContents(titleNode!);
 			range.collapse(false);
 			const selection = getSelection()!;
 			selection.removeAllRanges();
@@ -57,7 +57,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	async function handleSave(): Promise<void> {
 		const requestBody = new URLSearchParams();
-		requestBody.set('name', titleNode.textContent!);
+		requestBody.set('name', titleNode!.textContent!);
 
 		const response = await fetch(patchApi, {
 			method: 'PATCH',
@@ -75,7 +75,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 			// If name is normalised or otherwise modified on server
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-			titleNode.textContent = subject.name;
+			titleNode!.textContent = subject.name;
 		}
 	}
 </script>
@@ -86,7 +86,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		class:error={$successState?.type === 'error'}
 		bind:this={titleNode}
 		contenteditable={editEnabled}
-		on:keydown={handleKeydown}
+		onkeydown={handleKeydown}
 	>
 		{subject.name}
 	</h1>
@@ -97,7 +97,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			type="submit"
 			class:success={$successState?.type === 'success'}
 			class:error={$successState?.type === 'error'}
-			on:click={handleSave}
+			onclick={handleSave}
 		>
 			<Save />
 		</button>
@@ -106,7 +106,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			class="enable-edit inline-svg remove-style"
 			class:success={$successState?.type === 'success'}
 			class:error={$successState?.type === 'error'}
-			on:click={enableEdit}><CreateIcon /></button
+			onclick={enableEdit}><CreateIcon /></button
 		>
 	{/if}
 </div>

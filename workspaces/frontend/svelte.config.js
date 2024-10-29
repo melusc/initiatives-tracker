@@ -27,6 +27,9 @@ const config = {
 			crawl: false,
 		},
 	},
+	compilerOptions: {
+		runes: true,
+	},
 };
 
 export default config;

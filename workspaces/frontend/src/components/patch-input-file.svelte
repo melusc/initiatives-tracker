@@ -25,20 +25,30 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import UploadIcon from './icons/upload.svelte';
 	import TrashIcon from './icons/trash.svelte';
 
-	export let name: string;
-	export let label: string;
-	export let apiEndpoint: string;
-	export let allowNull = false;
-	export let accept: string[] | undefined;
+	let {
+		name,
+		label,
+		apiEndpoint,
+		allowNull = false,
+		accept = undefined,
+		value = $bindable(),
+		initialValue = value,
+	}: {
+		name: string;
+		label: string;
+		apiEndpoint: string;
+		allowNull?: boolean;
+		accept?: readonly string[];
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		value: string | null;
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		initialValue?: string | null;
+	} = $props();
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	export let value: string | null;
+	let file = $state<File>();
+	let fileInputElement = $state<HTMLInputElement>();
 
-	let file: File | undefined;
-	let fileInputElement: HTMLInputElement;
-
-	export let initialValue = value;
-	let node: HTMLInputElement;
+	let node = $state<HTMLInputElement>();
 
 	const successState = createSuccessState();
 
@@ -46,18 +56,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		if (file) {
 			file = undefined;
 		} else {
-			fileInputElement.click();
+			fileInputElement!.click();
 		}
 	}
 
 	function handleFileInput(): void {
-		file = fileInputElement.files?.item(0) ?? undefined;
+		file = fileInputElement!.files?.item(0) ?? undefined;
 	}
 
 	async function handleSubmit(event: SubmitEvent): Promise<void> {
 		event.preventDefault();
 
-		let transformedValue: string | File = file ?? node.value.trim();
+		let transformedValue: string | File = file ?? node!.value.trim();
 		if (allowNull && !transformedValue) {
 			transformedValue = 'null';
 		}
@@ -81,7 +91,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	}
 </script>
 
-<form on:submit={handleSubmit}>
+<form onsubmit={handleSubmit}>
 	<label for={name}>
 		{label}
 	</label>
@@ -105,14 +115,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 				type="url"
 				{name}
 				value={initialValue ?? value}
-				on:input
 				bind:this={node}
 			/>
 			<input
 				class="hidden"
 				type="file"
 				accept={accept?.join(',')}
-				on:input={handleFileInput}
+				oninput={handleFileInput}
 				bind:this={fileInputElement}
 			/>
 		{/if}
@@ -120,7 +129,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			class:error={$successState?.type === 'error'}
 			class:success={$successState?.type === 'success'}
 			type="button"
-			on:click={clickUpload}
+			onclick={clickUpload}
 		>
 			{#if file}
 				<TrashIcon />

@@ -23,18 +23,27 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import SaveIcon from './icons/save.svelte';
 
-	export let type: 'text' | 'url' | 'date';
-	export let name: string;
-	export let label: string;
-	export let apiEndpoint: string;
-
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	export let value: string | null;
-
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	export let transform: (s: string) => string | null = s => s;
-
-	export let initialValue = value;
+	let {
+		type,
+		name,
+		label,
+		apiEndpoint,
+		value = $bindable(),
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		transform = (s): string | null => s,
+		initialValue = value,
+	}: {
+		type: 'text' | 'url' | 'date';
+		name: string;
+		label: string;
+		apiEndpoint: string;
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		value: string | null;
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		transform?: (s: string) => string | null;
+		// eslint-disable-next-line @typescript-eslint/ban-types
+		initialValue?: string | null;
+	} = $props();
 	let node: HTMLInputElement;
 
 	const successState = createSuccessState();
@@ -57,7 +66,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	}
 </script>
 
-<form on:submit={handleSubmit}>
+<form onsubmit={handleSubmit}>
 	<label for={name}>
 		{label}
 	</label>
@@ -72,7 +81,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			{type}
 			{name}
 			value={initialValue ?? value}
-			on:input
 			bind:this={node}
 		/><!--
 			--><button

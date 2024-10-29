@@ -27,7 +27,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	const loginInfo = getLogin();
 
-	let showMenu = false;
+	let showMenu = $state(false);
 
 	const loginLink = new RelativeUrl('/login');
 	const currentLink = new RelativeUrl(browser ? location.href : '/');
@@ -69,8 +69,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			class="user-icon-action"
 			role="button"
 			tabindex="0"
-			on:click={toggleMenu}
-			on:keydown={toggleMenu}
+			onclick={toggleMenu}
+			onkeydown={toggleMenu}
 		>
 			<UserIcon name={loginInfo.name} iconKey={loginInfo.id} />
 		</div>
@@ -81,12 +81,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 {#if showMenu}
 	<HeaderMenu close={headerMenuClose}>
-		<div slot="user-icon" class="user-info">
-			{#if loginInfo}
-				<UserIcon name={loginInfo.name} iconKey={loginInfo.id} />
-				<span>{loginInfo.name}</span>
-			{/if}
-		</div>
+		{#snippet userIcon()}
+			<div class="user-info">
+				{#if loginInfo}
+					<UserIcon name={loginInfo.name} iconKey={loginInfo.id} />
+					<span>{loginInfo.name}</span>
+				{/if}
+			</div>
+		{/snippet}
 	</HeaderMenu>
 {/if}
 

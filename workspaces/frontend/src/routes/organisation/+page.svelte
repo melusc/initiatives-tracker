@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import Loading from '../../components/loading.svelte';
 	import Initiative from '../../components/initiative.svelte';
 
-	let organisation = getState<EnrichedOrganisation>();
+	let organisation = $state(getState<EnrichedOrganisation>());
 </script>
 
 <div class="organisation">
