@@ -15,12 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {
-	type Invalidator,
-	type Subscriber,
-	type Unsubscriber,
-	writable,
-} from 'svelte/store';
+import {writable, type Subscriber, type Unsubscriber} from 'svelte/store';
 
 type SuccessState =
 	| {
@@ -34,9 +29,8 @@ type SuccessState =
 
 export function createSuccessState(): {
 	subscribe: (
-		this: void,
 		run: Subscriber<SuccessState>,
-		invalidate?: Invalidator<SuccessState> | undefined,
+		invalidate?: () => void,
 	) => Unsubscriber;
 	setSuccess(): void;
 	setError(error: string): void;

@@ -21,7 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import Trash from '../icons/trash.svelte';
 	import {getLogin} from '../../state.ts';
 
-	export let initiative: EnrichedInitiative;
+	const {initiative = $bindable()}: {initiative: EnrichedInitiative} = $props();
 
 	const login = getLogin();
 
@@ -76,8 +76,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 				{#if login?.isAdmin}
 					<div
 						class="trash"
-						on:click={handleClickRemove(organisation.id)}
-						on:keydown={handleKeyboardRemove(organisation.id)}
+						onclick={handleClickRemove(organisation.id)}
+						onkeydown={handleKeyboardRemove(organisation.id)}
 						role="button"
 						tabindex="0"
 					>

@@ -27,14 +27,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import DeleteButton from './delete-button.svelte';
 	import PatchInputFile from './patch-input-file.svelte';
 
-	export let organisation: Organisation;
-
-	export let allowEdit: boolean;
-	export let standalone: boolean;
+	const {
+		organisation = $bindable(),
+		allowEdit,
+		standalone,
+	}: {
+		organisation: Organisation;
+		allowEdit: boolean;
+		standalone: boolean;
+	} = $props();
 
 	const login = getLogin();
 
-	let showEdit = false;
+	let showEdit = $state(false);
 
 	function handleEditToggle(): void {
 		showEdit = !showEdit;
@@ -50,7 +55,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	{#if allowEdit && login?.isAdmin}
 		<button
 			class="toggle-edit inline-svg button-reset"
-			on:click={handleEditToggle}
+			onclick={handleEditToggle}
 		>
 			{showEdit ? 'Back' : 'Edit'}
 			<CreateIcon />

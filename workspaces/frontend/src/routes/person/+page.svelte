@@ -24,7 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import Initiative from '../../components/initiative.svelte';
 	import DeleteButton from '../../components/delete-button.svelte';
 
-	let person = getState<EnrichedPerson>();
+	let person = $state(getState<EnrichedPerson>());
 </script>
 
 <div class="person" data-person={person?.id}>

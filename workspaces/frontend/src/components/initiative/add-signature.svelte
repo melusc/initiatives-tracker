@@ -28,17 +28,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import {browser} from '$app/environment';
 
-	export let initiative: EnrichedInitiative;
-	let people: Person[] | undefined | false;
+	const {initiative = $bindable()}: {initiative: EnrichedInitiative} = $props();
+	let people = $state<Person[] | false>();
 
-	let personId: string | undefined;
+	let personId = $state<string>();
 
-	$: filteredPeople
-		= people
-		&& people.filter(
-			person =>
-				!initiative.signatures.some(signature => signature.id === person.id),
-		);
+	const filteredPeople = $derived(
+		people
+			&& people.filter(
+				person =>
+					!initiative.signatures.some(signature => signature.id === person.id),
+			),
+	);
 
 	const successState = createSuccessState();
 
@@ -101,12 +102,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		void fetchPeople();
 	}
 
-	$: formDisabled = !personId || personId === 'add-signature';
+	const formDisabled = $derived(!personId || personId === 'add-signature');
 </script>
 
-<form class="add-signature" on:submit={submitSignature}>
+<form class="add-signature" onsubmit={submitSignature}>
 	{#if filteredPeople && filteredPeople.length > 0}
-		<select bind:value={personId} on:keydown={handleKeydown}>
+		<select bind:value={personId} onkeydown={handleKeydown}>
 			<option disabled selected value="add-signature">Add signature</option>
 
 			{#each filteredPeople as person (person.id)}

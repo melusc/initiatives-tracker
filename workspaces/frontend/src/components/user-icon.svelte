@@ -18,8 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import {colorHash} from '@lusc/initiatives-tracker-util/color-hash.js';
 
-	export let name: string;
-	export let iconKey: string;
+	const {name, iconKey}: {name: string; iconKey: string} = $props();
 </script>
 
 <div class="user-icon" title={name}>

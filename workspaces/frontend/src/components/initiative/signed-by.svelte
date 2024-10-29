@@ -21,7 +21,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import UserIcon from '../user-icon.svelte';
 	import Trash from '../icons/trash.svelte';
 
-	export let initiative: EnrichedInitiative;
+	const {initiative = $bindable()}: {initiative: EnrichedInitiative} = $props();
 
 	function handleKeyboardRemove(id: string): (event: KeyboardEvent) => void {
 		return (event: KeyboardEvent) => {
@@ -61,8 +61,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 				</a>
 				<div
 					class="trash"
-					on:click={handleClickRemove(person.id)}
-					on:keydown={handleKeyboardRemove(person.id)}
+					onclick={handleClickRemove(person.id)}
+					onkeydown={handleKeyboardRemove(person.id)}
 					role="button"
 					tabindex="0"
 				>

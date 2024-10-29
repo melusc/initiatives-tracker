@@ -28,20 +28,21 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import {browser} from '$app/environment';
 
-	export let initiative: EnrichedInitiative;
-	let organisations: Organisation[] | undefined | false;
+	const {initiative = $bindable()}: {initiative: EnrichedInitiative} = $props();
+	let organisations = $state<Organisation[] | false>();
 
-	let organisationId: string | undefined;
+	let organisationId = $state<string>();
 
-	$: filteredOrganisations
-		= organisations
-		&& organisations.filter(
-			organisation =>
-				!initiative.organisations.some(
-					associatedOrganisation =>
-						associatedOrganisation.id === organisation.id,
-				),
-		);
+	const filteredOrganisations = $derived(
+		organisations
+			&& organisations.filter(
+				organisation =>
+					!initiative.organisations.some(
+						associatedOrganisation =>
+							associatedOrganisation.id === organisation.id,
+					),
+			),
+	);
 
 	const successState = createSuccessState();
 
@@ -106,12 +107,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		void fetchOrganisations();
 	}
 
-	$: formDisabled = !organisationId || organisationId === 'add-organisation';
+	const formDisabled = $derived(
+		!organisationId || organisationId === 'add-organisation',
+	);
 </script>
 
-<form class="add-organisation" on:submit={submitAssociation}>
+<form class="add-organisation" onsubmit={submitAssociation}>
 	{#if filteredOrganisations && filteredOrganisations.length > 0}
-		<select bind:value={organisationId} on:keydown={handleKeydown}>
+		<select bind:value={organisationId} onkeydown={handleKeydown}>
 			<option disabled selected value="add-organisation"
 				>Add organisation</option
 			>

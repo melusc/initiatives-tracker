@@ -32,7 +32,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	{#if people && people.length > 0}
 		<div class="table">
 			<div class="thead">
-				<div class="cell" />
+				<div class="cell"></div>
 				<div class="cell">Name</div>
 				<div class="cell">No. signed initiatives</div>
 			</div>

@@ -15,27 +15,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<script context="module" lang="ts">
-	export type Input = {
-		name: string;
-		label: string;
-		type: string;
-		minlength: number;
-		required?: boolean;
-		accept?: string[];
-	};
-</script>
-
 <script lang="ts">
 	import {getState} from '../../state.ts';
 	import Card from '../card.svelte';
 	import StandaloneCenter from '../standalone-center.svelte';
 
+	import type {Input} from './create-form.d.ts';
 	import FileInput from './file-input.svelte';
 
-	export let title: string;
-
-	export let inputs: Input[];
+	const {title, inputs} = $props<{title: string; inputs: Input[]}>();
 
 	const {
 		error,
