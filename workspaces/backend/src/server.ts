@@ -213,7 +213,6 @@ app.get('/person/create', (_, response) => {
 
 app.post('/person/create', multerUpload.none(), async (request, response) => {
 	const body = request.body as Record<string, unknown>;
-	console.log(body);
 
 	const person = await createPerson(body, response.locals.login.id);
 
