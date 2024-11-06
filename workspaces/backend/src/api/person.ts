@@ -29,7 +29,7 @@ import {
 	sortPeople,
 } from '@lusc/initiatives-tracker-util/sort.js';
 
-import {database} from '../db.ts';
+import {database} from '../database.ts';
 import {makeValidator} from '../validate-body.ts';
 import {transformInitiativeUrls} from '../uploads.ts';
 
@@ -234,8 +234,8 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 	}
 
 	if (
-		'name' in validateResult.data
-		&& validateResult.data.name !== oldRow.name
+		'name' in validateResult.data &&
+		validateResult.data.name !== oldRow.name
 	) {
 		const sameName = database
 			.prepare<
@@ -296,7 +296,7 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 	}
 };
 
-export const deletePerson: RequestHandler<{id: string}> = async (
+export const deletePerson: RequestHandler<{id: string}> = (
 	request,
 	response,
 ) => {
@@ -338,17 +338,13 @@ export function getAllPeople(owner: string) {
 	return sortPeople(rows).map(person => enrichPerson(person));
 }
 
-export const getAllPeopleEndpoint: RequestHandler = async (
-	_request,
-	response,
-) => {
+export const getAllPeopleEndpoint: RequestHandler = (_request, response) => {
 	response.status(200).json({
 		type: 'success',
 		data: getAllPeople(response.locals.login.id),
 	});
 };
 
-// eslint-disable-next-line new-cap
 export const personRouter = Router();
 
 personRouter.get('/people', getAllPeopleEndpoint);

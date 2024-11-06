@@ -34,7 +34,7 @@ import {
 	getOrganisation,
 } from './api/organisation.ts';
 import {createPerson, getAllPeople, getPerson} from './api/person.ts';
-import {database} from './db.ts';
+import {database} from './database.ts';
 import {setHeaders} from './middle-ware/set-headers.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
 import {mergeExpressBodyFile, multerUpload, staticRoot} from './uploads.ts';
@@ -342,8 +342,8 @@ app.post('/account', async (request, response) => {
 				},
 			});
 		} catch (error: unknown) {
-			const message
-				= error instanceof Error ? error.message : 'Something went wrong.';
+			const message =
+				error instanceof Error ? error.message : 'Something went wrong.';
 			response.status(400).render('account', {
 				login: response.locals.login,
 				state: {
@@ -363,9 +363,9 @@ app.post('/account', async (request, response) => {
 	const newPasswordRepeat = body['newPasswordRepeat'];
 
 	if (
-		typeof currentPassword !== 'string'
-		|| typeof newPassword !== 'string'
-		|| typeof newPasswordRepeat !== 'string'
+		typeof currentPassword !== 'string' ||
+		typeof newPassword !== 'string' ||
+		typeof newPasswordRepeat !== 'string'
 	) {
 		response.status(400).render('account', {
 			login: response.locals.login,
@@ -387,8 +387,8 @@ app.post('/account', async (request, response) => {
 		);
 		logout(request, response, '/account');
 	} catch (error: unknown) {
-		const message
-			= error instanceof Error ? error.message : 'Something went wrong.';
+		const message =
+			error instanceof Error ? error.message : 'Something went wrong.';
 		response.status(400).render('account', {
 			login: response.locals.login,
 			state: {

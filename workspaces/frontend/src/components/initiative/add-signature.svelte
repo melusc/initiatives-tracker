@@ -34,8 +34,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	let personId = $state<string>();
 
 	const filteredPeople = $derived(
-		people
-			&& people.filter(
+		people &&
+			people.filter(
 				person =>
 					!initiative.signatures.some(signature => signature.id === person.id),
 			),

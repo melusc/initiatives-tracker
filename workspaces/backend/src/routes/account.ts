@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import {type Buffer} from 'node:buffer';
 import {randomBytes, timingSafeEqual} from 'node:crypto';
 
-import {database} from '../db.ts';
+import {database} from '../database.ts';
 import {scrypt} from '../promisified.ts';
 
 export function changeUsername(username: string, userId: string) {

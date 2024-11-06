@@ -17,7 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import type {Request, Response} from 'express';
 
-import {database} from '../db.ts';
+import {database} from '../database.ts';
 
 export function logout(
 	request: Request,

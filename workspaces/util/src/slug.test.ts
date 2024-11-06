@@ -15,8 +15,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {makeSlug} from './slug.js';

@@ -15,18 +15,19 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-/* eslint-disable unicorn/no-typeof-undefined */
-
 import type {LoginInfo} from '@lusc/initiatives-tracker-util/types.js';
 
 declare const state: unknown;
 
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
 export function getState<T>(): T | undefined {
+	// eslint-disable-next-line unicorn/no-typeof-undefined
 	return typeof state === 'undefined' ? undefined : (state as T);
 }
 
 declare const login: LoginInfo | undefined;
 
 export function getLogin(): LoginInfo | undefined {
+	// eslint-disable-next-line unicorn/no-typeof-undefined
 	return typeof login === 'undefined' ? undefined : login;
 }

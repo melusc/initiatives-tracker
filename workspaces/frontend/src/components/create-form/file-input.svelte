@@ -21,8 +21,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import type {Input} from './create-form.d.ts';
 
-	const {input, values}: {input: Input; values: Record<string, string>}
-		= $props();
+	const {input, values}: {input: Input; values: Record<string, string>} =
+		$props();
 
 	let file = $state<File>();
 	let fileInputElement = $state<HTMLInputElement>();

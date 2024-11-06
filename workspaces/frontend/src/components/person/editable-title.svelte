@@ -23,9 +23,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import CreateIcon from '../icons/create.svelte';
 	import Save from '../icons/save.svelte';
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-	let {subject = $bindable(), patchApi}: {subject: T; patchApi: string}
-		= $props();
+	let {subject = $bindable(), patchApi}: {subject: T; patchApi: string} =
+		$props();
 
 	const successState = createSuccessState();
 
@@ -69,12 +68,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 			successState.setError(body.readableError);
 		} else {
 			successState.setSuccess();
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			subject = body.data;
 			editEnabled = false;
 
 			// If name is normalised or otherwise modified on server
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			titleNode!.textContent = subject.name;
 		}
 	}

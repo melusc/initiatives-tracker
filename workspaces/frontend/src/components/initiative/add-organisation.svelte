@@ -34,8 +34,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	let organisationId = $state<string>();
 
 	const filteredOrganisations = $derived(
-		organisations
-			&& organisations.filter(
+		organisations &&
+			organisations.filter(
 				organisation =>
 					!initiative.organisations.some(
 						associatedOrganisation =>

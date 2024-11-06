@@ -11,13 +11,14 @@
 	},
 	"type": "module",
 	"devDependencies": {
+		"@lusc/eslint-config": "^1.0.1",
 		"@lusc/tsconfig": "^5.1.0",
 		"@types/node": "^22.9.0",
-		"typescript": "^5.6.3",
-		"xo": "^0.59.3"
+		"eslint": "^9.14.0",
+		"typescript": "^5.6.3"
 	},
 	"scripts": {
-		"fmt": "xo --fix",
+		"fmt": "eslint --fix",
 		"build": "tsc",
 		"test": "tsc && node --test dist/*.test.js"
 	},
@@ -25,6 +26,9 @@
 		"email": "oss@lusc.ch",
 		"name": "melusc",
 		"url": "https://github.com/melusc"
+	},
+	"engines": {
+		"node": ">=22"
 	},
 	"license": "GPL-3.0-only",
 	"repository": {

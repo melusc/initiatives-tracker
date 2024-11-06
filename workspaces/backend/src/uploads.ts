@@ -194,10 +194,9 @@ export async function fetchPdf(pdf: URL | Buffer): Promise<FetchedFile> {
 }
 
 export function mergeExpressBodyFile(request: Request, keys: string[]) {
-	const files = request.files as unknown as Record<
-		string,
-		Express.Multer.File[]
-	>;
+	const files = request.files as unknown as
+		| Record<string, Express.Multer.File[]>
+		| undefined;
 
 	const body = {
 		...(request.body as Record<string, unknown>),
