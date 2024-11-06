@@ -21,8 +21,8 @@ const lowercaseCharSet = 'abcdefghijklmnopqrstuvwxyz';
 const uppercaseCharSet = lowercaseCharSet.toUpperCase();
 const numberCharSet = '0123456789';
 const specialCharSet = '!@#$%*';
-const allCharactersSet
-	= lowercaseCharSet + uppercaseCharSet + numberCharSet + specialCharSet;
+const allCharactersSet =
+	lowercaseCharSet + uppercaseCharSet + numberCharSet + specialCharSet;
 
 function getRandom(charset: string) {
 	return charset[randomInt(charset.length)]!;
@@ -38,15 +38,15 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export function generatePassword(length: number): string {
-	let password
-		= getRandom(lowercaseCharSet)
-		+ getRandom(uppercaseCharSet)
-		+ getRandom(numberCharSet)
-		+ getRandom(specialCharSet);
+	let password =
+		getRandom(lowercaseCharSet) +
+		getRandom(uppercaseCharSet) +
+		getRandom(numberCharSet) +
+		getRandom(specialCharSet);
 
 	while (password.length < length) {
 		password += getRandom(allCharactersSet);
 	}
 
-	return shuffleArray(password.split('')).join('');
+	return shuffleArray([...password]).join('');
 }

@@ -33,9 +33,9 @@ async function isInternal(url: URL) {
 	// Should be fine, because hostnames that resolve to ipv6
 	// still work
 	if (
-		hostname.includes('[')
-		|| hostname.includes(']')
-		|| ip.isV6Format(hostname)
+		hostname.includes('[') ||
+		hostname.includes(']') ||
+		ip.isV6Format(hostname)
 	) {
 		return true;
 	}
@@ -109,9 +109,9 @@ type GenericValidator = Record<
 
 export function isNullish(input: unknown): boolean {
 	return (
-		input === null
-		|| input === 'null'
-		|| (typeof input === 'string' && input.trim() === '')
+		input === null ||
+		input === 'null' ||
+		(typeof input === 'string' && input.trim() === '')
 	);
 }
 
@@ -174,7 +174,7 @@ export function makeValidator<Validators extends GenericValidator>(
 
 		const result: Record<string, unknown> = {};
 
-		for await (const entry of resultEntries) {
+		for (const entry of await Promise.all(resultEntries)) {
 			if ('type' in entry) {
 				return entry;
 			}
@@ -184,7 +184,7 @@ export function makeValidator<Validators extends GenericValidator>(
 
 		return {
 			type: 'success',
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
 			data: result as any,
 		};
 	};

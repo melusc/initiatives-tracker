@@ -33,7 +33,7 @@ import type {
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
 
-import {database} from '../db.ts';
+import {database} from '../database.ts';
 import {
 	fetchImage,
 	fetchPdf,
@@ -246,8 +246,8 @@ export async function createInitiative(
 		return validateResult;
 	}
 
-	const {website, fullName, shortName, pdf, image, deadline}
-		= validateResult.data;
+	const {website, fullName, shortName, pdf, image, deadline} =
+		validateResult.data;
 
 	await writeFile(pdf.suggestedFilePath, pdf.body);
 
@@ -374,7 +374,7 @@ export function getAllInitiatives(loginUserId: string): EnrichedInitiative[] {
 	);
 }
 
-export const getAllInitiativesEndpoint: RequestHandler = async (
+export const getAllInitiativesEndpoint: RequestHandler = (
 	_request,
 	response,
 ) => {
@@ -420,13 +420,11 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 
 	const newData = validateResult.data;
 
-	if (newData.pdf) {
-		try {
-			await unlink(new URL(oldRow.pdf, pdfOutDirectory));
-		} catch {}
+	try {
+		await unlink(new URL(oldRow.pdf, pdfOutDirectory));
+	} catch {}
 
-		await writeFile(newData.pdf.suggestedFilePath, newData.pdf.body);
-	}
+	await writeFile(newData.pdf.suggestedFilePath, newData.pdf.body);
 
 	if (newData.image) {
 		try {
@@ -462,7 +460,7 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 		.run({
 			...newData,
 			id,
-			pdf: newData.pdf?.id,
+			pdf: newData.pdf.id,
 			image: newData.image?.id ?? null,
 		});
 
@@ -608,7 +606,6 @@ export const initiativeRemoveOrganisation: RequestHandler<{
 	});
 };
 
-// eslint-disable-next-line new-cap
 export const initiativeRouter = Router();
 
 /* NON-ADMIN */
@@ -621,7 +618,7 @@ initiativeRouter.delete(
 	initiativeRemoveSignature,
 );
 
-/* ADMIN (expect GET) */
+/* ADMIN (except GET) */
 initiativeRouter.get('/initiatives', getAllInitiativesEndpoint);
 initiativeRouter.post(
 	'/initiative/create',

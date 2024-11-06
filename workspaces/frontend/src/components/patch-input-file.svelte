@@ -30,7 +30,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		label,
 		apiEndpoint,
 		allowNull = false,
-		accept = undefined,
+		accept,
 		value = $bindable(),
 		initialValue = value,
 	}: {
@@ -39,9 +39,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		apiEndpoint: string;
 		allowNull?: boolean;
 		accept?: readonly string[];
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		value: string | null;
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		initialValue?: string | null;
 	} = $props();
 

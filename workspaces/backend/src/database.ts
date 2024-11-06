@@ -17,6 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import {randomBytes, randomUUID} from 'node:crypto';
 import {stdin, stdout} from 'node:process';
+// eslint-disable-next-line n/no-unsupported-features/node-builtins
 import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
@@ -127,7 +128,6 @@ if (shouldPrune) {
 
 	for (const diskImage of diskImages) {
 		if (!images.has(diskImage)) {
-			// eslint-disable-next-line no-await-in-loop
 			await unlink(new URL(diskImage, imageOutDirectory));
 		}
 	}
@@ -142,7 +142,6 @@ if (shouldPrune) {
 
 	for (const diskPdf of diskPdfs) {
 		if (!pdf.has(diskPdf)) {
-			// eslint-disable-next-line no-await-in-loop
 			await unlink(new URL(diskPdf, pdfOutDirectory));
 		}
 	}

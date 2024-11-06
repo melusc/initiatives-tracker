@@ -21,7 +21,6 @@ import {Router} from 'express';
 
 import {imageOutDirectory, pdfOutDirectory} from '../uploads.ts';
 
-// eslint-disable-next-line new-cap
 const router = Router();
 
 router.get('/pdf/:id', (request, response, next) => {
@@ -30,10 +29,9 @@ router.get('/pdf/:id', (request, response, next) => {
 		{
 			root: fileURLToPath(pdfOutDirectory),
 		},
-		error => {
-			if (error) {
-				next();
-			}
+		() => {
+			// 404
+			next();
 		},
 	);
 });
@@ -44,10 +42,9 @@ router.get('/image/:id', (request, response, next) => {
 		{
 			root: fileURLToPath(imageOutDirectory),
 		},
-		error => {
-			if (error) {
-				next();
-			}
+		() => {
+			// 404
+			next();
 		},
 	);
 });

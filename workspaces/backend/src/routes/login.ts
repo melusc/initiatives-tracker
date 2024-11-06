@@ -21,7 +21,7 @@ import type {Request, Response} from 'express';
 import z from 'zod';
 import {RelativeUrl} from '@lusc/util/relative-url';
 
-import {database} from '../db.ts';
+import {database} from '../database.ts';
 import {scrypt} from '../promisified.ts';
 
 export async function loginPost(request: Request, response: Response) {

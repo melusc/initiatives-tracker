@@ -22,7 +22,6 @@ import {organisationRouter} from './organisation.ts';
 import {personRouter} from './person.ts';
 import {userContent} from './user-content.ts';
 
-// eslint-disable-next-line new-cap
 const router = Router();
 
 router.use(organisationRouter);

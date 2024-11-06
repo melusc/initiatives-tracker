@@ -29,7 +29,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		label,
 		apiEndpoint,
 		value = $bindable(),
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		transform = (s): string | null => s,
 		initialValue = value,
 	}: {
@@ -37,11 +36,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		name: string;
 		label: string;
 		apiEndpoint: string;
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		value: string | null;
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		transform?: (s: string) => string | null;
-		// eslint-disable-next-line @typescript-eslint/ban-types
 		initialValue?: string | null;
 	} = $props();
 	let node: HTMLInputElement;

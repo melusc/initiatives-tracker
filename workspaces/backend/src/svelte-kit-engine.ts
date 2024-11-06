@@ -22,7 +22,7 @@ import type {Locals} from 'express';
 export async function svelteKitEngine(
 	path: string,
 	options_: unknown,
-	callback: (error: any, rendered?: string) => void,
+	callback: (error: unknown, rendered?: string) => void,
 ): Promise<void> {
 	const options = options_ as Record<string, unknown>;
 
@@ -46,6 +46,6 @@ export async function svelteKitEngine(
 			.replace('__login__', JSON.stringify(login));
 		callback(null, injected);
 	} catch (error: unknown) {
-		callback(error, undefined);
+		callback(error);
 	}
 }

@@ -35,7 +35,7 @@ export function createSuccessState(): {
 	setSuccess(): void;
 	setError(error: string): void;
 } {
-	const {subscribe, set} = writable<SuccessState>(undefined);
+	const {subscribe, set} = writable<SuccessState>();
 
 	let timeout: ReturnType<typeof setTimeout> | undefined;
 

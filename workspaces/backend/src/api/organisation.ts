@@ -41,7 +41,7 @@ import {
 	transformOrganisationUrls,
 	type FetchedFile,
 } from '../uploads.ts';
-import {database} from '../db.ts';
+import {database} from '../database.ts';
 import {requireAdmin} from '../middle-ware/require-admin.ts';
 
 function enrichOrganisation(organisation: Organisation): EnrichedOrganisation {
@@ -279,7 +279,7 @@ export const getOrganisationEndpoint: RequestHandler<{id: string}> = (
 	});
 };
 
-export const deleteOrganisation: RequestHandler<{id: string}> = async (
+export const deleteOrganisation: RequestHandler<{id: string}> = (
 	request,
 	response,
 ) => {
@@ -383,7 +383,6 @@ export const patchOrganisation: RequestHandler<{id: string}> = async (
 	});
 };
 
-// eslint-disable-next-line new-cap
 export const organisationRouter = Router();
 
 organisationRouter.get('/organisations', getAllOrganisationsEndpoint);

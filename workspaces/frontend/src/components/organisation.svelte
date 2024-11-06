@@ -45,7 +45,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		showEdit = !showEdit;
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	function transformOptional(s: string): string | null {
 		return s.trim() === '' ? null : s;
 	}
