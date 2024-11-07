@@ -23,6 +23,7 @@ import type {
 	Initiative,
 	Person,
 	ApiResponse,
+	LoginInfo,
 } from '@lusc/initiatives-tracker-util/types.js';
 import {
 	sortInitiatives,
@@ -103,7 +104,7 @@ export async function createPerson(
 		.prepare<
 			{name: string; owner: string},
 			Person
-		>('SELECT id, name, owner FROM people WHERE name = :name AND owner = :owner')
+		>('SELECT id, name, owner FROM people WHERE LOWER(name) = LOWER(:name) AND owner = :owner')
 		.get({name, owner});
 	if (sameName) {
 		return {
@@ -161,15 +162,21 @@ export const createPersonEndpoint: RequestHandler = async (
 	return response.status(201).json(result);
 };
 
-export function getPerson(id: string, owner: string): EnrichedPerson | false {
+export function getPerson(
+	id: string,
+	login: LoginInfo,
+): EnrichedPerson | false {
+	let query = 'SELECT id, name, owner FROM people WHERE id = :id';
+
+	if (!login.isAdmin) {
+		query += ' AND owner = :owner';
+	}
+
 	const person = database
-		.prepare<
-			{id: string; owner: string},
-			Person
-		>('SELECT id, name, owner FROM people WHERE id = :id AND owner = :owner')
+		.prepare<{id: string; owner: string}, Person>(query)
 		.get({
 			id,
-			owner,
+			owner: login.id,
 		});
 
 	if (!person) {
@@ -183,7 +190,7 @@ export const getPersonEndpoint: RequestHandler<{id: string}> = (
 	request,
 	response,
 ) => {
-	const result = getPerson(request.params.id, response.locals.login.id);
+	const result = getPerson(request.params.id, response.locals.login);
 
 	if (!result) {
 		return response.status(404).json({
@@ -205,11 +212,14 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 ) => {
 	const {id} = request.params;
 
+	let oldRowQuery = 'SELECT id, name, owner FROM people WHERE id = :id';
+
+	if (!response.locals.login.isAdmin) {
+		oldRowQuery += ' AND owner = :owner';
+	}
+
 	const oldRow = database
-		.prepare<
-			{id: string; owner: string},
-			Person
-		>('SELECT id, name, owner FROM people WHERE id = :id AND owner = :owner')
+		.prepare<{id: string; owner: string}, Person>(oldRowQuery)
 		.get({id, owner: response.locals.login.id});
 
 	if (!oldRow) {
@@ -242,7 +252,7 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 				{name: string; owner: string},
 				Person
 			>('SELECT id, name, owner FROM people WHERE name = :name AND owner = :owner')
-			.get({name: validateResult.data.name, owner: response.locals.login.id});
+			.get({name: validateResult.data.name, owner: oldRow.owner});
 		if (sameName) {
 			response.status(400).json({
 				type: 'error',
@@ -270,10 +280,10 @@ export const patchPerson: RequestHandler<{id: string}> = async (
 	}
 
 	try {
+		// No need to check for owner, as id is unique globally anyway
+		// and requester is at this point either owner or admin
 		database
-			.prepare<Person>(
-				`UPDATE people SET ${query.join(', ')} WHERE id = :id AND owner = :owner`,
-			)
+			.prepare<Person>(`UPDATE people SET ${query.join(', ')} WHERE id = :id`)
 			.run({
 				...newData,
 				id,
@@ -302,11 +312,16 @@ export const deletePerson: RequestHandler<{id: string}> = (
 ) => {
 	const {id} = request.params;
 
+	let query = 'DELETE FROM people WHERE id = :id';
+	if (!response.locals.login.isAdmin) {
+		query += ' AND owner = :owner';
+	}
+
 	const result = database
 		.prepare<{
 			id: string;
 			owner: string;
-		}>('DELETE FROM people WHERE id = :id AND owner = :owner')
+		}>(query)
 		.run({id, owner: response.locals.login.id});
 
 	if (result.changes === 0) {
