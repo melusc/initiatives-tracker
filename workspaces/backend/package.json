@@ -3,7 +3,7 @@
 	"private": true,
 	"type": "module",
 	"devDependencies": {
-		"@lusc/eslint-config": "^1.0.1",
+		"@lusc/eslint-config": "^1.1.0",
 		"@lusc/tsconfig": "^5.1.0",
 		"@types/better-sqlite3": "^7.6.11",
 		"@types/cookie-parser": "^1.4.7",
@@ -35,7 +35,7 @@
 		"zod": "^3.23.8"
 	},
 	"engines": {
-		"node": ">= 22"
+		"node": ">= 22.11.0"
 	},
 	"scripts": {
 		"fmt": "eslint --fix",
