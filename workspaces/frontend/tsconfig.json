@@ -1,5 +1,5 @@
 {
-	"extends": ["@lusc/tsconfig", "./.svelte-kit/tsconfig.json"],
+	"extends": ["@lusc/tsconfig/bundler", "./.svelte-kit/tsconfig.json"],
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
