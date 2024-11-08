@@ -621,8 +621,8 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.13.0"
     eslint: "npm:^9.14.0"
     eslint-plugin-svelte: "npm:^2.46.0"
-    svelte: "npm:^5.1.12"
-    svelte-check: "npm:^4.0.5"
+    svelte: "npm:^5.1.13"
+    svelte-check: "npm:^4.0.6"
     svelte-eslint-parser: "npm:^0.43.0"
     tslib: "npm:^2.8.1"
     typescript: "npm:^5.6.3"
@@ -4931,9 +4931,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte-check@npm:^4.0.5":
-  version: 4.0.5
-  resolution: "svelte-check@npm:4.0.5"
+"svelte-check@npm:^4.0.6":
+  version: 4.0.6
+  resolution: "svelte-check@npm:4.0.6"
   dependencies:
     "@jridgewell/trace-mapping": "npm:^0.3.25"
     chokidar: "npm:^4.0.1"
@@ -4945,7 +4945,7 @@ __metadata:
     typescript: ">=5.0.0"
   bin:
     svelte-check: bin/svelte-check
-  checksum: 10c0/192ee83f83169408b5f0b819440349f53e256db868d59fdd2422e831ef581891f5f257632dd3e632b12518ca307e1f99ff97455f56c19c3d2a5ee7be6391a181
+  checksum: 10c0/05b480594a974718936c0df76b77fa749ca1ca6806ab897aeb58f89c998517f63c1a46ae2a15c2d414bfd2a03f75ec9b96d42e4caffc88a2157363057073ea2b
   languageName: node
   linkType: hard
 
@@ -4967,9 +4967,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^5.1.12":
-  version: 5.1.12
-  resolution: "svelte@npm:5.1.12"
+"svelte@npm:^5.1.13":
+  version: 5.1.13
+  resolution: "svelte@npm:5.1.13"
   dependencies:
     "@ampproject/remapping": "npm:^2.3.0"
     "@jridgewell/sourcemap-codec": "npm:^1.5.0"
@@ -4984,7 +4984,7 @@ __metadata:
     locate-character: "npm:^3.0.0"
     magic-string: "npm:^0.30.11"
     zimmerframe: "npm:^1.1.2"
-  checksum: 10c0/59a4e208833ff05aebc934cf59c999e3c1ebcf7d64327a9f372caeb0188023701e0711759205220d706961f0af412df188ae06b9729473a96e36fb849a3de698
+  checksum: 10c0/c63a8d926d04810f7d63e68262593e4a89e3ea00dd1be6357ac3cdd998e6f6c0816fd9f3d470738de4030b7c04bdd4a7850fd0517d75672448738a972f7ce9b8
   languageName: node
   linkType: hard
 
