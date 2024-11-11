@@ -20,13 +20,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import {getLogin} from '../state.ts';
 
-	import PatchInput from './patch-input.svelte';
+	import Card from './card.svelte';
+	import DeleteButton from './delete-button.svelte';
+	import Calendar from './icons/calendar.svelte';
 	import CreateIcon from './icons/create.svelte';
 	import ExternalLinkIcon from './icons/external-link.svelte';
-	import Card from './card.svelte';
-	import Calendar from './icons/calendar.svelte';
-	import DeleteButton from './delete-button.svelte';
 	import PatchInputFile from './patch-input-file.svelte';
+	import PatchInput from './patch-input.svelte';
 
 	const {
 		initiative = $bindable(),

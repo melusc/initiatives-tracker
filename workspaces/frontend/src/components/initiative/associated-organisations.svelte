@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import {type EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
 
-	import Trash from '../icons/trash.svelte';
 	import {getLogin} from '../../state.ts';
+	import Trash from '../icons/trash.svelte';
 
 	const {initiative = $bindable()}: {initiative: EnrichedInitiative} = $props();
 

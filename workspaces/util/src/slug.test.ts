@@ -15,8 +15,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import test from 'node:test';
 import assert from 'node:assert/strict';
+import test from 'node:test';
+
 import {makeSlug} from './slug.js';
 
 function makeSlugDeterministic(s: string) {

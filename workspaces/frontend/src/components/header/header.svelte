@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import {RelativeUrl} from '@lusc/util/relative-url';
 
-	import UserIcon from '../user-icon.svelte';
 	import {getLogin} from '../../state.ts';
+	import UserIcon from '../user-icon.svelte';
 
 	import HeaderMenu from './header-menu.svelte';
 

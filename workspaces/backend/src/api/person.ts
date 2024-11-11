@@ -16,22 +16,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
+import {
+	sortInitiatives,
+	sortPeople,
+} from '@lusc/initiatives-tracker-util/sort.js';
 import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
-import {Router, type RequestHandler} from 'express';
 import type {
 	EnrichedPerson,
 	Initiative,
 	Person,
 	ApiResponse,
 } from '@lusc/initiatives-tracker-util/types.js';
-import {
-	sortInitiatives,
-	sortPeople,
-} from '@lusc/initiatives-tracker-util/sort.js';
+import {Router, type RequestHandler} from 'express';
 
 import {database} from '../database.ts';
-import {makeValidator} from '../validate-body.ts';
 import {transformInitiativeUrls} from '../uploads.ts';
+import {makeValidator} from '../validate-body.ts';
 
 function enrichPerson(person: Person): EnrichedPerson {
 	const initiatives = database

@@ -18,11 +18,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import type {EnrichedPerson} from '@lusc/initiatives-tracker-util/types.js';
 
-	import Loading from '../../components/loading.svelte';
-	import {getState} from '../../state.ts';
-	import EditableTitle from '../../components/person/editable-title.svelte';
-	import Initiative from '../../components/initiative.svelte';
 	import DeleteButton from '../../components/delete-button.svelte';
+	import Initiative from '../../components/initiative.svelte';
+	import Loading from '../../components/loading.svelte';
+	import EditableTitle from '../../components/person/editable-title.svelte';
+	import {getState} from '../../state.ts';
 
 	let person = $state(getState<EnrichedPerson>());
 </script>

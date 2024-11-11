@@ -35,14 +35,14 @@ import {
 } from './api/organisation.ts';
 import {createPerson, getAllPeople, getPerson} from './api/person.ts';
 import {database} from './database.ts';
-import {setHeaders} from './middle-ware/set-headers.ts';
 import {loginProtect} from './middle-ware/login-protect.ts';
-import {mergeExpressBodyFile, multerUpload, staticRoot} from './uploads.ts';
+import {requireAdmin} from './middle-ware/require-admin.ts';
+import {setHeaders} from './middle-ware/set-headers.ts';
+import {changePassword, changeUsername} from './routes/account.ts';
 import {loginPost} from './routes/login.ts';
 import {logout} from './routes/logout.ts';
 import {svelteKitEngine} from './svelte-kit-engine.ts';
-import {requireAdmin} from './middle-ware/require-admin.ts';
-import {changePassword, changeUsername} from './routes/account.ts';
+import {mergeExpressBodyFile, multerUpload, staticRoot} from './uploads.ts';
 
 const app = express();
 

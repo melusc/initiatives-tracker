@@ -18,10 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import type {EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
 
-	import Initiative from '../components/initiative.svelte';
-	import {getState} from '../state.ts';
-	import Loading from '../components/loading.svelte';
 	import CreateButton from '../components/create-button.svelte';
+	import Initiative from '../components/initiative.svelte';
+	import Loading from '../components/loading.svelte';
+	import {getState} from '../state.ts';
 
 	const initiatives = getState<EnrichedInitiative[]>();
 </script>

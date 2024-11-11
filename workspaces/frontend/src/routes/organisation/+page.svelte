@@ -18,10 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import type {EnrichedOrganisation} from '@lusc/initiatives-tracker-util/types.js';
 
-	import {getState} from '../../state.ts';
-	import Organisation from '../../components/organisation.svelte';
-	import Loading from '../../components/loading.svelte';
 	import Initiative from '../../components/initiative.svelte';
+	import Loading from '../../components/loading.svelte';
+	import Organisation from '../../components/organisation.svelte';
+	import {getState} from '../../state.ts';
 
 	let organisation = $state(getState<EnrichedOrganisation>());
 </script>

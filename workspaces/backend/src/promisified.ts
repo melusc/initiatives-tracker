@@ -15,8 +15,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import {scrypt as scryptCallback} from 'node:crypto';
 import {type Buffer} from 'node:buffer';
+import {scrypt as scryptCallback} from 'node:crypto';
 
 export async function scrypt(
 	password: string | Buffer,
