@@ -15,10 +15,10 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type {NextFunction, Request, Response} from 'express';
+import type {RequestHandler} from 'express';
 
-export function requireAdmin() {
-	return (request: Request, response: Response, next: NextFunction) => {
+export function requireAdmin(): RequestHandler {
+	return (request, response, next) => {
 		if (response.locals.login.isAdmin) {
 			next();
 			return;
