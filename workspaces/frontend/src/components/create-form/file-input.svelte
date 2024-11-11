@@ -16,8 +16,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import UploadIcon from '../icons/upload.svelte';
 	import TrashIcon from '../icons/trash.svelte';
+	import UploadIcon from '../icons/upload.svelte';
 
 	import type {Input} from './create-form.d.ts';
 

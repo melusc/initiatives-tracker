@@ -22,8 +22,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import {createSuccessState} from '../success-state.ts';
 
 	import SaveIcon from './icons/save.svelte';
-	import UploadIcon from './icons/upload.svelte';
 	import TrashIcon from './icons/trash.svelte';
+	import UploadIcon from './icons/upload.svelte';
 
 	let {
 		name,

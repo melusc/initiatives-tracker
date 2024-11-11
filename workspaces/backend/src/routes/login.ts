@@ -15,11 +15,12 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import type {Buffer} from 'node:buffer';
 import {randomBytes, timingSafeEqual} from 'node:crypto';
 
+import {RelativeUrl} from '@lusc/util/relative-url';
 import type {Request, Response} from 'express';
 import z from 'zod';
-import {RelativeUrl} from '@lusc/util/relative-url';
 
 import {database} from '../database.ts';
 import {scrypt} from '../promisified.ts';

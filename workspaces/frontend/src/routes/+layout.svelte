@@ -18,8 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import type {Snippet} from 'svelte';
 
-	import Header from '../components/header/header.svelte';
 	import Footer from '../components/footer.svelte';
+	import Header from '../components/header/header.svelte';
 	import '../common/sanitise.css';
 	import '../common/theme.css';
 	import '../common/font.css';

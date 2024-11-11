@@ -16,18 +16,18 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
 import {Buffer} from 'node:buffer';
+import {randomUUID} from 'node:crypto';
 import {mkdir} from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
-import {randomUUID} from 'node:crypto';
 
-import {fileTypeFromBuffer} from 'file-type';
 import type {
 	Initiative,
 	Organisation,
 } from '@lusc/initiatives-tracker-util/types.js';
-import {optimize as svgoOptimise} from 'svgo';
-import multer, {memoryStorage} from 'multer';
 import type {Request} from 'express';
+import {fileTypeFromBuffer} from 'file-type';
+import multer, {memoryStorage} from 'multer';
+import {optimize as svgoOptimise} from 'svgo';
 
 import {validateUrl} from './validate-body.ts';
 

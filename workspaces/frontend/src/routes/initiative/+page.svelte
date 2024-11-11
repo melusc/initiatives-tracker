@@ -18,13 +18,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import type {EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
 
-	import {getLogin, getState} from '../../state.ts';
-	import Initiative from '../../components/initiative.svelte';
-	import Loading from '../../components/loading.svelte';
-	import SignedBy from '../../components/initiative/signed-by.svelte';
+	import AddOrganisation from '../../components/initiative/add-organisation.svelte';
 	import AddSignature from '../../components/initiative/add-signature.svelte';
 	import AssociatedOrganisations from '../../components/initiative/associated-organisations.svelte';
-	import AddOrganisation from '../../components/initiative/add-organisation.svelte';
+	import SignedBy from '../../components/initiative/signed-by.svelte';
+	import Initiative from '../../components/initiative.svelte';
+	import Loading from '../../components/loading.svelte';
+	import {getLogin, getState} from '../../state.ts';
 
 	let initiative = $state(getState<EnrichedInitiative>());
 

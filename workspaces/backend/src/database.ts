@@ -15,19 +15,20 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
+import type {Buffer} from 'node:buffer';
 import {randomBytes, randomUUID} from 'node:crypto';
+import {readdir, unlink} from 'node:fs/promises';
 import {stdin, stdout} from 'node:process';
 // eslint-disable-next-line n/no-unsupported-features/node-builtins
 import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
-import {readdir, unlink} from 'node:fs/promises';
 
 import {generatePassword} from '@lusc/initiatives-tracker-util/pw.js';
 import Database, {type Database as DatabaseT} from 'better-sqlite3';
 
-import {dataDirectory, imageOutDirectory, pdfOutDirectory} from './uploads.ts';
 import {scrypt} from './promisified.ts';
+import {dataDirectory, imageOutDirectory, pdfOutDirectory} from './uploads.ts';
 
 export const database: DatabaseT = new Database(
 	fileURLToPath(new URL('initiatives-tracker.db', dataDirectory)),
