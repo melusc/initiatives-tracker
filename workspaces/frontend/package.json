@@ -17,7 +17,7 @@
 		"@lusc/tsconfig": "^5.1.0",
 		"@sveltejs/adapter-static": "^3.0.6",
 		"@sveltejs/kit": "^2.8.1",
-		"@sveltejs/vite-plugin-svelte": "^4.0.2",
+		"@sveltejs/vite-plugin-svelte": "^5.0.1",
 		"@tsconfig/svelte": "^5.0.4",
 		"@typescript-eslint/parser": "^8.16.0",
 		"eslint": "^9.15.0",
