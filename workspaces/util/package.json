@@ -13,7 +13,7 @@
 	"devDependencies": {
 		"@lusc/eslint-config": "^3.2.0",
 		"@lusc/tsconfig": "^5.1.0",
-		"@types/node": "^22.10.0",
+		"@types/node": "^22.10.1",
 		"eslint": "^9.15.0",
 		"typescript": "^5.7.2"
 	},
