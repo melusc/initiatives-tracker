@@ -29,9 +29,11 @@ router.get('/pdf/:id', (request, response, next) => {
 		{
 			root: fileURLToPath(pdfOutDirectory),
 		},
-		() => {
-			// 404
-			next();
+		(error: Error | undefined) => {
+			if (error) {
+				// 404
+				next();
+			}
 		},
 	);
 });
@@ -42,9 +44,11 @@ router.get('/image/:id', (request, response, next) => {
 		{
 			root: fileURLToPath(imageOutDirectory),
 		},
-		() => {
-			// 404
-			next();
+		(error: Error | undefined) => {
+			if (error) {
+				// 404
+				next();
+			}
 		},
 	);
 });
