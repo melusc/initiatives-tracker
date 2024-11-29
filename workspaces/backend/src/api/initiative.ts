@@ -420,12 +420,15 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 	}
 
 	const newData = validateResult.data;
+	const newPdf = newData.pdf as FetchedFile | undefined;
 
-	try {
-		await unlink(new URL(oldRow.pdf, pdfOutDirectory));
-	} catch {}
+	if (newPdf) {
+		try {
+			await unlink(new URL(oldRow.pdf, pdfOutDirectory));
+		} catch {}
 
-	await writeFile(newData.pdf.suggestedFilePath, newData.pdf.body);
+		await writeFile(newPdf.suggestedFilePath, newPdf.body);
+	}
 
 	if (newData.image) {
 		try {
@@ -461,7 +464,8 @@ export const patchInitiativeEndpoint: RequestHandler<{id: string}> = async (
 		.run({
 			...newData,
 			id,
-			pdf: newData.pdf.id,
+			// @ts-expect-error It is defined when the query needs it
+			pdf: newPdf?.id ?? undefined,
 			image: newData.image?.id ?? null,
 		});
 
