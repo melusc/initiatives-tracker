@@ -466,12 +466,12 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.17.0"
     eslint: "npm:^9.16.0"
     eslint-plugin-svelte: "npm:^2.46.1"
-    svelte: "npm:^5.5.3"
+    svelte: "npm:^5.7.1"
     svelte-check: "npm:^4.1.1"
     svelte-eslint-parser: "npm:^0.43.0"
     tslib: "npm:^2.8.1"
     typescript: "npm:^5.7.2"
-    vite: "npm:^6.0.2"
+    vite: "npm:^6.0.3"
   languageName: unknown
   linkType: soft
 
@@ -4917,9 +4917,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"svelte@npm:^5.5.3":
-  version: 5.5.3
-  resolution: "svelte@npm:5.5.3"
+"svelte@npm:^5.7.1":
+  version: 5.7.1
+  resolution: "svelte@npm:5.7.1"
   dependencies:
     "@ampproject/remapping": "npm:^2.3.0"
     "@jridgewell/sourcemap-codec": "npm:^1.5.0"
@@ -4934,7 +4934,7 @@ __metadata:
     locate-character: "npm:^3.0.0"
     magic-string: "npm:^0.30.11"
     zimmerframe: "npm:^1.1.2"
-  checksum: 10c0/5799b7a09147de696def9efbecfde5cd9820c61a6fcded2deebebdaee1ee3d3d600a3b9870067b9c674f045016b69a1c865ad4cc7269071b898aaea322d2b4e0
+  checksum: 10c0/4091035ddcc108f9f2608a0231c5138d1568190815eccf6137b22643caf249a76e202671f94fa884eb3354ad7ec2f1082e508453db25ab938d9f37de6cbdad9e
   languageName: node
   linkType: hard
 
@@ -5247,9 +5247,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.0.2":
-  version: 6.0.2
-  resolution: "vite@npm:6.0.2"
+"vite@npm:^6.0.3":
+  version: 6.0.3
+  resolution: "vite@npm:6.0.3"
   dependencies:
     esbuild: "npm:^0.24.0"
     fsevents: "npm:~2.3.3"
@@ -5295,7 +5295,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: 10c0/45fc609f2bc5fb5beb5a8e2cad9ad6c2edce229a922f6fc1270ea2a9d75819482edcc0f77c85b4a7abdad7eb69ce6a4f26131925d47cdc0778fc15d1bbc3b6a2
+  checksum: 10c0/764ebed14770426a638575b23a51127c630ace873999ab896b0184484d8107e7255cdf64cfb36c65c1ef1d583e44b70a1d14c0f05b89612e834a5806e3964475
   languageName: node
   linkType: hard
 
