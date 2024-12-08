@@ -23,6 +23,11 @@ import {imageOutDirectory, pdfOutDirectory} from '../uploads.ts';
 
 const router = Router();
 
+router.use((_request, response, next) => {
+	response.setHeader('Cache-Control', 'public, max-age=3600, immutable');
+	next();
+});
+
 router.get('/pdf/:id', (request, response, next) => {
 	response.sendFile(
 		request.params.id,

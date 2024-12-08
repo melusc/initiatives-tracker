@@ -122,6 +122,9 @@ app.use(
 	'/static',
 	express.static(staticRoot, {
 		index: false,
+		setHeaders(response) {
+			response.setHeader('Cache-Control', 'public, max-age=3600, immutable');
+		},
 	}),
 );
 
