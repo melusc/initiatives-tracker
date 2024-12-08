@@ -16,13 +16,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import {sortPeople} from '@lusc/initiatives-tracker-util/sort.js';
+	import {sortPeople} from '@lusc/initiative-tracker-util/sort.js';
 	import type {
 		ApiResponse,
 		ApiResponseSuccess,
 		EnrichedInitiative,
 		Person,
-	} from '@lusc/initiatives-tracker-util/types.js';
+	} from '@lusc/initiative-tracker-util/types.js';
 
 	import {createSuccessState} from '../../success-state.ts';
 

@@ -23,7 +23,7 @@ import {fileURLToPath} from 'node:url';
 import type {
 	Initiative,
 	Organisation,
-} from '@lusc/initiatives-tracker-util/types.js';
+} from '@lusc/initiative-tracker-util/types.js';
 import type {Request} from 'express';
 import {fileTypeFromBuffer} from 'file-type';
 import multer, {memoryStorage} from 'multer';
@@ -41,7 +41,7 @@ export const imageOutDirectory = new URL('image/', dataDirectory);
 await mkdir(imageOutDirectory, {recursive: true});
 
 export const staticRoot = fileURLToPath(
-	import.meta.resolve('@lusc/initiatives-tracker-frontend'),
+	import.meta.resolve('@lusc/initiative-tracker-frontend'),
 );
 
 const fileSizeLimit = 10_485_760; // 10 MB

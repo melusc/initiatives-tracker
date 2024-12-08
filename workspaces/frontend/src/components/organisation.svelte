@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import type {Organisation} from '@lusc/initiatives-tracker-util/types.js';
+	import type {Organisation} from '@lusc/initiative-tracker-util/types.js';
 
 	import {getLogin} from '../state.ts';
 

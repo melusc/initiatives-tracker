@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import type {EnrichedPerson} from '@lusc/initiatives-tracker-util/types.js';
+	import type {EnrichedPerson} from '@lusc/initiative-tracker-util/types.js';
 
 	import DeleteButton from '../../components/delete-button.svelte';
 	import Initiative from '../../components/initiative.svelte';

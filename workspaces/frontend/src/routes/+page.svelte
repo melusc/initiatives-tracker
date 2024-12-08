@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import type {EnrichedInitiative} from '@lusc/initiatives-tracker-util/types.js';
+	import type {EnrichedInitiative} from '@lusc/initiative-tracker-util/types.js';
 
 	import CreateButton from '../components/create-button.svelte';
 	import Initiative from '../components/initiative.svelte';

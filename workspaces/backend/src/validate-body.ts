@@ -17,12 +17,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import {lookup} from 'node:dns/promises';
 
-import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
+import {typeOf} from '@lusc/initiative-tracker-util/type-of.js';
 import type {
 	ApiResponse,
 	ApiResponseError,
 	ApiResponseSuccess,
-} from '@lusc/initiatives-tracker-util/types.js';
+} from '@lusc/initiative-tracker-util/types.js';
 import ip from 'ip';
 
 async function isInternal(url: URL) {

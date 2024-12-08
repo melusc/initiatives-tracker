@@ -1,5 +1,5 @@
 {
-	"name": "@lusc/initiatives-tracker-frontend",
+	"name": "@lusc/initiative-tracker-frontend",
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
@@ -30,7 +30,7 @@
 		"vite": "^6.0.3"
 	},
 	"dependencies": {
-		"@lusc/initiatives-tracker-util": "workspace:^",
+		"@lusc/initiative-tracker-util": "workspace:^",
 		"@lusc/util": "^1.2.0"
 	},
 	"author": {
@@ -40,6 +40,6 @@
 	},
 	"license": "GPL-3.0-only",
 	"repository": {
-		"url": "https://github.com/melusc/initiatives-tracker.git"
+		"url": "https://github.com/melusc/initiative-tracker.git"
 	}
 }

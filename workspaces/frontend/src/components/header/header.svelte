@@ -55,7 +55,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 <header>
 	<a href="/">
-		<h1>Initiatives Tracker</h1>
+		<h1>Initiative Tracker</h1>
 	</a>
 
 	<div class="header-nav">

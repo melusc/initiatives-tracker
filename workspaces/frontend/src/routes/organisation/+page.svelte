@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import type {EnrichedOrganisation} from '@lusc/initiatives-tracker-util/types.js';
+	import type {EnrichedOrganisation} from '@lusc/initiative-tracker-util/types.js';
 
 	import Initiative from '../../components/initiative.svelte';
 	import Loading from '../../components/loading.svelte';
