@@ -18,20 +18,20 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import {Buffer} from 'node:buffer';
 import {unlink, writeFile} from 'node:fs/promises';
 
-import {makeSlug} from '@lusc/initiatives-tracker-util/slug.js';
+import {makeSlug} from '@lusc/initiative-tracker-util/slug.js';
 import {
 	sortInitiatives,
 	sortOrganisations,
 	sortPeople,
-} from '@lusc/initiatives-tracker-util/sort.js';
-import {typeOf} from '@lusc/initiatives-tracker-util/type-of.js';
+} from '@lusc/initiative-tracker-util/sort.js';
+import {typeOf} from '@lusc/initiative-tracker-util/type-of.js';
 import type {
 	Initiative,
 	EnrichedInitiative,
 	Organisation,
 	Person,
 	ApiResponse,
-} from '@lusc/initiatives-tracker-util/types.js';
+} from '@lusc/initiative-tracker-util/types.js';
 import {Router, type RequestHandler} from 'express';
 
 import {database} from '../database.ts';

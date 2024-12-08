@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-import type {LoginInfo} from '@lusc/initiatives-tracker-util/types.js';
+import type {LoginInfo} from '@lusc/initiative-tracker-util/types.js';
 import type {Database} from 'better-sqlite3';
 import type {RequestHandler} from 'express';
 import {z} from 'zod';

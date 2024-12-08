@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import type {ApiResponse} from '@lusc/initiatives-tracker-util/types.js';
+	import type {ApiResponse} from '@lusc/initiative-tracker-util/types.js';
 	import {slide} from 'svelte/transition';
 
 	import {createSuccessState} from '../success-state.ts';

@@ -4,8 +4,8 @@
 
 <svelte:head>
 	{#if title}
-		<title>{title} | Initiatives Tracker</title>
+		<title>{title} | Initiative Tracker</title>
 	{:else}
-		<title>Initiatives Tracker</title>
+		<title>Initiative Tracker</title>
 	{/if}
 </svelte:head>

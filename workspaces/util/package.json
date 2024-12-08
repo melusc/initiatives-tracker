@@ -1,5 +1,5 @@
 {
-	"name": "@lusc/initiatives-tracker-util",
+	"name": "@lusc/initiative-tracker-util",
 	"private": true,
 	"exports": {
 		"./color-hash.js": "./dist/color-hash.js",
@@ -32,6 +32,6 @@
 	},
 	"license": "GPL-3.0-only",
 	"repository": {
-		"url": "https://github.com/melusc/initiatives-tracker.git"
+		"url": "https://github.com/melusc/initiative-tracker.git"
 	}
 }

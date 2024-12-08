@@ -24,14 +24,14 @@ import {createInterface} from 'node:readline/promises';
 import {fileURLToPath} from 'node:url';
 import {parseArgs} from 'node:util';
 
-import {generatePassword} from '@lusc/initiatives-tracker-util/pw.js';
+import {generatePassword} from '@lusc/initiative-tracker-util/pw.js';
 import Database, {type Database as DatabaseT} from 'better-sqlite3';
 
 import {scrypt} from './promisified.ts';
 import {dataDirectory, imageOutDirectory, pdfOutDirectory} from './uploads.ts';
 
 export const database: DatabaseT = new Database(
-	fileURLToPath(new URL('initiatives-tracker.db', dataDirectory)),
+	fileURLToPath(new URL('initiative-tracker.db', dataDirectory)),
 );
 
 const {

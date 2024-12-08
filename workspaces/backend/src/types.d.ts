@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 declare global {
 	declare module 'express-serve-static-core' {
 		interface Locals {
-			readonly login: import('@lusc/initiatives-tracker-util/types.js').LoginInfo;
+			readonly login: import('@lusc/initiative-tracker-util/types.js').LoginInfo;
 		}
 
 		interface Request {

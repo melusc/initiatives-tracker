@@ -1,4 +1,4 @@
-== Initiatives Tracker ==
+== Initiative Tracker ==
 
 Copyright (C) 2024  Luca Schnellmann
 

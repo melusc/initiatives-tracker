@@ -1,5 +1,5 @@
 {
-	"name": "@lusc/initiatives-tracker-backend",
+	"name": "@lusc/initiative-tracker-backend",
 	"private": true,
 	"type": "module",
 	"devDependencies": {
@@ -19,8 +19,8 @@
 		"typescript": "^5.7.2"
 	},
 	"dependencies": {
-		"@lusc/initiatives-tracker-frontend": "workspace:^",
-		"@lusc/initiatives-tracker-util": "workspace:^",
+		"@lusc/initiative-tracker-frontend": "workspace:^",
+		"@lusc/initiative-tracker-util": "workspace:^",
 		"@lusc/util": "^1.2.0",
 		"better-sqlite3": "^11.6.0",
 		"cookie-parser": "^1.4.7",
@@ -53,6 +53,6 @@
 	},
 	"license": "GPL-3.0-only",
 	"repository": {
-		"url": "https://github.com/melusc/initiatives-tracker.git"
+		"url": "https://github.com/melusc/initiative-tracker.git"
 	}
 }

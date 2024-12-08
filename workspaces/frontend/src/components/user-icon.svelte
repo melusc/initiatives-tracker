@@ -16,7 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
-	import {colorHash} from '@lusc/initiatives-tracker-util/color-hash.js';
+	import {colorHash} from '@lusc/initiative-tracker-util/color-hash.js';
 
 	const {name, iconKey}: {name: string; iconKey: string} = $props();
 </script>
