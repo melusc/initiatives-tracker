@@ -21,11 +21,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import DeleteButton from '../../components/delete-button.svelte';
 	import Initiative from '../../components/initiative.svelte';
 	import Loading from '../../components/loading.svelte';
+	import PageTitle from '../../components/page-title.svelte';
 	import EditableTitle from '../../components/person/editable-title.svelte';
 	import {getState} from '../../state.ts';
 
 	let person = $state(getState<EnrichedPerson>());
 </script>
+
+<PageTitle title={person?.name} />
 
 <div class="person" data-person={person?.id}>
 	{#if person}

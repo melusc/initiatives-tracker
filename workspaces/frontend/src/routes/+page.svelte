@@ -21,14 +21,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import CreateButton from '../components/create-button.svelte';
 	import Initiative from '../components/initiative.svelte';
 	import Loading from '../components/loading.svelte';
+	import PageTitle from '../components/page-title.svelte';
 	import {getState} from '../state.ts';
 
 	const initiatives = getState<EnrichedInitiative[]>();
 </script>
 
-<svelte:head>
-	<title>Initiatives Tracker</title>
-</svelte:head>
+<PageTitle />
 
 <CreateButton text="Add initiative" href="/initiative/create" />
 

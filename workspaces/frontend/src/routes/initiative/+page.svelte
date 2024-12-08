@@ -24,12 +24,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import SignedBy from '../../components/initiative/signed-by.svelte';
 	import Initiative from '../../components/initiative.svelte';
 	import Loading from '../../components/loading.svelte';
+	import PageTitle from '../../components/page-title.svelte';
 	import {getLogin, getState} from '../../state.ts';
 
 	let initiative = $state(getState<EnrichedInitiative>());
 
 	const login = getLogin();
 </script>
+
+<PageTitle title={initiative?.shortName} />
 
 <div class="initiative">
 	{#if initiative}

@@ -16,6 +16,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
+	import PageTitle from '../../components/page-title.svelte';
 	import {getLogin, getState} from '../../state.ts';
 
 	const login = getLogin();
@@ -25,6 +26,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		success?: Record<string, string>;
 	}>();
 </script>
+
+<PageTitle title="Account" />
 
 <h1>Account</h1>
 

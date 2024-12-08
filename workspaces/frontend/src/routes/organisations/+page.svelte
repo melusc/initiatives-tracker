@@ -21,10 +21,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import CreateButton from '../../components/create-button.svelte';
 	import Loading from '../../components/loading.svelte';
 	import Organisation from '../../components/organisation.svelte';
+	import PageTitle from '../../components/page-title.svelte';
 	import {getState} from '../../state.ts';
 
 	const organisations = getState<EnrichedOrganisation[]>();
 </script>
+
+<PageTitle title="Organisations" />
 
 <CreateButton text="Create organisation" href="/organisation/create" />
 

@@ -20,11 +20,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 	import CreateButton from '../../components/create-button.svelte';
 	import Loading from '../../components/loading.svelte';
+	import PageTitle from '../../components/page-title.svelte';
 	import UserIcon from '../../components/user-icon.svelte';
 	import {getState} from '../../state.ts';
 
 	const people = getState<EnrichedPerson[]>();
 </script>
+
+<PageTitle title="People" />
 
 <CreateButton text="Create person" href="/person/create" nonAdminAllowed />
 

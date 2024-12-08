@@ -15,9 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<svelte:head>
-	<title>404 — Page not found</title>
-</svelte:head>
+<script lang="ts">
+	import PageTitle from '../../components/page-title.svelte';
+</script>
+
+<PageTitle title="404 — Page not found" />
 
 <h1>404 — Page not found</h1>
 <a href="/">Want to sign an initiative to ban all 404 pages?</a>

@@ -18,6 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 <script lang="ts">
 	import {getState} from '../../state.ts';
 	import Card from '../card.svelte';
+	import PageTitle from '../page-title.svelte';
 	import StandaloneCenter from '../standalone-center.svelte';
 
 	import type {Input} from './create-form.d.ts';
@@ -33,6 +34,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		values: Record<string, string>;
 	} = getState() ?? {values: {}};
 </script>
+
+<PageTitle {title} />
 
 <StandaloneCenter>
 	<form method="POST" enctype="multipart/form-data">

@@ -16,14 +16,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
 <script lang="ts">
+	import PageTitle from '../../components/page-title.svelte';
 	import {getState} from '../../state.ts';
 
 	const state = getState<{error?: string}>();
 </script>
 
-<svelte:head>
-	<title>Login</title>
-</svelte:head>
+<PageTitle title="Login" />
 
 <div class="login-form-center">
 	<form method="POST">

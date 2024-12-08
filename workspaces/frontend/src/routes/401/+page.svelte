@@ -15,9 +15,11 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>.
 -->
 
-<svelte:head>
-	<title>401 — Unauthorised</title>
-</svelte:head>
+<script>
+	import PageTitle from '../../components/page-title.svelte';
+</script>
+
+<PageTitle title="401 — Unauthorised" />
 
 <h1>401 — Unauthorised</h1>
 

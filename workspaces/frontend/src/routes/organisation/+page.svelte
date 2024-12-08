@@ -21,10 +21,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import Initiative from '../../components/initiative.svelte';
 	import Loading from '../../components/loading.svelte';
 	import Organisation from '../../components/organisation.svelte';
+	import PageTitle from '../../components/page-title.svelte';
 	import {getState} from '../../state.ts';
 
 	let organisation = $state(getState<EnrichedOrganisation>());
 </script>
+
+<PageTitle title={organisation?.name} />
 
 <div class="organisation">
 	{#if organisation}
