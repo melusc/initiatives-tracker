@@ -11,7 +11,7 @@
 	},
 	"type": "module",
 	"devDependencies": {
-		"@lusc/eslint-config": "^3.4.0",
+		"@lusc/eslint-config": "^3.4.1",
 		"@lusc/tsconfig": "^5.1.0",
 		"@types/node": "^22.10.1",
 		"eslint": "^9.16.0",
