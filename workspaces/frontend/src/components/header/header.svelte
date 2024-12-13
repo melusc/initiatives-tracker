@@ -125,8 +125,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		margin: 0;
 	}
 
-	.header-title {
+	a {
 		font-weight: 600;
+	}
+
+	.header-title {
 		display: flex;
 		align-items: center;
 		gap: 1em;
