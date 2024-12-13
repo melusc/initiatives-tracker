@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 	import {RelativeUrl} from '@lusc/util/relative-url';
 
 	import {getLogin} from '../../state.ts';
+	import Icon from '../icons/icon.svelte';
 	import UserIcon from '../user-icon.svelte';
 
 	import HeaderMenu from './header-menu.svelte';
@@ -54,8 +55,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 </script>
 
 <header>
-	<a href="/">
+	<a href="/" class="header-title">
 		<h1>Initiative Tracker</h1>
+		<Icon />
 	</a>
 
 	<div class="header-nav">
@@ -123,8 +125,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 		margin: 0;
 	}
 
-	a {
+	.header-title {
 		font-weight: 600;
+		display: flex;
+		align-items: center;
+		gap: 1em;
+	}
+
+	.header-title > :global(svg) {
+		height: 1.5em;
+		width: 1.5em;
 	}
 
 	.user-info {
